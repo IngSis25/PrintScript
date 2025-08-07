@@ -1,0 +1,5 @@
+
+class OperatorType implements TokenType{
+
+
+}
