@@ -1,4 +1,7 @@
-package main.kotlin.parser
+package parser
+
+import main.kotlin.parser.ASTNode
+import main.kotlin.parser.IdentifierNode
 
 data class VariableDeclarationNode(
     val identifier: IdentifierNode,
