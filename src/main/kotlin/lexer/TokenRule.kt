@@ -1,4 +1,6 @@
-package main.kotlin.lexer
+package lexer
+
+import main.kotlin.lexer.TokenType
 
 //para representar una regla (regex + tipo + ignore).
 data class TokenRule (val pattern: Regex,
