@@ -1,5 +1,5 @@
 package main.kotlin.lexer
 
-object PuntuationType : TokenType {
+object PunctuationType : TokenType {
     override val name: String = "PUNCTUATION"
 }
