@@ -1,6 +1,8 @@
+package main.kotlin.lexer
+
 data class Token(
     val type: TokenType,
     val value: String,
-  /*  val line: Int,
-    val column: Int*/
+    val line: Int,
+    val column: Int
 )
