@@ -1,5 +1,4 @@
 
-class OperatorType implements TokenType{
-
-
+object OperatorType: TokenType {
+    override val name = "OPERATOR"
 }
