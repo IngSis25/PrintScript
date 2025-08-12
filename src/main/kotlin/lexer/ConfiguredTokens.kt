@@ -5,7 +5,7 @@ import lexer.ModifierType
 
 object ConfiguredTokens{
 
-    // Versión 1 de tu configuración de tokens
+    // Versión 1 configuración de tokens
     val V1: Map<String, TokenType> = linkedMapOf(
         // Palabras clave
         "\\bnumber\\b"            to NumberType,

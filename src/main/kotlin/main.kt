@@ -3,18 +3,17 @@ import lexer.TokenRule
 import main.kotlin.lexer.*
 
 fun main() {
-    val rules = listOf(
-        TokenRule(Regex("\\Gval"), ModifierType),
-        TokenRule(Regex("\\G[0-9]+"), LiteralNumber),
-        TokenRule(Regex("\\G[A-Za-z_][A-Za-z0-9_]*"), IdentifierType),
-        TokenRule(Regex("\\G="), OperatorType),
-        TokenRule(Regex("\\G:"), PunctuationType),
-        TokenRule(Regex("\\G[ \\t]+"), PunctuationType, ignore = true),
-        TokenRule(Regex("\\G;"), PunctuationType)
 
+    val baseProvider = ConfiguredTokens.providerV1()
+
+    val ignored = listOf(
+        TokenRule(Regex("\\G[ \\t]+"), PunctuationType, ignore = true),     // espacios/tabs
+        TokenRule(Regex("\\G(?:\\r?\\n)+"), PunctuationType, ignore = true), // saltos de línea
+        TokenRule(Regex("\\G//.*(?:\\r?\\n|$)"), PunctuationType, ignore = true) // comentarios //
     )
 
-    val tokenProvider = TokenProvider(rules)
+
+    val tokenProvider = TokenProvider(ignored + baseProvider.rules())
     val lexer = DefaultLexer(tokenProvider)
 
     val code = "x = 2;"

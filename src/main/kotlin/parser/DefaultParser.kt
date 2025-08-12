@@ -1,3 +1,4 @@
+/*
 package parser
 
 import main.kotlin.lexer.Token
@@ -34,4 +35,4 @@ class DefaultParser(
     private fun buildAstNodeForRule(rule: ParserRule, subList: List<Token>): ASTNode {
 
     }
-}
+}*/
