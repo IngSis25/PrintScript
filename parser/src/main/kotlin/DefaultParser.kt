@@ -1,36 +1,30 @@
 package parser
 
 import main.kotlin.lexer.Token
-import main.kotlin.lexer.TokenProvider
 import main.kotlin.parser.ASTNode
 import main.kotlin.parser.ParseResult
 import main.kotlin.parser.Parser
-import parser.rules.ParserRule
+import rules.RuleMatcher
 
 class DefaultParser(
-    private val rules: List<ParserRule>
+    private val ruleMatcher: RuleMatcher
 ) : Parser {
-    override fun parse(tokens: List<Token>): ParseResult<ASTNode>? {
+
+    override fun parse(tokens: List<Token>): ParseResult<ASTNode> {
         return parseRecursive(tokens, 0)
+            ?: ParseResult.Failure("No parse result could be produced", 0)
     }
 
     private fun parseRecursive(tokens: List<Token>, pos: Int): ParseResult<ASTNode>? {
         if (pos >= tokens.size) return null
 
-        for (rule in rules) {
-            val result = rule.matcher.match(tokens, pos)
-            if (result != null) {
-                val node = buildAstNodeForRule(rule, tokens.subList(pos, result.nextPosition))
-                // Intentar parsear lo que queda recursivamente (si querés hacer un árbol completo)
-                val nextResult = parseRecursive(tokens, result.nextPosition)
-                return ParseResult(node, nextResult?.nextPosition ?: result.nextPosition)
+        return when (val matchResult = ruleMatcher.matchNext(tokens, pos)) { //si nunca voy a tener mas opciones de ParseResult
+            is ParseResult.Success<*> -> {
+                val node = matchResult.node.rule.buildNode(matchResult.node.matchedTokens)
+                val nextResult = parseRecursive(tokens, matchResult.nextPosition)
+                ParseResult.Success(node, nextResult?.nextPosition ?: matchResult.nextPosition)
             }
+            is ParseResult.Failure -> matchResult
         }
-
-        return null
-    }
-
-    private fun buildAstNodeForRule(rule: ParserRule, subList: List<Token>): ASTNode {
-
     }
 }
