@@ -5,6 +5,8 @@ import main.kotlin.parser.ASTNode
 import parser.matchers.Matcher
 
 interface ParserRule{
-    val matcher: Matcher<List<Token>>
+    //RuleMatcher No usa el tipo de nodo, solo se fija si matchea o no, por eso no le paso un tipo especifico
+    val matcher: Matcher<*>
+    //val matcher: Matcher<List<Token>>
     fun buildNode(matchedTokens: List<Token>): ASTNode //cada regla sabe construir su propio nodo
 }
