@@ -25,7 +25,9 @@ object ConfiguredTokens{
         "[A-Za-z_][A-Za-z_0-9]*"  to IdentifierType,        // variables, funciones
 
         // Puntuación
-        ";"                       to PunctuationType
+        ";"                       to PunctuationType,
+        "\\("                     to PunctuationType, // paréntesis de apertura
+        "\\)"                     to PunctuationType, // paréntesis de cierre
     )
 
     // Método para obtener el provider listo para usar
