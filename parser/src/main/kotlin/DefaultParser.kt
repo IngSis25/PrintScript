@@ -1,7 +1,3 @@
-package parser
-
-import main.kotlin.lexer.Token
-import main.kotlin.lexer.TokenProvider
 import main.kotlin.parser.ASTNode
 import main.kotlin.parser.ParseResult
 import main.kotlin.parser.Parser
