@@ -11,8 +11,8 @@ import main.kotlin.parser.IdentifierNode
 import main.kotlin.parser.LiteralNode
 import parser.VariableDeclarationNode
 import parser.matchers.Matcher
-import parser.matchers.SequenceMatcher
-import parser.matchers.TokenMatcher
+import matchers.SequenceMatcher
+import matchers.TokenMatcher
 
 class VariableDeclarationRule : ParserRule {
    override val matcher: Matcher<*> = SequenceMatcher(
