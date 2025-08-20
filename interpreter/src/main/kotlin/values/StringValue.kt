@@ -1,3 +1,5 @@
 package org.example.values
 
-class StringValue(val s: String) : Value
+class StringValue(
+    val s: String,
+) : Value

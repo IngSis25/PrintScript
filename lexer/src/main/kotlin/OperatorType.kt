@@ -1,4 +1,5 @@
 package main.kotlin.lexer
-object OperatorType: TokenType {
+
+object OperatorType : TokenType {
     override val name = "OPERATOR"
 }
