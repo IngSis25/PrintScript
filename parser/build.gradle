@@ -7,7 +7,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation "org.jetbrains.kotlin:kotlin-test:2.2.0"
     implementation project(':lexer')
 }
 
