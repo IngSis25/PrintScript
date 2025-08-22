@@ -1,5 +1,6 @@
 package main.kotlin.parser
 
+import ASTNode
 import main.kotlin.lexer.Token
 
 interface Parser {

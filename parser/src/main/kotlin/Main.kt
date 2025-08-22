@@ -1,28 +1,28 @@
 import lexer.TokenRule
 import main.kotlin.lexer.*
-import rules.RuleMatcher
 import parser.rules.*
 import rules.PrintlnRule
+import rules.RuleMatcher
 
 fun main() {
-
     val baseProvider = ConfiguredTokens.providerV1()
 
-    val ignored = listOf(
-        TokenRule(Regex("\\G[ \\t]+"), PunctuationType, ignore = true),
-        TokenRule(Regex("\\G(?:\\r?\\n)+"), PunctuationType, ignore = true),
-        TokenRule(Regex("\\G//.*(?:\\r?\\n|$)"), PunctuationType, ignore = true)
-    )
+    val ignored =
+        listOf(
+            TokenRule(Regex("\\G[ \\t]+"), PunctuationType, ignore = true),
+            TokenRule(Regex("\\G(?:\\r?\\n)+"), PunctuationType, ignore = true),
+            TokenRule(Regex("\\G//.*(?:\\r?\\n|$)"), PunctuationType, ignore = true),
+        )
 
     val tokenProvider = TokenProvider(ignored + baseProvider.rules())
     val lexer = DefaultLexer(tokenProvider)
 
-
-    val code = """
+    val code =
+        """
         let nombre = "Achu";
         println("hola");
         println(12 + 8);
-    """.trimIndent()
+        """.trimIndent()
 
     // 3) LEXER: tokenizamos
     val tokens = lexer.tokenize(code)
@@ -32,13 +32,14 @@ fun main() {
         println("${t.type} -> '${t.value}' (linea ${t.line}, col ${t.column})")
     }
 
-    val ruleMatcher = RuleMatcher(
-        listOf(
-            PrintlnRule(),
-            VariableDeclarationRule(),
-            ExpressionRule()
+    val ruleMatcher =
+        RuleMatcher(
+            listOf(
+                PrintlnRule(),
+                VariableDeclarationRule(),
+                ExpressionRule(),
+            ),
         )
-    )
 
     val parser = DefaultParser(ruleMatcher)
 

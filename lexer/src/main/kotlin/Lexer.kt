@@ -1,5 +1,5 @@
 package main.kotlin.lexer
 
-interface Lexer{
+interface Lexer {
     fun tokenize(sourceCode: String): List<Token>
 }

@@ -1,17 +1,17 @@
 package lexerTest
 
 import main.kotlin.lexer.*
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
-class LexerTest{
-
+class LexerTest {
     @Test
     fun lexerShouldRecognizeStringTypeToken() {
         val input = "String"
-        val tokenProvider = TokenProvider.fromMap(
-            mapOf("String" to StringType)
-        )
+        val tokenProvider =
+            TokenProvider.fromMap(
+                mapOf("String" to StringType),
+            )
         val lexer = DefaultLexer(tokenProvider)
         val tokens = lexer.tokenize(input)
 
@@ -23,9 +23,10 @@ class LexerTest{
     @Test
     fun lexerShouldRecognizeNumberTypeToken() {
         val input = "Int"
-        val tokenProvider = TokenProvider.fromMap(
-            mapOf("Int" to NumberType)
-        )
+        val tokenProvider =
+            TokenProvider.fromMap(
+                mapOf("Int" to NumberType),
+            )
         val lexer = DefaultLexer(tokenProvider)
         val tokens = lexer.tokenize(input)
 
@@ -37,9 +38,10 @@ class LexerTest{
     @Test
     fun lexerShouldRecognizeLiteralNumberToken() {
         val input = "123"
-        val tokenProvider = TokenProvider.fromMap(
-            mapOf("\\d+" to LiteralNumber)
-        )
+        val tokenProvider =
+            TokenProvider.fromMap(
+                mapOf("\\d+" to LiteralNumber),
+            )
         val lexer = DefaultLexer(tokenProvider)
         val tokens = lexer.tokenize(input)
 
@@ -51,9 +53,10 @@ class LexerTest{
     @Test
     fun lexerShouldRecognizeLiteralStringToken() {
         val input = "\"Olivia\""
-        val tokenProvider = TokenProvider.fromMap(
-            mapOf("\"[^\"]*\"" to LiteralString)
-        )
+        val tokenProvider =
+            TokenProvider.fromMap(
+                mapOf("\"[^\"]*\"" to LiteralString),
+            )
         val lexer = DefaultLexer(tokenProvider)
         val tokens = lexer.tokenize(input)
 
@@ -65,9 +68,10 @@ class LexerTest{
     @Test
     fun lexerShouldRecognizePunctuationTypeToken() {
         val input = ";"
-        val tokenProvider = TokenProvider.fromMap(
-            mapOf(";" to PunctuationType)
-        )
+        val tokenProvider =
+            TokenProvider.fromMap(
+                mapOf(";" to PunctuationType),
+            )
         val lexer = DefaultLexer(tokenProvider)
         val tokens = lexer.tokenize(input)
 
@@ -79,9 +83,10 @@ class LexerTest{
     @Test
     fun lexerShouldRecognizeIdentifierTypeToken() {
         val input = "variable1"
-        val tokenProvider = TokenProvider.fromMap(
-            mapOf("[a-zA-Z_][a-zA-Z0-9_]*" to IdentifierType)
-        )
+        val tokenProvider =
+            TokenProvider.fromMap(
+                mapOf("[a-zA-Z_][a-zA-Z0-9_]*" to IdentifierType),
+            )
         val lexer = DefaultLexer(tokenProvider)
         val tokens = lexer.tokenize(input)
 
@@ -93,9 +98,10 @@ class LexerTest{
     @Test
     fun lexerShouldRecognizeOperatorTypeToken() {
         val input = "+"
-        val tokenProvider = TokenProvider.fromMap(
-            mapOf("\\+" to OperatorType)
-        )
+        val tokenProvider =
+            TokenProvider.fromMap(
+                mapOf("\\+" to OperatorType),
+            )
         val lexer = DefaultLexer(tokenProvider)
         val tokens = lexer.tokenize(input)
 

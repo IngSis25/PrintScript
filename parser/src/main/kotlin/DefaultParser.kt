@@ -1,12 +1,11 @@
 import main.kotlin.lexer.Token
-import main.kotlin.parser.ASTNode
 import main.kotlin.parser.ParseResult
 import rules.MatchedRule
 import rules.RuleMatcher
 
-
-class DefaultParser(private val ruleMatcher: RuleMatcher) {
-
+class DefaultParser(
+    private val ruleMatcher: RuleMatcher,
+) {
     fun parse(tokens: List<Token>): List<ASTNode> {
         val ast = mutableListOf<ASTNode>()
         var pos = 0
@@ -27,7 +26,6 @@ class DefaultParser(private val ruleMatcher: RuleMatcher) {
         return ast.toList()
     }
 }
-
 
    /* private fun parseRecursive(tokens: List<Token>, pos: Int): ParseResult<ASTNode>? {
         if (pos >= tokens.size) return null

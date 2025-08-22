@@ -1,7 +1,7 @@
 package parser
 
-import main.kotlin.parser.ASTNode
+import ASTNode
 
 data class PrintlnNode(
-    val value: ASTNode
+    val value: ASTNode,
 ) : ASTNode
