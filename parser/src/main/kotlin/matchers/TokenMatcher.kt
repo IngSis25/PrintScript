@@ -1,17 +1,25 @@
-package parser.matchers
+package matchers
 
 import main.kotlin.lexer.Token
 import main.kotlin.lexer.TokenType
 import main.kotlin.parser.ParseResult
+import parser.matchers.Matcher
 
-class TokenMatcher(private val type: TokenType) : Matcher<Token> {
-    override fun match(tokens: List<Token>, pos: Int): ParseResult<Token>? {
+// devuelve un token cuando matchea
+class TokenMatcher(
+    private val type: TokenType,
+) : Matcher<Token> {
+    override fun match(
+        tokens: List<Token>,
+        pos: Int,
+    ): ParseResult<Token>? {
         if (pos >= tokens.size) return null
 
         val token = tokens[pos]
 
         if (token.type != type) return null
 
-        return ParseResult(token, pos + 1)
+        // return ParseResult(token, pos + 1)
+        return ParseResult.Success(token, pos + 1)
     }
 }

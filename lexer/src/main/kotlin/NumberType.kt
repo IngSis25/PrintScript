@@ -1,5 +1,5 @@
 package main.kotlin.lexer
 
-object NumberType: TokenType {
+object NumberType : TokenType {
     override val name = "NUMBER_KEYWORD"
 }
