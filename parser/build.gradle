@@ -1,21 +1,8 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '2.2.0'
-    id 'org.jlleitschuh.gradle.ktlint' version '13.0.0'
-
-}
-
-repositories {
-    mavenCentral()
+    id 'buildlogic.kotlin-library-conventions'
 }
 
 dependencies {
-    testImplementation 'org.jetbrains.kotlin:kotlin-test'
     implementation project(':lexer')
 }
 
-test {
-    useJUnitPlatform()
-}
-kotlin {
-    jvmToolchain(17)
-}
