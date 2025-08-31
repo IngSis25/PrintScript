@@ -1,0 +1,32 @@
+import org.gradle.api.tasks.Copy
+
+tasks.register('installGitHooks', Copy) {
+    group = 'git hooks'
+    description = 'Instala el hook pre-commit en .git/hooks del repo'
+
+    // Providers (compatibles con config cache)
+    def hooksDir = layout.projectDirectory.dir(".git/hooks")
+    def srcHook  = layout.projectDirectory.file("gradle/hooks/pre-commit")
+
+    // Si no existe .git/hooks, fallamos antes de ejecutar
+    doFirst {
+        if (!hooksDir.asFile.exists()) {
+            throw new GradleException(".git/hooks no existe. ¿Clonaste con git? Si abriste un .zip, no hay carpeta .git.")
+        }
+        if (!srcHook.asFile.exists()) {
+            throw new GradleException("No se encontró ${srcHook.asFile}. Creá el archivo en gradle/hooks/pre-commit")
+        }
+    }
+
+    // Copiamos el pre-commit al directorio de hooks
+    from(srcHook)
+    into(hooksDir)
+    rename { "pre-commit" }
+
+    // Marcar ejecutable sin usar `file(...)`
+    doLast {
+        def dst = hooksDir.file("pre-commit").asFile
+        dst.setExecutable(true, false)
+        println "Hook pre-commit instalado en ${dst}"
+    }
+}

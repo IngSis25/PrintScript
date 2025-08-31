@@ -3,7 +3,6 @@ package org.example.strategy
 import ASTNode
 import org.example.builder.StrategyProviderBuilder
 
-
 /**
  * A provider of [Strategy] to use in the [Interpreter].
  */
@@ -12,7 +11,7 @@ sealed interface StrategyProvider {
      * Gets the [Strategy] for the given [ASTNode] type. Método para pedir la receta correcta para un nodo.
      */
     infix fun <T> getStrategyFor(node: T): Strategy<T>? where T : ASTNode
-//val s: Strategy<PrintlnNode>? = provider getStrategyFor printlnNode -> forma de uso
+// val s: Strategy<PrintlnNode>? = provider getStrategyFor printlnNode -> forma de uso
 
     /**
      * Combines this [StrategyProvider] with another [StrategyProvider].
@@ -31,31 +30,26 @@ sealed interface StrategyProvider {
         /**
          * Creates a new [StrategyProvider] using the builder-style DSL.
          */
-        infix fun builder(block: StrategyProviderBuilder.() -> Unit): StrategyProvider {
-            return StrategyProviderBuilder().apply(block).build()
-        }
+        infix fun builder(block: StrategyProviderBuilder.() -> Unit): StrategyProvider =
+            StrategyProviderBuilder().apply(block).build()
 
         /**
          * Creates a concrete implementation from a prebuilt map.
          */
         internal infix fun implementation(
-            strategies: Map<Class<out ASTNode>, Strategy<out ASTNode>>
-        ): StrategyProvider {
-            return StrategyProviderImplementation(strategies)
-        }
+            strategies: Map<Class<out ASTNode>, Strategy<out ASTNode>>,
+        ): StrategyProvider = StrategyProviderImplementation(strategies)
     }
 
     /**
      * Default map-backed implementation.
      */
     private class StrategyProviderImplementation(
-        private val strategies: Map<Class<out ASTNode>, Strategy<out ASTNode>>
+        private val strategies: Map<Class<out ASTNode>, Strategy<out ASTNode>>,
     ) : StrategyProvider {
-
         @Suppress("UNCHECKED_CAST")
-        override fun <T> getStrategyFor(node: T): Strategy<T>? where T : ASTNode {
-            return strategies[node::class.java] as Strategy<T>?
-        }
+        override fun <T> getStrategyFor(node: T): Strategy<T>? where T : ASTNode =
+            strategies[node::class.java] as Strategy<T>?
 
         override fun plus(other: StrategyProvider): StrategyProvider {
             val merged = mutableMapOf<Class<out ASTNode>, Strategy<out ASTNode>>()

@@ -1,10 +1,8 @@
-package lexerTest
-
 import main.kotlin.lexer.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class LexerTest {
+class LexerTests {
     @Test
     fun lexerShouldRecognizeStringTypeToken() {
         val input = "String"

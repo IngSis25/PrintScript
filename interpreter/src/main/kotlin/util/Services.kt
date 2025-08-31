@@ -3,7 +3,6 @@ package org.example.util
 import ASTNode
 import org.example.output.Output
 
-
 /**
  * Mochila de ejecución que reciben TODAS las strategies.
  * - context: estado (inmutable) de variables
@@ -13,5 +12,5 @@ import org.example.output.Output
 data class Services(
     val context: Map<String, Any?>,
     val output: Output,
-    val visit: (Services, ASTNode) -> Any?
+    val visit: (Services, ASTNode) -> Any?,
 )
