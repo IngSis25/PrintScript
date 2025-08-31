@@ -15,7 +15,7 @@ class RuleMatcher(
             // intento aplicar cada regla
             val result = rule.matcher.match(tokens, pos) ?: continue
 
-            when (result) {
+            when (result) { //puedo usar when si solo voy a tener dos posibles results??
                 is ParseResult.Success<*> -> {
                     val end = result.nextPosition
                     val slice = tokens.subList(pos, end)

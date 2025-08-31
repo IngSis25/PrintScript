@@ -25,30 +25,4 @@ class VariableDeclarationRule : ParserRule {
                 TokenMatcher(PunctuationType),
             ),
         )
-
-    override fun buildNode(matchedTokens: List<Token>): ASTNode {
-        val identToken = matchedTokens[1]
-        val valueToken = matchedTokens[3]
-
-        val identNode = IdentifierNode(identToken.value)
-
-        val raw = valueToken.value
-        val unquoted =
-            if (raw.length >= 2 && raw.first() == '"' && raw.last() == '"') {
-                raw.substring(1, raw.length - 1)
-            } else {
-                raw
-            }
-
-        val literalNode =
-            LiteralNode(
-                value = unquoted,
-                literalType = main.kotlin.lexer.LiteralString,
-            )
-        return VariableDeclarationNode(
-            identifier = identNode,
-            varType = "string", // hardcodeado por ahora en string, desp lo arreglamos para poner mas
-            value = literalNode,
-        )
-    }
 }
