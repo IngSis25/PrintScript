@@ -9,5 +9,5 @@ interface ParserRule {
     val matcher: Matcher<*>
 
     // val matcher: Matcher<List<Token>>
-    fun buildNode(matchedTokens: List<Token>): ASTNode // cada regla sabe construir su propio nodo
+    //fun buildNode(matchedTokens: List<Token>): ASTNode // cada regla sabe construir su propio nodo -> NodeBuilder
 }

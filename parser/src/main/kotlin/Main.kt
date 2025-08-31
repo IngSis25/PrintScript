@@ -41,7 +41,7 @@ fun main() {
             ),
         )
 
-    val parser = DefaultParser(ruleMatcher)
+    val parser = DefaultParser(ruleMatcher,)
 
     val ast = parser.parse(tokens)
 
