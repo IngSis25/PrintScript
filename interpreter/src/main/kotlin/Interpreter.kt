@@ -1,7 +1,7 @@
 package org.example
 
-import main.kotlin.parser.ASTNode
+import org.example.ast.ASTNode
 
 interface Interpreter {
-    fun execute(input: List<ASTNode>) //no devuelve nada, el resultado es el efecto
+    fun execute(input: List<ASTNode>) // no devuelve nada, el resultado es el efecto
 }

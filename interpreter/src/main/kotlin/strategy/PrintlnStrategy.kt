@@ -1,7 +1,6 @@
 package org.example.strategy
+import org.example.ast.PrintlnNode
 import org.example.util.Services
-import parser.PrintlnNode
-
 
 val printlnStrategy =
     Strategy<PrintlnNode> { services: Services, node: PrintlnNode ->

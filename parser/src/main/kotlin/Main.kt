@@ -1,3 +1,4 @@
+import builders.PrintBuilder
 import lexer.TokenRule
 import main.kotlin.lexer.*
 import parser.rules.*
@@ -19,12 +20,12 @@ fun main() {
 
     val code =
         """
-        let nombre = "Achu";
+        let nombre: string = "Achu";
         println("hola");
         println(12 + 8);
         """.trimIndent()
 
-    // 3) LEXER: tokenizamos
+    // LEXER
     val tokens = lexer.tokenize(code)
 
     println("=== TOKENS ===")
@@ -32,16 +33,18 @@ fun main() {
         println("${t.type} -> '${t.value}' (linea ${t.line}, col ${t.column})")
     }
 
+    // Reglas del parser (¡inyectando builders!)
     val ruleMatcher =
         RuleMatcher(
             listOf(
-                PrintlnRule(),
-                VariableDeclarationRule(),
-                ExpressionRule(),
+                // Importante: reglas específicas antes que las genéricas
+                PrintlnRule(PrintBuilder()),
+                // VariableDeclarationRule(VariableDeclarationBuilder()),
+                // ExpressionRule(ExpressionBuilder()),
             ),
         )
 
-    val parser = DefaultParser(ruleMatcher,)
+    val parser = DefaultParser(ruleMatcher)
 
     val ast = parser.parse(tokens)
 

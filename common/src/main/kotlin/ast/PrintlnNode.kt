@@ -1,6 +1,4 @@
-package parser
-
-import ASTNode
+package org.example.ast
 
 data class PrintlnNode(
     val value: ASTNode,

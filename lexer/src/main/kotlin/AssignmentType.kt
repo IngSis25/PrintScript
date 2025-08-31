@@ -1,5 +1,5 @@
 package lexer
-import main.kotlin.lexer.TokenType
+import org.example.TokenType
 
 object AssignmentType : TokenType {
     override val name = "ASSIGNMENT"

@@ -1,6 +1,6 @@
 package lexer
 
-import main.kotlin.lexer.TokenType
+import org.example.TokenType
 
 object ModifierType : TokenType {
     override val name = "MODIFIER"

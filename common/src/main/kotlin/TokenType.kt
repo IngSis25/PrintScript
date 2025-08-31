@@ -1,4 +1,4 @@
-package main.kotlin.lexer
+package org.example
 
 interface TokenType {
     val name: String

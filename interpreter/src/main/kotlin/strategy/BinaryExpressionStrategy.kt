@@ -1,5 +1,6 @@
 package org.example.strategy
 
+import org.example.ast.BinaryOpNode
 import org.example.util.Services
 
 // Ajustá el import del nodo a tu parser real

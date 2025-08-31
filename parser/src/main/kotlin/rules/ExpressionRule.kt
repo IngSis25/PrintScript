@@ -1,15 +1,14 @@
 package parser.rules
 
-import ASTNode
+import builders.NodeBuilder
 import main.kotlin.lexer.LiteralNumber
 import main.kotlin.lexer.OperatorType
-import main.kotlin.lexer.Token
-import main.kotlin.parser.BinaryOpNode
-import main.kotlin.parser.LiteralNode
 import matchers.SequenceMatcher
 import matchers.TokenMatcher
 
-class ExpressionRule : ParserRule {
+class ExpressionRule(
+    override val builder: NodeBuilder,
+) : ParserRule {
     override val matcher =
         SequenceMatcher(
             listOf(

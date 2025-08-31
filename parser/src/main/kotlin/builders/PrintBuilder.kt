@@ -1,21 +1,17 @@
 package builders
 
-import ASTNode
 import main.kotlin.lexer.IdentifierType
 import main.kotlin.lexer.LiteralNumber
 import main.kotlin.lexer.LiteralString
 import main.kotlin.lexer.OperatorType
 import main.kotlin.lexer.Token
-import main.kotlin.parser.BinaryOpNode
-import main.kotlin.parser.IdentifierNode
-import main.kotlin.parser.LiteralNode
-import parser.PrintlnNode
+import org.example.ast.*
 
-class PrintBuilder: NodeBuilder {
+class PrintBuilder : NodeBuilder {
     override fun buildNode(matchedTokens: List<Token>): ASTNode {
         val openParenIndex = 1
         val closeParenIndex = matchedTokens.lastIndex - 1
-        val inner = matchedTokens.subList(openParenIndex + 1, closeParenIndex) //toma lo que esta adentro de ()
+        val inner = matchedTokens.subList(openParenIndex + 1, closeParenIndex) // toma lo que esta adentro de ()
 
         val exprNode = parseInnerExpression(inner)
         return PrintlnNode(exprNode)

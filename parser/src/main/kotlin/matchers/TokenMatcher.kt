@@ -1,8 +1,8 @@
 package matchers
 
 import main.kotlin.lexer.Token
-import main.kotlin.lexer.TokenType
 import main.kotlin.parser.ParseResult
+import org.example.TokenType
 import parser.matchers.Matcher
 
 // devuelve un token cuando matchea

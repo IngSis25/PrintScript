@@ -1,5 +1,5 @@
 package org.example.strategy
-import AssignmentNode
+import org.example.ast.AssignmentNode
 import org.example.util.Services
 
 val assignmentStrategy =
