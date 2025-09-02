@@ -30,3 +30,8 @@ test {
 kotlin {
     jvmToolchain(17)
 }
+task installGitHooks(type: Copy) {
+    from("$rootDir/hooks/pre-commit")
+    into("$rootDir/.git/hooks")
+}
+build.dependsOn installGitHooks
