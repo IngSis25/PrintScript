@@ -1,7 +1,7 @@
 package org.example.strategy
 
+import org.example.ast.VariableDeclarationNode
 import org.example.util.Services
-import parser.VariableDeclarationNode
 
 val variableDeclarationStrategy =
     Strategy<VariableDeclarationNode> { services: Services, node: VariableDeclarationNode ->

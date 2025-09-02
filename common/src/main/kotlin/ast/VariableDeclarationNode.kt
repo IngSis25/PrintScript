@@ -1,7 +1,4 @@
-package parser
-
-import ASTNode
-import main.kotlin.parser.IdentifierNode
+package org.example.ast
 
 data class VariableDeclarationNode(
     val identifier: IdentifierNode,

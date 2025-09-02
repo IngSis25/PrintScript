@@ -1,5 +1,5 @@
 package org.example.strategy
-import main.kotlin.parser.IdentifierNode
+import org.example.ast.IdentifierNode
 import org.example.util.Services
 
 // Nota: IdentifierNode está en default package en tu parser.

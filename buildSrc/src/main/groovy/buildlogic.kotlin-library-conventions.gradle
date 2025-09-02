@@ -7,8 +7,37 @@
 plugins {
     // Apply the common convention plugin for shared build configuration between library and application projects.
     id 'buildlogic.kotlin-common-conventions'
+    id 'jacoco'
 
 
     // Apply the java-library plugin for API and implementation separation.
     id 'java-library'
+}
+
+jacoco {
+    toolVersion = '0.8.11'
+}
+
+tasks.withType(Test).configureEach{
+    finalizedBy(tasks.named('jacocoTestReport'))
+}
+
+tasks.named('jacocoTestReport'){
+    dependsOn(tasks.named('test'))
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
+}
+tasks.named('jacocoTestCoverageVerification'){
+    dependsOn(tasks.named('test'))
+    violationRules {
+        rule {
+            limit { minimum = 0.70 }
+        }
+    }
+}
+tasks.named('check'){
+    dependsOn(tasks.named('jacocoTestCoverageVerification'))
 }

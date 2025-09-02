@@ -1,6 +1,6 @@
 package org.example.strategy
 
-import main.kotlin.parser.LiteralNode
+import org.example.ast.LiteralNode
 
 val literalStrategy =
     Strategy<LiteralNode> { _, node ->

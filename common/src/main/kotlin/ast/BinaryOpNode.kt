@@ -1,6 +1,4 @@
-package main.kotlin.parser
-
-import ASTNode
+package org.example.ast
 
 data class BinaryOpNode(
     val left: ASTNode,

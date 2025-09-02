@@ -1,10 +1,11 @@
 package builders
 
-import ASTNode
+import main.kotlin.lexer.LiteralString
 import main.kotlin.lexer.Token
-import main.kotlin.parser.IdentifierNode
-import main.kotlin.parser.LiteralNode
-import parser.VariableDeclarationNode
+import org.example.ast.ASTNode
+import org.example.ast.IdentifierNode
+import org.example.ast.LiteralNode
+import org.example.ast.VariableDeclarationNode
 
 class VariableDeclarationBuilder : NodeBuilder {
     override fun buildNode(matchedTokens: List<Token>): ASTNode {
@@ -24,7 +25,7 @@ class VariableDeclarationBuilder : NodeBuilder {
         val literalNode =
             LiteralNode(
                 value = unquoted,
-                literalType = main.kotlin.lexer.LiteralString,
+                literalType = LiteralString,
             )
         return VariableDeclarationNode(
             identifier = identNode,
@@ -32,5 +33,4 @@ class VariableDeclarationBuilder : NodeBuilder {
             value = literalNode,
         )
     }
-
 }

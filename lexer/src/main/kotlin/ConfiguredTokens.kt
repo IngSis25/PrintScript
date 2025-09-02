@@ -2,6 +2,7 @@ package main.kotlin.lexer
 
 import lexer.AssignmentType
 import lexer.ModifierType
+import org.example.TokenType
 
 object ConfiguredTokens {
     // Versión 1 configuración de tokens

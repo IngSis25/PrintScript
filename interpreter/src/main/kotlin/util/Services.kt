@@ -1,6 +1,6 @@
 package org.example.util
 
-import ASTNode
+import org.example.ast.ASTNode
 import org.example.output.Output
 
 /**

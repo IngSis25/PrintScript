@@ -1,13 +1,14 @@
 package rules
 
-import ASTNode
+import builders.NodeBuilder
 import main.kotlin.lexer.*
 import main.kotlin.parser.*
-import parser.PrintlnNode
 import parser.matchers.Matcher
 import parser.rules.ParserRule
 
-class PrintlnRule : ParserRule {
+class PrintlnRule(
+    override val builder: NodeBuilder,
+) : ParserRule {
     // para reconocer println ( ... )
     override val matcher: Matcher<List<Token>> =
         object : Matcher<List<Token>> {

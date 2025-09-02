@@ -7,4 +7,5 @@ include 'interpreter'
 include 'formatter'
 include 'analyzer'
 include 'CLI'
+include 'common'
 

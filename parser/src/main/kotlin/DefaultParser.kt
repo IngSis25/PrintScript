@@ -1,5 +1,6 @@
 import main.kotlin.lexer.Token
 import main.kotlin.parser.ParseResult
+import org.example.ast.ASTNode
 import rules.MatchedRule
 import rules.RuleMatcher
 
@@ -14,7 +15,7 @@ class DefaultParser(
             when (val res = ruleMatcher.matchNext(tokens, pos)) {
                 is ParseResult.Success<MatchedRule> -> {
                     val matched = res.node
-                    val node = matched.rule.buildNode(matched.matchedTokens)
+                    val node = matched.rule.builder.buildNode(matched.matchedTokens)
                     ast.add(node)
                     pos = res.nextPosition
                 }

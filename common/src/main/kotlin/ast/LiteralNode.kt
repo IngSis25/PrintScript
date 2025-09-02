@@ -1,7 +1,6 @@
-package main.kotlin.parser
+package org.example.ast
 
-import ASTNode
-import main.kotlin.lexer.TokenType
+import org.example.TokenType
 
 data class LiteralNode(
     val value: String,

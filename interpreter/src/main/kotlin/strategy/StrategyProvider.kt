@@ -1,6 +1,6 @@
 package org.example.strategy
 
-import ASTNode
+import org.example.ast.ASTNode
 import org.example.builder.StrategyProviderBuilder
 
 /**
