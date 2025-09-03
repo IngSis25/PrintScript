@@ -1,8 +1,9 @@
-package main.kotlin.lexer
-
-import lexer.AssignmentType
-import lexer.ModifierType
+import main.kotlin.lexer.IdentifierType
+import main.kotlin.lexer.LiteralNumber
+import main.kotlin.lexer.LiteralString
+import main.kotlin.lexer.TokenProvider
 import org.example.TokenType
+import types.*
 
 object ConfiguredTokens {
     // Versión 1 configuración de tokens

@@ -3,6 +3,7 @@ package test.lexerTest
 import main.kotlin.lexer.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import types.*
 
 class TokenTypesTest {
     @Test
@@ -88,5 +89,29 @@ class TokenTypesTest {
                 column = 1,
             )
         assertEquals(StringType, token.type)
+    }
+
+    @Test
+    fun tokenTypeShouldBeAssigmentType() {
+        val token =
+            Token(
+                type = AssignmentType,
+                value = "=",
+                line = 1,
+                column = 1,
+            )
+        assertEquals(AssignmentType, token.type)
+    }
+
+    @Test
+    fun tokenTypeShouldBeModifierType() {
+        val token =
+            Token(
+                type = ModifierType,
+                value = "var",
+                line = 1,
+                column = 1,
+            )
+        assertEquals(ModifierType, token.type)
     }
 }

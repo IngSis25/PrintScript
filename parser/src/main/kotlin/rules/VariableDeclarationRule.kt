@@ -1,14 +1,14 @@
 package parser.rules
 
 import builders.NodeBuilder
-import lexer.AssignmentType
-import lexer.ModifierType
 import main.kotlin.lexer.IdentifierType
 import main.kotlin.lexer.LiteralString
-import main.kotlin.lexer.PunctuationType
 import matchers.SequenceMatcher
 import matchers.TokenMatcher
 import parser.matchers.Matcher
+import types.AssignmentType
+import types.ModifierType
+import types.PunctuationType
 
 class VariableDeclarationRule(
     override val builder: NodeBuilder,

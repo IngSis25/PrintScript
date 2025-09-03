@@ -1,6 +1,5 @@
 import lexer.TokenRule
 import main.kotlin.lexer.Lexer
-import main.kotlin.lexer.LexicalException
 import main.kotlin.lexer.Token
 import main.kotlin.lexer.TokenProvider
 

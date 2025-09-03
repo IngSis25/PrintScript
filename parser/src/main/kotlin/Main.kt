@@ -1,9 +1,9 @@
 import builders.PrintBuilder
 import lexer.TokenRule
 import main.kotlin.lexer.*
-import parser.rules.*
 import rules.PrintlnRule
 import rules.RuleMatcher
+import types.PunctuationType
 
 fun main() {
     val baseProvider = ConfiguredTokens.providerV1()

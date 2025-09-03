@@ -1,10 +1,11 @@
-package parser.rules
+package rules
 
 import builders.NodeBuilder
 import main.kotlin.lexer.LiteralNumber
-import main.kotlin.lexer.OperatorType
 import matchers.SequenceMatcher
 import matchers.TokenMatcher
+import parser.rules.ParserRule
+import types.OperatorType
 
 class ExpressionRule(
     override val builder: NodeBuilder,
