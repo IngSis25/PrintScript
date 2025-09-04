@@ -6,6 +6,6 @@ include 'lexer'
 include 'interpreter'
 include 'formatter'
 include 'analyzer'
-include 'CLI'
+include 'cli'
 include 'common'
 
