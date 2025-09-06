@@ -10,9 +10,11 @@ import org.example.util.Services
 import kotlin.test.*
 
 class AssignmentStrategyTests {
-
     private fun createMockServices(context: Map<String, Any?> = emptyMap()): Services {
-        val mockOutput = object : Output { override infix fun write(msg: String) {} }
+        val mockOutput =
+            object : Output {
+                override infix fun write(msg: String) {}
+            }
         return Services(
             context = context,
             output = mockOutput,
@@ -21,7 +23,7 @@ class AssignmentStrategyTests {
                     is LiteralNode -> literalStrategy.visit(services, node)
                     else -> null
                 }
-            }
+            },
         )
     }
 
@@ -30,7 +32,13 @@ class AssignmentStrategyTests {
         // Arrange
         val existingContext = mapOf("nombre" to "valorAnterior")
         val identifier = IdentifierNode("nombre")
-        val newValue = LiteralNode("\"nuevoValor\"", object : org.example.TokenType { override val name = "STRING" })
+        val newValue =
+            LiteralNode(
+                "\"nuevoValor\"",
+                object : org.example.TokenType {
+                    override val name = "STRING"
+                },
+            )
         val assignment = AssignmentNode(identifier, newValue)
         val services = createMockServices(existingContext)
 
@@ -48,7 +56,13 @@ class AssignmentStrategyTests {
         // Arrange
         val existingContext = mapOf("edad" to 25.0)
         val identifier = IdentifierNode("edad")
-        val newValue = LiteralNode("30", object : org.example.TokenType { override val name = "NUMBER" })
+        val newValue =
+            LiteralNode(
+                "30",
+                object : org.example.TokenType {
+                    override val name = "NUMBER"
+                },
+            )
         val assignment = AssignmentNode(identifier, newValue)
         val services = createMockServices(existingContext)
 
@@ -64,13 +78,20 @@ class AssignmentStrategyTests {
     @Test
     fun assignmentStrategy_should_preserve_other_variables() {
         // Arrange
-        val existingContext = mapOf(
-            "var1" to "valor1",
-            "var2" to 42.0,
-            "var3" to "valor3"
-        )
+        val existingContext =
+            mapOf(
+                "var1" to "valor1",
+                "var2" to 42.0,
+                "var3" to "valor3",
+            )
         val identifier = IdentifierNode("var2")
-        val newValue = LiteralNode("100", object : org.example.TokenType { override val name = "NUMBER" })
+        val newValue =
+            LiteralNode(
+                "100",
+                object : org.example.TokenType {
+                    override val name = "NUMBER"
+                },
+            )
         val assignment = AssignmentNode(identifier, newValue)
         val services = createMockServices(existingContext)
 
@@ -80,10 +101,10 @@ class AssignmentStrategyTests {
         // Assert
         assertTrue(result is Services)
         val newServices = result as Services
-        
+
         // var2 debe estar actualizada
         assertEquals(100.0, newServices.context["var2"])
-        
+
         // otras variables deben mantenerse igual
         assertEquals("valor1", newServices.context["var1"])
         assertEquals("valor3", newServices.context["var3"])
@@ -95,14 +116,21 @@ class AssignmentStrategyTests {
         // Arrange
         val existingContext = mapOf("existente" to "valor")
         val identifier = IdentifierNode("noExiste") // variable no declarada
-        val newValue = LiteralNode("\"valor\"", object : org.example.TokenType { override val name = "STRING" })
+        val newValue =
+            LiteralNode(
+                "\"valor\"",
+                object : org.example.TokenType {
+                    override val name = "STRING"
+                },
+            )
         val assignment = AssignmentNode(identifier, newValue)
         val services = createMockServices(existingContext)
 
         // Act & Assert
-        val exception = assertFailsWith<RuntimeException> {
-            assignmentStrategy.visit(services, assignment)
-        }
+        val exception =
+            assertFailsWith<RuntimeException> {
+                assignmentStrategy.visit(services, assignment)
+            }
         assertTrue(exception.message!!.contains("noExiste"))
         assertTrue(exception.message!!.contains("no declarada"))
     }
@@ -112,7 +140,13 @@ class AssignmentStrategyTests {
         // Arrange
         val existingContext = mapOf("variable" to null)
         val identifier = IdentifierNode("variable")
-        val newValue = LiteralNode("\"ahora tiene valor\"", object : org.example.TokenType { override val name = "STRING" })
+        val newValue =
+            LiteralNode(
+                "\"ahora tiene valor\"",
+                object : org.example.TokenType {
+                    override val name = "STRING"
+                },
+            )
         val assignment = AssignmentNode(identifier, newValue)
         val services = createMockServices(existingContext)
 
@@ -130,12 +164,22 @@ class AssignmentStrategyTests {
         // Arrange
         val existingContext = mapOf("variable" to "valor anterior")
         val identifier = IdentifierNode("variable")
-        val services = Services(
-            context = existingContext,
-            output = object : Output { override fun write(msg: String) {} },
-            visit = { _, _ -> null } // devuelve null
-        )
-        val newValue = LiteralNode("cualquier", object : org.example.TokenType { override val name = "STRING" })
+        val services =
+            Services(
+                context = existingContext,
+                output =
+                    object : Output {
+                        override fun write(msg: String) {}
+                    },
+                visit = { _, _ -> null }, // devuelve null
+            )
+        val newValue =
+            LiteralNode(
+                "cualquier",
+                object : org.example.TokenType {
+                    override val name = "STRING"
+                },
+            )
         val assignment = AssignmentNode(identifier, newValue)
 
         // Act
@@ -151,7 +195,13 @@ class AssignmentStrategyTests {
     fun assignmentStrategy_should_handle_empty_context() {
         // Arrange
         val identifier = IdentifierNode("cualquier")
-        val newValue = LiteralNode("\"valor\"", object : org.example.TokenType { override val name = "STRING" })
+        val newValue =
+            LiteralNode(
+                "\"valor\"",
+                object : org.example.TokenType {
+                    override val name = "STRING"
+                },
+            )
         val assignment = AssignmentNode(identifier, newValue)
         val services = createMockServices(emptyMap())
 
@@ -166,11 +216,23 @@ class AssignmentStrategyTests {
         // Arrange
         val initialContext = mapOf("variable" to "inicial")
         val services1 = createMockServices(initialContext)
-        
+
         val identifier = IdentifierNode("variable")
-        val value1 = LiteralNode("\"primer cambio\"", object : org.example.TokenType { override val name = "STRING" })
-        val value2 = LiteralNode("\"segundo cambio\"", object : org.example.TokenType { override val name = "STRING" })
-        
+        val value1 =
+            LiteralNode(
+                "\"primer cambio\"",
+                object : org.example.TokenType {
+                    override val name = "STRING"
+                },
+            )
+        val value2 =
+            LiteralNode(
+                "\"segundo cambio\"",
+                object : org.example.TokenType {
+                    override val name = "STRING"
+                },
+            )
+
         val assignment1 = AssignmentNode(identifier, value1)
         val assignment2 = AssignmentNode(identifier, value2)
 

@@ -9,9 +9,11 @@ import org.example.util.Services
 import kotlin.test.*
 
 class BinaryExpressionStrategyTests {
-
     private fun createMockServices(): Services {
-        val mockOutput = object : Output { override infix fun write(msg: String) {} }
+        val mockOutput =
+            object : Output {
+                override infix fun write(msg: String) {}
+            }
         return Services(
             context = emptyMap(),
             output = mockOutput,
@@ -21,15 +23,27 @@ class BinaryExpressionStrategyTests {
                     is LiteralNode -> literalStrategy.visit(services, node)
                     else -> null
                 }
-            }
+            },
         )
     }
 
     @Test
     fun binaryExpressionStrategy_should_handle_addition() {
         // Arrange
-        val leftNode = LiteralNode("12", object : org.example.TokenType { override val name = "NUMBER" })
-        val rightNode = LiteralNode("8", object : org.example.TokenType { override val name = "NUMBER" })
+        val leftNode =
+            LiteralNode(
+                "12",
+                object : org.example.TokenType {
+                    override val name = "NUMBER"
+                },
+            )
+        val rightNode =
+            LiteralNode(
+                "8",
+                object : org.example.TokenType {
+                    override val name = "NUMBER"
+                },
+            )
         val binaryNode = BinaryOpNode(leftNode, "+", rightNode)
         val services = createMockServices()
 
@@ -43,8 +57,20 @@ class BinaryExpressionStrategyTests {
     @Test
     fun binaryExpressionStrategy_should_handle_subtraction() {
         // Arrange
-        val leftNode = LiteralNode("15", object : org.example.TokenType { override val name = "NUMBER" })
-        val rightNode = LiteralNode("5", object : org.example.TokenType { override val name = "NUMBER" })
+        val leftNode =
+            LiteralNode(
+                "15",
+                object : org.example.TokenType {
+                    override val name = "NUMBER"
+                },
+            )
+        val rightNode =
+            LiteralNode(
+                "5",
+                object : org.example.TokenType {
+                    override val name = "NUMBER"
+                },
+            )
         val binaryNode = BinaryOpNode(leftNode, "-", rightNode)
         val services = createMockServices()
 
@@ -58,8 +84,20 @@ class BinaryExpressionStrategyTests {
     @Test
     fun binaryExpressionStrategy_should_handle_multiplication() {
         // Arrange
-        val leftNode = LiteralNode("6", object : org.example.TokenType { override val name = "NUMBER" })
-        val rightNode = LiteralNode("7", object : org.example.TokenType { override val name = "NUMBER" })
+        val leftNode =
+            LiteralNode(
+                "6",
+                object : org.example.TokenType {
+                    override val name = "NUMBER"
+                },
+            )
+        val rightNode =
+            LiteralNode(
+                "7",
+                object : org.example.TokenType {
+                    override val name = "NUMBER"
+                },
+            )
         val binaryNode = BinaryOpNode(leftNode, "*", rightNode)
         val services = createMockServices()
 
@@ -73,8 +111,20 @@ class BinaryExpressionStrategyTests {
     @Test
     fun binaryExpressionStrategy_should_handle_division() {
         // Arrange
-        val leftNode = LiteralNode("20", object : org.example.TokenType { override val name = "NUMBER" })
-        val rightNode = LiteralNode("4", object : org.example.TokenType { override val name = "NUMBER" })
+        val leftNode =
+            LiteralNode(
+                "20",
+                object : org.example.TokenType {
+                    override val name = "NUMBER"
+                },
+            )
+        val rightNode =
+            LiteralNode(
+                "4",
+                object : org.example.TokenType {
+                    override val name = "NUMBER"
+                },
+            )
         val binaryNode = BinaryOpNode(leftNode, "/", rightNode)
         val services = createMockServices()
 
@@ -88,8 +138,20 @@ class BinaryExpressionStrategyTests {
     @Test
     fun binaryExpressionStrategy_should_handle_decimal_operations() {
         // Arrange
-        val leftNode = LiteralNode("3.5", object : org.example.TokenType { override val name = "NUMBER" })
-        val rightNode = LiteralNode("2.5", object : org.example.TokenType { override val name = "NUMBER" })
+        val leftNode =
+            LiteralNode(
+                "3.5",
+                object : org.example.TokenType {
+                    override val name = "NUMBER"
+                },
+            )
+        val rightNode =
+            LiteralNode(
+                "2.5",
+                object : org.example.TokenType {
+                    override val name = "NUMBER"
+                },
+            )
         val binaryNode = BinaryOpNode(leftNode, "+", rightNode)
         val services = createMockServices()
 
@@ -103,8 +165,20 @@ class BinaryExpressionStrategyTests {
     @Test
     fun binaryExpressionStrategy_should_throw_exception_for_division_by_zero() {
         // Arrange
-        val leftNode = LiteralNode("10", object : org.example.TokenType { override val name = "NUMBER" })
-        val rightNode = LiteralNode("0", object : org.example.TokenType { override val name = "NUMBER" })
+        val leftNode =
+            LiteralNode(
+                "10",
+                object : org.example.TokenType {
+                    override val name = "NUMBER"
+                },
+            )
+        val rightNode =
+            LiteralNode(
+                "0",
+                object : org.example.TokenType {
+                    override val name = "NUMBER"
+                },
+            )
         val binaryNode = BinaryOpNode(leftNode, "/", rightNode)
         val services = createMockServices()
 
@@ -117,8 +191,20 @@ class BinaryExpressionStrategyTests {
     @Test
     fun binaryExpressionStrategy_should_throw_exception_for_unsupported_operator() {
         // Arrange
-        val leftNode = LiteralNode("5", object : org.example.TokenType { override val name = "NUMBER" })
-        val rightNode = LiteralNode("3", object : org.example.TokenType { override val name = "NUMBER" })
+        val leftNode =
+            LiteralNode(
+                "5",
+                object : org.example.TokenType {
+                    override val name = "NUMBER"
+                },
+            )
+        val rightNode =
+            LiteralNode(
+                "3",
+                object : org.example.TokenType {
+                    override val name = "NUMBER"
+                },
+            )
         val binaryNode = BinaryOpNode(leftNode, "%", rightNode) // operador no soportado
         val services = createMockServices()
 
@@ -131,15 +217,31 @@ class BinaryExpressionStrategyTests {
     @Test
     fun binaryExpressionStrategy_should_throw_exception_for_non_numeric_operands() {
         // Arrange - simular que visit devuelve string en lugar de número
-        val mockOutput = object : Output { override infix fun write(msg: String) {} }
-        val servicesWithStringResult = Services(
-            context = emptyMap(),
-            output = mockOutput,
-            visit = { _, _ -> "not a number" } // devuelve string
-        )
+        val mockOutput =
+            object : Output {
+                override infix fun write(msg: String) {}
+            }
+        val servicesWithStringResult =
+            Services(
+                context = emptyMap(),
+                output = mockOutput,
+                visit = { _, _ -> "not a number" }, // devuelve string
+            )
 
-        val leftNode = LiteralNode("5", object : org.example.TokenType { override val name = "NUMBER" })
-        val rightNode = LiteralNode("3", object : org.example.TokenType { override val name = "NUMBER" })
+        val leftNode =
+            LiteralNode(
+                "5",
+                object : org.example.TokenType {
+                    override val name = "NUMBER"
+                },
+            )
+        val rightNode =
+            LiteralNode(
+                "3",
+                object : org.example.TokenType {
+                    override val name = "NUMBER"
+                },
+            )
         val binaryNode = BinaryOpNode(leftNode, "+", rightNode)
 
         // Act & Assert

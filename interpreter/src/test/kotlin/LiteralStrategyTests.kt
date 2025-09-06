@@ -8,17 +8,26 @@ import org.example.util.Services
 import kotlin.test.*
 
 class LiteralStrategyTests {
-
     @Test
     fun literalStrategy_should_handle_string_with_double_quotes() {
         // Arrange
-        val node = LiteralNode("\"hello\"", object : TokenType { override val name = "STRING" })
-        val mockOutput = object : Output { override infix fun write(msg: String) {} }
-        val services = Services(
-            context = emptyMap(),
-            output = mockOutput,
-            visit = { _, _ -> null }
-        )
+        val node =
+            LiteralNode(
+                "\"hello\"",
+                object : TokenType {
+                    override val name = "STRING"
+                },
+            )
+        val mockOutput =
+            object : Output {
+                override infix fun write(msg: String) {}
+            }
+        val services =
+            Services(
+                context = emptyMap(),
+                output = mockOutput,
+                visit = { _, _ -> null },
+            )
 
         // Act
         val result = literalStrategy.visit(services, node)
@@ -30,13 +39,23 @@ class LiteralStrategyTests {
     @Test
     fun literalStrategy_should_handle_string_with_single_quotes() {
         // Arrange
-        val node = LiteralNode("'world'", object : TokenType { override val name = "STRING" })
-        val mockOutput = object : Output { override infix fun write(msg: String) {} }
-        val services = Services(
-            context = emptyMap(),
-            output = mockOutput,
-            visit = { _, _ -> null }
-        )
+        val node =
+            LiteralNode(
+                "'world'",
+                object : TokenType {
+                    override val name = "STRING"
+                },
+            )
+        val mockOutput =
+            object : Output {
+                override infix fun write(msg: String) {}
+            }
+        val services =
+            Services(
+                context = emptyMap(),
+                output = mockOutput,
+                visit = { _, _ -> null },
+            )
 
         // Act
         val result = literalStrategy.visit(services, node)
@@ -48,13 +67,23 @@ class LiteralStrategyTests {
     @Test
     fun literalStrategy_should_handle_integer_number() {
         // Arrange
-        val node = LiteralNode("42", object : TokenType { override val name = "NUMBER" })
-        val mockOutput = object : Output { override infix fun write(msg: String) {} }
-        val services = Services(
-            context = emptyMap(),
-            output = mockOutput,
-            visit = { _, _ -> null }
-        )
+        val node =
+            LiteralNode(
+                "42",
+                object : TokenType {
+                    override val name = "NUMBER"
+                },
+            )
+        val mockOutput =
+            object : Output {
+                override infix fun write(msg: String) {}
+            }
+        val services =
+            Services(
+                context = emptyMap(),
+                output = mockOutput,
+                visit = { _, _ -> null },
+            )
 
         // Act
         val result = literalStrategy.visit(services, node)
@@ -66,13 +95,23 @@ class LiteralStrategyTests {
     @Test
     fun literalStrategy_should_handle_decimal_number() {
         // Arrange
-        val node = LiteralNode("3.14", object : TokenType { override val name = "NUMBER" })
-        val mockOutput = object : Output { override infix fun write(msg: String) {} }
-        val services = Services(
-            context = emptyMap(),
-            output = mockOutput,
-            visit = { _, _ -> null }
-        )
+        val node =
+            LiteralNode(
+                "3.14",
+                object : TokenType {
+                    override val name = "NUMBER"
+                },
+            )
+        val mockOutput =
+            object : Output {
+                override infix fun write(msg: String) {}
+            }
+        val services =
+            Services(
+                context = emptyMap(),
+                output = mockOutput,
+                visit = { _, _ -> null },
+            )
 
         // Act
         val result = literalStrategy.visit(services, node)
@@ -84,13 +123,23 @@ class LiteralStrategyTests {
     @Test
     fun literalStrategy_should_handle_raw_string_without_quotes() {
         // Arrange
-        val node = LiteralNode("rawtext", object : TokenType { override val name = "STRING" })
-        val mockOutput = object : Output { override infix fun write(msg: String) {} }
-        val services = Services(
-            context = emptyMap(),
-            output = mockOutput,
-            visit = { _, _ -> null }
-        )
+        val node =
+            LiteralNode(
+                "rawtext",
+                object : TokenType {
+                    override val name = "STRING"
+                },
+            )
+        val mockOutput =
+            object : Output {
+                override infix fun write(msg: String) {}
+            }
+        val services =
+            Services(
+                context = emptyMap(),
+                output = mockOutput,
+                visit = { _, _ -> null },
+            )
 
         // Act
         val result = literalStrategy.visit(services, node)
@@ -102,13 +151,23 @@ class LiteralStrategyTests {
     @Test
     fun literalStrategy_should_handle_empty_string() {
         // Arrange
-        val node = LiteralNode("\"\"", object : TokenType { override val name = "STRING" })
-        val mockOutput = object : Output { override infix fun write(msg: String) {} }
-        val services = Services(
-            context = emptyMap(),
-            output = mockOutput,
-            visit = { _, _ -> null }
-        )
+        val node =
+            LiteralNode(
+                "\"\"",
+                object : TokenType {
+                    override val name = "STRING"
+                },
+            )
+        val mockOutput =
+            object : Output {
+                override infix fun write(msg: String) {}
+            }
+        val services =
+            Services(
+                context = emptyMap(),
+                output = mockOutput,
+                visit = { _, _ -> null },
+            )
 
         // Act
         val result = literalStrategy.visit(services, node)

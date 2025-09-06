@@ -4,15 +4,17 @@ import org.example.ast.IdentifierNode
 import org.example.ast.LiteralNode
 import org.example.ast.VariableDeclarationNode
 import org.example.output.Output
-import org.example.strategy.variableDeclarationStrategy
 import org.example.strategy.literalStrategy
+import org.example.strategy.variableDeclarationStrategy
 import org.example.util.Services
 import kotlin.test.*
 
 class VariableDeclarationStrategyTests {
-
     private fun createMockServices(initialContext: Map<String, Any?> = emptyMap()): Services {
-        val mockOutput = object : Output { override infix fun write(msg: String) {} }
+        val mockOutput =
+            object : Output {
+                override infix fun write(msg: String) {}
+            }
         return Services(
             context = initialContext,
             output = mockOutput,
@@ -21,7 +23,7 @@ class VariableDeclarationStrategyTests {
                     is LiteralNode -> literalStrategy.visit(services, node)
                     else -> null
                 }
-            }
+            },
         )
     }
 
@@ -29,7 +31,13 @@ class VariableDeclarationStrategyTests {
     fun variableDeclarationStrategy_should_declare_variable_with_string_value() {
         // Arrange
         val identifier = IdentifierNode("nombre")
-        val value = LiteralNode("\"Juan\"", object : org.example.TokenType { override val name = "STRING" })
+        val value =
+            LiteralNode(
+                "\"Juan\"",
+                object : org.example.TokenType {
+                    override val name = "STRING"
+                },
+            )
         val varDecl = VariableDeclarationNode(identifier, "string", value)
         val services = createMockServices()
 
@@ -47,7 +55,13 @@ class VariableDeclarationStrategyTests {
     fun variableDeclarationStrategy_should_declare_variable_with_number_value() {
         // Arrange
         val identifier = IdentifierNode("edad")
-        val value = LiteralNode("25", object : org.example.TokenType { override val name = "NUMBER" })
+        val value =
+            LiteralNode(
+                "25",
+                object : org.example.TokenType {
+                    override val name = "NUMBER"
+                },
+            )
         val varDecl = VariableDeclarationNode(identifier, "number", value)
         val services = createMockServices()
 
@@ -83,7 +97,13 @@ class VariableDeclarationStrategyTests {
         // Arrange
         val existingContext = mapOf("existente" to "valor")
         val identifier = IdentifierNode("nueva")
-        val value = LiteralNode("\"nuevo\"", object : org.example.TokenType { override val name = "STRING" })
+        val value =
+            LiteralNode(
+                "\"nuevo\"",
+                object : org.example.TokenType {
+                    override val name = "STRING"
+                },
+            )
         val varDecl = VariableDeclarationNode(identifier, "string", value)
         val services = createMockServices(existingContext)
 
@@ -93,7 +113,7 @@ class VariableDeclarationStrategyTests {
         // Assert
         assertTrue(result is Services)
         val newServices = result as Services
-        
+
         // Debe tener ambas variables
         assertTrue(newServices.context.containsKey("existente"))
         assertTrue(newServices.context.containsKey("nueva"))
@@ -106,7 +126,13 @@ class VariableDeclarationStrategyTests {
         // Arrange
         val existingContext = mapOf("duplicada" to "valor")
         val identifier = IdentifierNode("duplicada") // mismo nombre
-        val value = LiteralNode("\"nuevo\"", object : org.example.TokenType { override val name = "STRING" })
+        val value =
+            LiteralNode(
+                "\"nuevo\"",
+                object : org.example.TokenType {
+                    override val name = "STRING"
+                },
+            )
         val varDecl = VariableDeclarationNode(identifier, "string", value)
         val services = createMockServices(existingContext)
 
@@ -120,15 +146,27 @@ class VariableDeclarationStrategyTests {
     fun variableDeclarationStrategy_should_handle_multiple_declarations() {
         // Arrange
         val services1 = createMockServices()
-        
+
         // Primera declaración
         val identifier1 = IdentifierNode("var1")
-        val value1 = LiteralNode("\"first\"", object : org.example.TokenType { override val name = "STRING" })
+        val value1 =
+            LiteralNode(
+                "\"first\"",
+                object : org.example.TokenType {
+                    override val name = "STRING"
+                },
+            )
         val varDecl1 = VariableDeclarationNode(identifier1, "string", value1)
-        
+
         // Segunda declaración
         val identifier2 = IdentifierNode("var2")
-        val value2 = LiteralNode("42", object : org.example.TokenType { override val name = "NUMBER" })
+        val value2 =
+            LiteralNode(
+                "42",
+                object : org.example.TokenType {
+                    override val name = "NUMBER"
+                },
+            )
         val varDecl2 = VariableDeclarationNode(identifier2, "number", value2)
 
         // Act
