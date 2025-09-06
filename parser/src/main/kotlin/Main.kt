@@ -1,7 +1,5 @@
-import builders.PrintBuilder
 import lexer.TokenRule
 import main.kotlin.lexer.*
-import rules.PrintlnRule
 import rules.RuleMatcher
 import types.PunctuationType
 
@@ -33,17 +31,8 @@ fun main() {
         println("${t.type} -> '${t.value}' (linea ${t.line}, col ${t.column})")
     }
 
-    // Reglas del parser (¡inyectando builders!)
-    val ruleMatcher =
-        RuleMatcher(
-            listOf(
-                // Importante: reglas específicas antes que las genéricas
-                PrintlnRule(PrintBuilder()),
-                // VariableDeclarationRule(VariableDeclarationBuilder()),
-                // ExpressionRule(ExpressionBuilder()),
-            ),
-        )
-
+    // Parser configurado para versión 1.0
+    val ruleMatcher = RuleMatcher(ConfiguredRules.V1)
     val parser = DefaultParser(ruleMatcher)
 
     val ast = parser.parse(tokens)

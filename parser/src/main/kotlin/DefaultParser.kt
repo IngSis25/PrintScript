@@ -7,6 +7,7 @@ import rules.RuleMatcher
 class DefaultParser(
     private val ruleMatcher: RuleMatcher,
 ) {
+    
     fun parse(tokens: List<Token>): List<ASTNode> {
         val ast = mutableListOf<ASTNode>()
         var pos = 0
