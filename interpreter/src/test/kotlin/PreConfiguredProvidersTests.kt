@@ -13,12 +13,7 @@ class PreConfiguredProvidersTests {
                 override infix fun write(msg: String) {}
             }
         return Services(
-                                    context = context,
-
-
-
-
-            
+            context = context,
             output = mockOutput,
             visit = { services, node ->
                 // Mock visit que usa el mismo provider para recursión
