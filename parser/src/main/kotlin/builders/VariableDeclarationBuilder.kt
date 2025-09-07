@@ -1,6 +1,6 @@
 package builders
 
-import main.kotlin.lexer.LiteralString
+import org.example.LiteralString
 import main.kotlin.lexer.Token
 import org.example.ast.ASTNode
 import org.example.ast.IdentifierNode

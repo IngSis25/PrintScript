@@ -1,5 +1,6 @@
 import lexer.TokenRule
 import main.kotlin.lexer.TokenProvider
+import org.example.LiteralNumber
 import org.junit.jupiter.api.Assertions.assertEquals
 import types.AssignmentType
 import types.PunctuationType
@@ -36,7 +37,7 @@ class MainTest {
         assertEquals(3, tokens[1].column) // el espacio ignorado avanza col
 
         assertEquals("2", tokens[2].value)
-        assertEquals(main.kotlin.lexer.LiteralNumber, tokens[2].type)
+        assertEquals(LiteralNumber, tokens[2].type)
         assertEquals(1, tokens[2].line)
         assertEquals(5, tokens[2].column)
 

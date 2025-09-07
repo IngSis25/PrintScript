@@ -1,8 +1,8 @@
 package builders
 
 import main.kotlin.lexer.IdentifierType
-import main.kotlin.lexer.LiteralNumber
-import main.kotlin.lexer.LiteralString
+import org.example.LiteralNumber
+import org.example.LiteralString
 import main.kotlin.lexer.Token
 import org.example.ast.*
 import types.OperatorType

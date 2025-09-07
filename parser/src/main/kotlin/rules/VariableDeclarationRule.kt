@@ -2,7 +2,7 @@ package parser.rules
 
 import builders.NodeBuilder
 import main.kotlin.lexer.IdentifierType
-import main.kotlin.lexer.LiteralString
+import org.example.LiteralString
 import matchers.SequenceMatcher
 import matchers.TokenMatcher
 import parser.matchers.Matcher

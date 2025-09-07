@@ -2,6 +2,8 @@ package test.parserTest
 
 import builders.PrintBuilder
 import main.kotlin.lexer.*
+import org.example.LiteralNumber
+import org.example.LiteralString
 import org.example.ast.*
 import types.OperatorType
 import types.PunctuationType

@@ -3,6 +3,8 @@ package test.parserTest
 import DefaultParser
 import builders.PrintBuilder
 import main.kotlin.lexer.*
+import org.example.LiteralNumber
+import org.example.LiteralString
 import org.example.ast.LiteralNode
 import org.example.ast.PrintlnNode
 import rules.PrintlnRule

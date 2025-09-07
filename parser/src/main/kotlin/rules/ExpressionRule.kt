@@ -1,7 +1,7 @@
 package rules
 
 import builders.NodeBuilder
-import main.kotlin.lexer.LiteralNumber
+import org.example.LiteralNumber
 import matchers.SequenceMatcher
 import matchers.TokenMatcher
 import parser.rules.ParserRule
