@@ -1,6 +1,6 @@
 package builders
 
-import main.kotlin.lexer.LiteralNumber
+import org.example.LiteralNumber
 import main.kotlin.lexer.Token
 import org.example.ast.ASTNode
 import org.example.ast.BinaryOpNode
