@@ -1,7 +1,7 @@
 import main.kotlin.lexer.IdentifierType
+import main.kotlin.lexer.TokenProvider
 import org.example.LiteralNumber
 import org.example.LiteralString
-import main.kotlin.lexer.TokenProvider
 import org.example.TokenType
 import types.*
 
