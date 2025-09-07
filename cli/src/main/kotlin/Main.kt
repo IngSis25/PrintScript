@@ -1,5 +1,8 @@
 package org.example
 
-fun main() {
-    println("Hello World!")
+import PrintScriptCLI
+
+fun main(args: Array<String>) {
+    val cli: PrintScriptCLI = PrintScriptCLI()
+    cli.run(args)
 }
