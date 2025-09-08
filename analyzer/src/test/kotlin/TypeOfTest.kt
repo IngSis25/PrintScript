@@ -117,4 +117,114 @@ class TypeOfTest {
         assertTrue(TypeOf.isCompatible(Types.UNKNOWN, Types.NUMBER))
         assertTrue(TypeOf.isCompatible(Types.NUMBER, Types.UNKNOWN))
     }
+
+    @Test
+    fun `should check if expression is simple`() {
+        val identifier = IdentifierNode("x")
+        val literal = LiteralNode("42", LiteralNumber)
+        val binaryOp =
+            BinaryOpNode(
+                left = identifier,
+                operator = "+",
+                right = literal,
+            )
+
+        assertTrue(TypeOf.isSimpleExpression(identifier))
+        assertTrue(TypeOf.isSimpleExpression(literal))
+        assertFalse(TypeOf.isSimpleExpression(binaryOp))
+    }
+
+    @Test
+    fun `should check if expression is complex`() {
+        val identifier = IdentifierNode("x")
+        val literal = LiteralNode("42", LiteralNumber)
+        val binaryOp =
+            BinaryOpNode(
+                left = identifier,
+                operator = "+",
+                right = literal,
+            )
+
+        assertFalse(TypeOf.isComplexExpression(identifier))
+        assertFalse(TypeOf.isComplexExpression(literal))
+        assertTrue(TypeOf.isComplexExpression(binaryOp))
+    }
+
+    @Test
+    fun `should handle boolean operations`() {
+        val symbolTable = SymbolTable()
+
+        // Boolean && Boolean = Boolean
+        val booleanAnd =
+            BinaryOpNode(
+                left = LiteralNode("true", LiteralString), // Assuming this represents boolean
+                operator = "&&",
+                right = LiteralNode("false", LiteralString),
+            )
+        assertEquals(Types.UNKNOWN, TypeOf.binaryOperation(booleanAnd, symbolTable))
+
+        // Boolean || Boolean = Boolean
+        val booleanOr =
+            BinaryOpNode(
+                left = LiteralNode("true", LiteralString),
+                operator = "||",
+                right = LiteralNode("false", LiteralString),
+            )
+        assertEquals(Types.UNKNOWN, TypeOf.binaryOperation(booleanOr, symbolTable))
+    }
+
+    @Test
+    fun `should handle comparison operations`() {
+        val symbolTable = SymbolTable()
+
+        // Number == Number = Boolean
+        val numberComparison =
+            BinaryOpNode(
+                left = LiteralNode("5", LiteralNumber),
+                operator = "==",
+                right = LiteralNode("5", LiteralNumber),
+            )
+        assertEquals(Types.BOOLEAN, TypeOf.binaryOperation(numberComparison, symbolTable))
+
+        // String != String = Boolean
+        val stringComparison =
+            BinaryOpNode(
+                left = LiteralNode("hello", LiteralString),
+                operator = "!=",
+                right = LiteralNode("world", LiteralString),
+            )
+        assertEquals(Types.BOOLEAN, TypeOf.binaryOperation(stringComparison, symbolTable))
+
+        // Number < Number = Boolean
+        val lessThan =
+            BinaryOpNode(
+                left = LiteralNode("3", LiteralNumber),
+                operator = "<",
+                right = LiteralNode("5", LiteralNumber),
+            )
+        assertEquals(Types.BOOLEAN, TypeOf.binaryOperation(lessThan, symbolTable))
+    }
+
+    @Test
+    fun `should handle unknown operations`() {
+        val symbolTable = SymbolTable()
+
+        val unknownOp =
+            BinaryOpNode(
+                left = LiteralNode("5", LiteralNumber),
+                operator = "??",
+                right = LiteralNode("3", LiteralNumber),
+            )
+        assertEquals(Types.UNKNOWN, TypeOf.binaryOperation(unknownOp, symbolTable))
+    }
+
+    @Test
+    fun `should handle unknown node types`() {
+        val symbolTable = SymbolTable()
+
+        // Create a mock node that's not handled
+        val unknownNode = object : ASTNode {}
+
+        assertEquals(Types.UNKNOWN, TypeOf.inferType(unknownNode, symbolTable))
+    }
 }

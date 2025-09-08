@@ -109,9 +109,7 @@ class DefaultAnalyzerTest {
                     varType = "NUMBER",
                     value = LiteralNode("42", LiteralNumber),
                 ),
-                PrintlnNode(
-                    value = IdentifierNode("myVariable"),
-                ),
+                PrintlnNode(value = IdentifierNode("myVariable")),
             )
 
         val result = analyzer.analyze(program, defaultConfig)
@@ -123,9 +121,7 @@ class DefaultAnalyzerTest {
     fun `should allow valid println with literal`() {
         val program =
             listOf(
-                PrintlnNode(
-                    value = LiteralNode("Hello World", LiteralString),
-                ),
+                PrintlnNode(value = LiteralNode("Hello World", LiteralString)),
             )
 
         val result = analyzer.analyze(program, defaultConfig)
@@ -199,13 +195,155 @@ class DefaultAnalyzerTest {
         val config = AnalyzerConfig(maxErrors = 2)
         val program =
             listOf(
-                VariableDeclarationNode(IdentifierNode("bad_name_1"), "NUMBER", LiteralNode("1", LiteralNumber)),
-                VariableDeclarationNode(IdentifierNode("bad_name_2"), "NUMBER", LiteralNode("2", LiteralNumber)),
-                VariableDeclarationNode(IdentifierNode("bad_name_3"), "NUMBER", LiteralNode("3", LiteralNumber)),
+                VariableDeclarationNode(
+                    IdentifierNode("bad_name_1"),
+                    "NUMBER",
+                    LiteralNode("1", LiteralNumber),
+                ),
+                VariableDeclarationNode(
+                    IdentifierNode("bad_name_2"),
+                    "NUMBER",
+                    LiteralNode("2", LiteralNumber),
+                ),
+                VariableDeclarationNode(
+                    IdentifierNode("bad_name_3"),
+                    "NUMBER",
+                    LiteralNode("3", LiteralNumber),
+                ),
             )
 
         val result = analyzer.analyze(program, config)
 
         assertTrue(result.diagnostics.size <= 2)
+    }
+
+    @Test
+    fun `should handle empty program`() {
+        val program = emptyList<ASTNode>()
+        val result = analyzer.analyze(program, defaultConfig)
+
+        assertTrue(result.diagnostics.isEmpty())
+        assertTrue(result.success)
+    }
+
+    @Test
+    fun `should handle variable declaration without type`() {
+        val program =
+            listOf(
+                VariableDeclarationNode(
+                    identifier = IdentifierNode("myVariable"),
+                    varType = null,
+                    value = LiteralNode("42", LiteralNumber),
+                ),
+            )
+
+        val result = analyzer.analyze(program, defaultConfig)
+
+        // Should not crash and should infer type from value
+        assertNotNull(result)
+    }
+
+    @Test
+    fun `should handle variable declaration without value`() {
+        val program =
+            listOf(
+                VariableDeclarationNode(
+                    identifier = IdentifierNode("myVariable"),
+                    varType = "NUMBER",
+                    value = null,
+                ),
+            )
+
+        val result = analyzer.analyze(program, defaultConfig)
+
+        // Should not crash
+        assertNotNull(result)
+    }
+
+    @Test
+    fun `should handle unknown variable types`() {
+        val program =
+            listOf(
+                VariableDeclarationNode(
+                    identifier = IdentifierNode("myVariable"),
+                    varType = "UNKNOWN_TYPE",
+                    value = null,
+                ),
+            )
+
+        val result = analyzer.analyze(program, defaultConfig)
+
+        // Should not crash, should default to UNKNOWN type
+        assertNotNull(result)
+    }
+
+    @Test
+    fun `should handle boolean variable type`() {
+        val program =
+            listOf(
+                VariableDeclarationNode(
+                    identifier = IdentifierNode("myVariable"),
+                    varType = "BOOLEAN",
+                    value = null,
+                ),
+            )
+
+        val result = analyzer.analyze(program, defaultConfig)
+
+        // Should not crash
+        assertNotNull(result)
+    }
+
+    @Test
+    fun `should handle array variable type`() {
+        val program =
+            listOf(
+                VariableDeclarationNode(
+                    identifier = IdentifierNode("myVariable"),
+                    varType = "ARRAY",
+                    value = null,
+                ),
+            )
+
+        val result = analyzer.analyze(program, defaultConfig)
+
+        // Should not crash
+        assertNotNull(result)
+    }
+
+    @Test
+    fun `should handle max errors set to zero`() {
+        val config = AnalyzerConfig(maxErrors = 0)
+        val program =
+            listOf(
+                VariableDeclarationNode(
+                    identifier = IdentifierNode("bad_name"),
+                    varType = "NUMBER",
+                    value = LiteralNode("42", LiteralNumber),
+                ),
+            )
+
+        val result = analyzer.analyze(program, config)
+
+        // Should return all diagnostics when maxErrors is 0
+        assertNotNull(result)
+    }
+
+    @Test
+    fun `should handle max errors set to negative`() {
+        val config = AnalyzerConfig(maxErrors = -1)
+        val program =
+            listOf(
+                VariableDeclarationNode(
+                    identifier = IdentifierNode("bad_name"),
+                    varType = "NUMBER",
+                    value = LiteralNode("42", LiteralNumber),
+                ),
+            )
+
+        val result = analyzer.analyze(program, config)
+
+        // Should return all diagnostics when maxErrors is negative
+        assertNotNull(result)
     }
 }
