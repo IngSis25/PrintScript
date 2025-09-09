@@ -128,7 +128,6 @@ class BuilderTests {
         assertEquals("variable", identifier.name)
     }
 
-
     @Test
     fun parseInnerExpression_should_throw_for_unsupported_expression() {
         val builder = PrintBuilder()
@@ -143,12 +142,11 @@ class BuilderTests {
                 Token(PunctuationType, ";", 1, 12),
             )
 
-        val exception = assertFailsWith<IllegalStateException> {
-            builder.buildNode(tokens)
-        }
+        val exception =
+            assertFailsWith<IllegalStateException> {
+                builder.buildNode(tokens)
+            }
 
         assertEquals("Expresión no soportada dentro de println por ahora", exception.message)
     }
-
 }
-
