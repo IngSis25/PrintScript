@@ -7,8 +7,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class RulesTest {
-    // AAA: Arrange, Act, Assert
-
     @Test
     fun `space around equals - with spaces`() {
         // Arrange
