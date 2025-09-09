@@ -2,3 +2,8 @@ plugins {
     id 'buildlogic.kotlin-library-conventions'
 }
 
+dependencies {
+    implementation project(':common')
+    implementation 'com.google.code.gson:gson:2.10.1'
+}
+
