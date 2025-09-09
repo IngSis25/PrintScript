@@ -5,7 +5,7 @@ import org.example.LiteralString
 import org.example.ast.*
 
 // FormatterVisitor SIMPLE - Estilo tu amigo: todo en evaluate() con when
-//Sin métodos visit separados, más directo y fácil de leer
+// Sin métodos visit separados, más directo y fácil de leer
 
 data class FormatterVisitor(
     private val config: FormatterConfig,
