@@ -5,4 +5,5 @@ plugins {
 dependencies {
     implementation(project(":common"))
     implementation(project(":parser"))
+    testImplementation "org.jetbrains.kotlin:kotlin-test:2.2.0"
 }

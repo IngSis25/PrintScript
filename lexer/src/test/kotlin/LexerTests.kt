@@ -1,6 +1,12 @@
 import main.kotlin.lexer.*
+import org.example.LiteralNumber
+import org.example.LiteralString
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import types.NumberType
+import types.OperatorType
+import types.PunctuationType
+import types.StringType
 
 class LexerTests {
     @Test
