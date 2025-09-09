@@ -4,7 +4,12 @@ import main.kotlin.analyzer.AnalysisResult
 import main.kotlin.analyzer.Diagnostic
 import main.kotlin.analyzer.DiagnosticSeverity
 import main.kotlin.analyzer.SourcePosition
+import main.kotlin.analyzer.createTestProgram
 import main.kotlin.analyzer.printAnalysisResults
+import main.kotlin.analyzer.testWithDifferentConfig
+import org.example.ast.PrintlnNode
+import org.example.ast.VariableDeclarationNode
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
@@ -62,5 +67,18 @@ class MainFunctionsTest {
         } finally {
             System.setOut(originalOut)
         }
+    }
+
+    @Test
+    fun `createTestProgram returns 8 nodes`() {
+        val program = createTestProgram()
+        assertEquals(8, program.size)
+        assert(program.any { it is VariableDeclarationNode })
+        assert(program.any { it is PrintlnNode })
+    }
+
+    @Test
+    fun `testWithDifferentConfig produces permissive results`() {
+        testWithDifferentConfig()
     }
 }

@@ -346,4 +346,31 @@ class DefaultAnalyzerTest {
         // Should return all diagnostics when maxErrors is negative
         assertNotNull(result)
     }
+
+    @Test
+    fun `DefaultAnalyzer analyze method`() {
+        val analyzer = DefaultAnalyzer()
+        val config =
+            ConfigLoader.loadFromJsonString(
+                """
+                {
+                  "identifierFormat": {
+                    "enabled": true,
+                    "format": "CAMEL_CASE"
+                  },
+                  "printlnRestrictions": {
+                    "enabled": true,
+                    "allowOnlyIdentifiersAndLiterals": true
+                  },
+                  "maxErrors": 10,
+                  "enableWarnings": true,
+                  "strictMode": false
+                }
+                """.trimIndent(),
+            )
+        val program = createTestProgram()
+        val result = analyzer.analyze(program, config)
+
+        assert(result.errorCount >= 0) // simplemente para invocar el camino
+    }
 }

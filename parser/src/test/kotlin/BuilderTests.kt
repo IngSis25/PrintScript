@@ -127,4 +127,28 @@ class BuilderTests {
         val identifier = printNode.value as IdentifierNode
         assertEquals("variable", identifier.name)
     }
+
+
+    @Test
+    fun parseInnerExpression_should_throw_for_unsupported_expression() {
+        val builder = PrintBuilder()
+        // tokens que producirán inner.size == 2 (no soportado)
+        val tokens =
+            listOf(
+                Token(IdentifierType, "println", 1, 1),
+                Token(PunctuationType, "(", 1, 8),
+                Token(LiteralNumber, "1", 1, 9),
+                Token(LiteralNumber, "2", 1, 10), // dos tokens dentro de ()
+                Token(PunctuationType, ")", 1, 11),
+                Token(PunctuationType, ";", 1, 12),
+            )
+
+        val exception = assertFailsWith<IllegalStateException> {
+            builder.buildNode(tokens)
+        }
+
+        assertEquals("Expresión no soportada dentro de println por ahora", exception.message)
+    }
+
 }
+
