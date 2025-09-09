@@ -19,7 +19,7 @@ data object Formatter {
         // 2. Crear visitor y procesar
         val result = StringBuilder()
         val visitor = FormatterVisitor(config, result)
-        //Procesar AST
+        // Procesar AST
         visitor.evaluate(node)
 
         return result.toString()
