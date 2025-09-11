@@ -1,4 +1,3 @@
-package org.example.rule
 
 // Ejemplo: SpaceAroundEquals devuelve " = " o "="
 

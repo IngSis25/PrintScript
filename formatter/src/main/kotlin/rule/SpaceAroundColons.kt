@@ -1,5 +1,3 @@
-package org.example.rule
-
 // Regla que maneja los espacios alrededor de los dos puntos ":" en declaraciones
 
 // Ejemplos:

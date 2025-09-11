@@ -1,8 +1,5 @@
-package org.example.formatter
-
 import org.example.LiteralString
 import org.example.ast.*
-import org.example.config.FormatterConfig
 
 // FormatterVisitor SIMPLE - Estilo tu amigo: todo en evaluate() con when
 // Sin métodos visit separados, más directo y fácil de leer

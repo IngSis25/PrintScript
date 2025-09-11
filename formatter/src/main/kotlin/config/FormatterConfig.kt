@@ -1,8 +1,4 @@
-package org.example.config
 
-import org.example.rule.LineBreaksBeforePrints
-import org.example.rule.SpaceAroundColons
-import org.example.rule.SpaceAroundEquals
 
 // Configuración principal del formatter que se carga desde JSON
 // todas las opciones de formateo y crea las reglas correspondientes

@@ -3,7 +3,6 @@ package formatter
 import org.example.LiteralString
 import org.example.ast.LiteralNode
 import org.example.ast.PrintlnNode
-import org.example.config.Formatter
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
