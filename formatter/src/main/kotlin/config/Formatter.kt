@@ -1,9 +1,8 @@
-package io.printscript
+package org.example.config
 
 import com.google.gson.Gson
-import io.printscript.FormatterVisitor
-import io.printscript.config.FormatterConfig
 import org.example.ast.ASTNode
+import org.example.formatter.FormatterVisitor
 import java.io.File
 
 // Punto de entrada único que combina JSON + AST → String formateado

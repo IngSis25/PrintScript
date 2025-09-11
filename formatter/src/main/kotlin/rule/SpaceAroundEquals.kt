@@ -1,4 +1,4 @@
-package io.printscript.rule
+package org.example.rule
 
 // Regla que maneja los espacios alrededor del operador de asignación "=".
 

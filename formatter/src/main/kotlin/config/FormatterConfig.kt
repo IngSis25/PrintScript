@@ -1,8 +1,8 @@
-package io.printscript.config
+package org.example.config
 
-import io.printscript.rule.LineBreaksBeforePrints
-import io.printscript.rule.SpaceAroundColons
-import io.printscript.rule.SpaceAroundEquals
+import org.example.rule.LineBreaksBeforePrints
+import org.example.rule.SpaceAroundColons
+import org.example.rule.SpaceAroundEquals
 
 // Configuración principal del formatter que se carga desde JSON
 // todas las opciones de formateo y crea las reglas correspondientes
