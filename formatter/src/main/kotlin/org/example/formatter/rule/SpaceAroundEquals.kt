@@ -1,3 +1,4 @@
+package org.example.formatter.rule
 
 // Regla que maneja los espacios alrededor del operador de asignación "=".
 

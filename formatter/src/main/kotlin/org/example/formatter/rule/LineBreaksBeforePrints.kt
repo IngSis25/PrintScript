@@ -1,3 +1,4 @@
+package org.example.formatter.rule
 
 // Regla que maneja las líneas en blanco antes de las declaraciones println.
 

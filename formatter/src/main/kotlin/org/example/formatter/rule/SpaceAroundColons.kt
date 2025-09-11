@@ -1,3 +1,5 @@
+package org.example.formatter.rule
+
 // Regla que maneja los espacios alrededor de los dos puntos ":" en declaraciones
 
 // Ejemplos:

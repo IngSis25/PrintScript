@@ -1,7 +1,10 @@
+package org.example.formatter
+
 import org.example.LiteralString
 import org.example.ast.*
+import org.example.formatter.config.FormatterConfig
 
-// FormatterVisitor SIMPLE
+// org.example.formatter.FormatterVisitor SIMPLE
 // Sin métodos visit separados, más directo y fácil de leer
 
 data class FormatterVisitor(

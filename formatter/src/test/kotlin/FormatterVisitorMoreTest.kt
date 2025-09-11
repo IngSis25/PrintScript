@@ -1,11 +1,11 @@
 package formatter
 
-import FormatterConfig
-import FormatterVisitor
 import org.example.ast.ASTNode
 import org.example.ast.IdentifierNode
 import org.example.ast.LiteralNode
 import org.example.ast.VariableDeclarationNode
+import org.example.formatter.FormatterVisitor
+import org.example.formatter.config.FormatterConfig
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

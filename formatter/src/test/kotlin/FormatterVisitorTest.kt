@@ -1,7 +1,5 @@
 package formatter
 
-import FormatterConfig
-import FormatterVisitor
 import org.example.LiteralString
 import org.example.ast.AssignmentNode
 import org.example.ast.BinaryOpNode
@@ -9,6 +7,8 @@ import org.example.ast.IdentifierNode
 import org.example.ast.LiteralNode
 import org.example.ast.PrintlnNode
 import org.example.ast.VariableDeclarationNode
+import org.example.formatter.FormatterVisitor
+import org.example.formatter.config.FormatterConfig
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

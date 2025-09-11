@@ -1,5 +1,8 @@
+package org.example.formatter
+
 import com.google.gson.Gson
 import org.example.ast.ASTNode
+import org.example.formatter.config.FormatterConfig
 import java.io.File
 
 // Punto de entrada único que combina JSON + AST → String formateado

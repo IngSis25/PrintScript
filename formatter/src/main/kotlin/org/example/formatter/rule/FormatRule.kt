@@ -1,5 +1,4 @@
-
-// Ejemplo: SpaceAroundEquals devuelve " = " o "="
+package org.example.formatter.rule
 
 sealed interface FormatRule {
     fun apply(): String
