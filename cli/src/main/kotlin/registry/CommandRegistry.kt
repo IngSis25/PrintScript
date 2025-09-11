@@ -18,18 +18,10 @@ class CommandRegistry {
         registerCommand("execute") { ExecutionCommand.Builder() }
         registerCommand("format") { FormattingCommand.Builder() }
         registerCommand("analyze") { AnalyzingCommand.Builder() }
-
-        // Aliases for convenience
-        registerCommand("validation") { ValidationCommand.Builder() }
-        registerCommand("execution") { ExecutionCommand.Builder() }
-        registerCommand("run") { ExecutionCommand.Builder() }
-        registerCommand("formatting") { FormattingCommand.Builder() }
-        registerCommand("analyzing") { AnalyzingCommand.Builder() }
-        registerCommand("analysis") { AnalyzingCommand.Builder() }
     }
 
     /**
-     * Register a new command - SUPER EXPANDIBLE!
+     * Register a new command -
      */
     fun registerCommand(
         name: String,

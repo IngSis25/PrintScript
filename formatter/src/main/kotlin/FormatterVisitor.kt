@@ -4,7 +4,7 @@ import config.FormatterConfig
 import org.example.LiteralString
 import org.example.ast.*
 
-// FormatterVisitor SIMPLE - Estilo tu amigo: todo en evaluate() con when
+// FormatterVisitor SIMPLE
 // Sin métodos visit separados, más directo y fácil de leer
 
 data class FormatterVisitor(
