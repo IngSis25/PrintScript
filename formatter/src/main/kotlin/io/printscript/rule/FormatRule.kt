@@ -1,4 +1,4 @@
-package rule
+package io.printscript.rule
 
 // Ejemplo: SpaceAroundEquals devuelve " = " o "="
 

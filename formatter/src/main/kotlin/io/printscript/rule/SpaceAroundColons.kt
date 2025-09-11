@@ -1,4 +1,4 @@
-package rule
+package io.printscript.rule
 
 // Regla que maneja los espacios alrededor de los dos puntos ":" en declaraciones
 

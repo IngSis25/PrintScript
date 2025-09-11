@@ -1,6 +1,6 @@
-package formatter
+package io.printscript
 
-import config.FormatterConfig
+import io.printscript.config.FormatterConfig
 import org.example.LiteralString
 import org.example.ast.*
 

@@ -1,5 +1,6 @@
 package formatter
 
+import io.printscript.Formatter
 import org.example.LiteralString
 import org.example.ast.LiteralNode
 import org.example.ast.PrintlnNode

@@ -1,8 +1,8 @@
 package formatter
 
-import rule.LineBreaksBeforePrints
-import rule.SpaceAroundColons
-import rule.SpaceAroundEquals
+import io.printscript.rule.LineBreaksBeforePrints
+import io.printscript.rule.SpaceAroundColons
+import io.printscript.rule.SpaceAroundEquals
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

@@ -1,8 +1,8 @@
-package formatter
+package io.printscript
 
 import com.google.gson.Gson
-import config.FormatterConfig
-import formatter.FormatterVisitor
+import io.printscript.FormatterVisitor
+import io.printscript.config.FormatterConfig
 import org.example.ast.ASTNode
 import java.io.File
 

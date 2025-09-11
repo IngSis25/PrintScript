@@ -1,6 +1,7 @@
 package formatter
 
-import config.FormatterConfig
+import io.printscript.FormatterVisitor
+import io.printscript.config.FormatterConfig
 import org.example.LiteralString
 import org.example.ast.AssignmentNode
 import org.example.ast.BinaryOpNode
