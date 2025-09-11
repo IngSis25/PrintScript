@@ -1,9 +1,9 @@
 package formatter
 
-import config.FormatterConfig
-import rule.LineBreaksBeforePrints
-import rule.SpaceAroundColons
-import rule.SpaceAroundEquals
+import FormatterConfig
+import LineBreaksBeforePrints
+import SpaceAroundColons
+import SpaceAroundEquals
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

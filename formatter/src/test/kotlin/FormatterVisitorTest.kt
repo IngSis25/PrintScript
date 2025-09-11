@@ -1,6 +1,7 @@
 package formatter
 
-import config.FormatterConfig
+import FormatterConfig
+import FormatterVisitor
 import org.example.LiteralString
 import org.example.ast.AssignmentNode
 import org.example.ast.BinaryOpNode

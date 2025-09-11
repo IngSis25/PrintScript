@@ -1,8 +1,4 @@
-package formatter
-
 import com.google.gson.Gson
-import config.FormatterConfig
-import formatter.FormatterVisitor
 import org.example.ast.ASTNode
 import java.io.File
 

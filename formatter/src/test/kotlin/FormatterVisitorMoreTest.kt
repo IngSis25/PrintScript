@@ -1,6 +1,7 @@
 package formatter
 
-import config.FormatterConfig
+import FormatterConfig
+import FormatterVisitor
 import org.example.ast.ASTNode
 import org.example.ast.IdentifierNode
 import org.example.ast.LiteralNode

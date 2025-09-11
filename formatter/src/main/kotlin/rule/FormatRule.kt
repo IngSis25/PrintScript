@@ -1,4 +1,3 @@
-package rule
 
 // Ejemplo: SpaceAroundEquals devuelve " = " o "="
 

@@ -1,6 +1,4 @@
-package config
 
-import rule.*
 
 // Configuración principal del formatter que se carga desde JSON
 // todas las opciones de formateo y crea las reglas correspondientes

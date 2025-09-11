@@ -3,6 +3,7 @@ package org.example
 import main.kotlin.analyzer.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import java.io.File
 
 class AnalyzerConfigTest {
     @Test
@@ -74,5 +75,15 @@ class AnalyzerConfigTest {
         assertEquals(IdentifierFormat.CAMEL_CASE, camelCase.format)
         assertEquals(IdentifierFormat.SNAKE_CASE, snakeCase.format)
         assertEquals(IdentifierFormat.PASCAL_CASE, pascalCase.format)
+    }
+
+    @Test
+    fun `createConfigFile writes correct JSON`() {
+        val file = File.createTempFile("test-config", ".json")
+        createConfigFile(file)
+
+        val content = file.readText()
+        assert(content.contains("\"format\": \"CAMEL_CASE\""))
+        file.deleteOnExit()
     }
 }

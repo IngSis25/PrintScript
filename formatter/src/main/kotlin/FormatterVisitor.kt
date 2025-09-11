@@ -1,6 +1,3 @@
-package formatter
-
-import config.FormatterConfig
 import org.example.LiteralString
 import org.example.ast.*
 
