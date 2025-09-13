@@ -1,6 +1,6 @@
 package builders
 
-import main.kotlin.lexer.IdentifierType
+import types.IdentifierType
 import main.kotlin.lexer.Token
 import org.example.LiteralNumber
 import org.example.LiteralString

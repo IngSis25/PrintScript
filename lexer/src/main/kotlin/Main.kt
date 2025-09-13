@@ -1,21 +1,16 @@
+import factory.LexerFactoryRegistry
 import lexer.TokenRule
 import main.kotlin.lexer.*
 import types.PunctuationType
 
-fun main() {
-    val baseProvider = ConfiguredTokens.providerV1()
+fun main(args: Array<String>) {
+    //por default usa la version 1.0
+    val version = args.getOrElse(0) { "1.0" }
 
-    val ignored =
-        listOf(
-            TokenRule(Regex("\\G[ \\t]+"), PunctuationType, ignore = true), // espacios/tabs
-            TokenRule(Regex("\\G(?:\\r?\\n)+"), PunctuationType, ignore = true), // saltos de línea
-            TokenRule(Regex("\\G//.*(?:\\r?\\n|$)"), PunctuationType, ignore = true), // comentarios //
-        )
+    val factory = LexerFactoryRegistry.getFactory(version);
+    val lexer = factory.create();
 
-    val tokenProvider = TokenProvider(ignored + baseProvider.rules())
-    val lexer = DefaultLexer(tokenProvider)
-
-    val code = "x = 2;"
+    val code = "x = 2;" //prueba con un codigo simple
 
     val tokens = lexer.tokenize(code)
 

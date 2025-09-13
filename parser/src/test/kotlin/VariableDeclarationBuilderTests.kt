@@ -5,6 +5,7 @@ import main.kotlin.lexer.*
 import org.example.LiteralString
 import org.example.ast.*
 import types.AssignmentType
+import types.IdentifierType
 import types.ModifierType
 import types.PunctuationType
 import kotlin.test.*

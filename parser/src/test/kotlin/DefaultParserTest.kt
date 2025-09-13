@@ -9,6 +9,7 @@ import org.example.ast.LiteralNode
 import org.example.ast.PrintlnNode
 import rules.PrintlnRule
 import rules.RuleMatcher
+import types.IdentifierType
 import types.PunctuationType
 import kotlin.test.*
 
