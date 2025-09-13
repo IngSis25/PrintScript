@@ -1,4 +1,4 @@
-package lexer
+package main.kotlin.lexer
 
 import org.example.TokenType
 

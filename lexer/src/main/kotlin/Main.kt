@@ -1,4 +1,5 @@
-import lexer.TokenRule
+package main.kotlin.lexer
+
 import main.kotlin.lexer.*
 import types.PunctuationType
 

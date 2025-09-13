@@ -1,4 +1,3 @@
-import lexer.TokenRule
 import main.kotlin.lexer.*
 import rules.RuleMatcher
 import types.PunctuationType

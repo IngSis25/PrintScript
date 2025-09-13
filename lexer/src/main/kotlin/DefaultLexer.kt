@@ -1,7 +1,4 @@
-import lexer.TokenRule
-import main.kotlin.lexer.Lexer
-import main.kotlin.lexer.Token
-import main.kotlin.lexer.TokenProvider
+package main.kotlin.lexer
 
 class DefaultLexer(
     private val tokenProvider: TokenProvider,

@@ -1,4 +1,5 @@
-import lexer.TokenRule
+package main.kotlin.lexer
+
 import main.kotlin.lexer.TokenProvider
 import org.example.LiteralNumber
 import org.junit.jupiter.api.Assertions.assertEquals
