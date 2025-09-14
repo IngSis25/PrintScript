@@ -13,6 +13,7 @@ object ConfiguredTokens {
             TokenRule(Regex("\\G[ \\t]+"), PunctuationType, ignore = true),
             TokenRule(Regex("\\G(?:\\r?\\n)+"), PunctuationType, ignore = true),
             TokenRule(Regex("\\G//.*(?:\\r?\\n|$)"), PunctuationType, ignore = true),
+            TokenRule(Regex("\\s+"), WhitespaceType, ignore = true),
         )
 
     // Versión 1 configuración de tokens

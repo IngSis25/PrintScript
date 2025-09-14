@@ -7,9 +7,9 @@ fun main() {
 
     val ignored =
         listOf(
-            TokenRule(Regex("\\G[ \\t]+"), PunctuationType, ignore = true),
-            TokenRule(Regex("\\G(?:\\r?\\n)+"), PunctuationType, ignore = true),
-            TokenRule(Regex("\\G//.*(?:\\r?\\n|$)"), PunctuationType, ignore = true),
+            TokenRule(Regex("\\G[ \\t]+"), PunctuationType, ignore = true), // espacios
+            TokenRule(Regex("\\G(?:\\r?\\n)+"), PunctuationType, ignore = true), // saltos de línea
+            TokenRule(Regex("\\G//.*(?:\\r?\\n|$)"), PunctuationType, ignore = true), // comentarios
         )
 
     val tokenProvider = TokenProvider(ignored + baseProvider.rules())
@@ -17,12 +17,14 @@ fun main() {
 
     val code =
         """
-        let nombre: string = "Achu";
-        println("hola");
-        println(12 + 8);
+        // comentario inicial
+        let name: string = "Joe";
+        let lastName: string = "Doe";
+
+        // expresión de impresión
+        println(name + " " + lastName);
         """.trimIndent()
 
-    // LEXER
     val tokens = lexer.tokenize(code)
 
     println("=== TOKENS ===")
@@ -30,7 +32,6 @@ fun main() {
         println("${t.type} -> '${t.value}' (linea ${t.line}, col ${t.column})")
     }
 
-    // Parser configurado para versión 1.0
     val ruleMatcher = RuleMatcher(ConfiguredRules.V1)
     val parser = DefaultParser(ruleMatcher)
 
