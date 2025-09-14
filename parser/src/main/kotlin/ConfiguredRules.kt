@@ -19,13 +19,17 @@ object ConfiguredRules {
             ExpressionRule(ExpressionBuilder()),
         )
 
-//    val V1_1: List<ParserRule> =
-//        V1 + listOf(
-//            IfRule(IfNodeBuilder()),
-//            ElseRule(ElseNodeBuilder()),
-//            BlockRule(
-//                BlockBuilder()),
-//            ConstRule(ConstBuilder()),
+//    val parserV1_1 by lazy {
+//        DefaultParser(RuleMatcher(V1_1_rules))
+//    }
 //
-//        )
+//    val V1_1_rules: List<ParserRule> by lazy {
+//        V1 +
+//            listOf(
+//                IfRule(IfNodeBuilder(parserV1_1)),
+//                ElseRule(ElseNodeBuilder(parserV1_1)),
+//                BlockRule(BlockBuilder(parserV1_1)),
+//                ConstRule(ConstBuilder(parserV1_1)),
+//            )
+//    }
 }

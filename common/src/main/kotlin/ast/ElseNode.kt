@@ -1,5 +1,5 @@
 package org.example.ast
 
 class ElseNode(
-    blockNode: BlockNode,
+    val blockNode: BlockNode,
 ) : ASTNode
