@@ -1,7 +1,5 @@
 package test.parserTest
 
-import DefaultLexer
-import lexer.TokenRule
 import main.kotlin.lexer.*
 import org.example.LiteralNumber
 import types.IdentifierType

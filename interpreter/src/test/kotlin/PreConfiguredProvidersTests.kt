@@ -181,7 +181,7 @@ class PreConfiguredProvidersTests {
 
         // Assert
         assertNotNull(strategy)
-        assertNull(result) // println no devuelve valor
+        assertTrue(result is Services) // println ahora devuelve Services para preservar contexto
         assertEquals("hello", capturedOutput)
     }
 

@@ -5,7 +5,7 @@ import main.kotlin.lexer.*
 import main.kotlin.parser.*
 import parser.matchers.Matcher
 import parser.rules.ParserRule
-import types.IdentifierType
+import types.PrintlnType
 import types.PunctuationType
 
 class PrintlnRule(
@@ -23,7 +23,7 @@ class PrintlnRule(
 
                 // debe empezar con "println"
                 val t0 = tokens[pos]
-                if (t0.type != IdentifierType || t0.value != "println") return null
+                if (t0.type != PrintlnType) return null
 
                 // debe seguir un "("
                 val t1 = tokens[pos + 1]

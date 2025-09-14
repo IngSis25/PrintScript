@@ -1,4 +1,5 @@
 import main.kotlin.lexer.TokenProvider
+import main.kotlin.lexer.TokenRule
 import org.example.LiteralNumber
 import org.example.LiteralString
 import org.example.TokenType
@@ -6,6 +7,14 @@ import types.*
 import types.IdentifierType
 
 object ConfiguredTokens {
+    // Reglas que se ignoran (espacios, saltos de línea, comentarios)
+    val IGNORED_RULES: List<TokenRule> =
+        listOf(
+            TokenRule(Regex("\\G[ \\t]+"), PunctuationType, ignore = true),
+            TokenRule(Regex("\\G(?:\\r?\\n)+"), PunctuationType, ignore = true),
+            TokenRule(Regex("\\G//.*(?:\\r?\\n|$)"), PunctuationType, ignore = true),
+        )
+
     // Versión 1 configuración de tokens
     val V1: Map<String, TokenType> =
         linkedMapOf(
@@ -13,6 +22,7 @@ object ConfiguredTokens {
             "\\bnumber\\b" to NumberType,
             "\\bstring\\b" to StringType,
             "\\blet\\b|\\bvar\\b" to ModifierType, // modificadores
+            "\\bprintln\\b" to PrintlnType, // función println
             // Operadores y asignación
             "=" to AssignmentType, // asignación
             "==|!=|<=|>=" to OperatorType, // comparaciones
@@ -23,19 +33,21 @@ object ConfiguredTokens {
             // Identificadores
             "[A-Za-z_][A-Za-z_0-9]*" to IdentifierType, // variables, funciones
             // Puntuación
+            ":" to PunctuationType, // dos puntos para declaraciones de tipo
             ";" to PunctuationType,
             "\\(" to PunctuationType, // paréntesis de apertura
             "\\)" to PunctuationType, // paréntesis de cierre
         )
 
-    // Método para obtener el provider listo para usar
-    fun providerV1(): TokenProvider = TokenProvider.fromMap(V1)
+    // Método para obtener el provider listo para usar (incluye reglas ignoradas)
+    fun providerV1(): TokenProvider = TokenProvider(IGNORED_RULES + TokenProvider.fromMap(V1).rules())
 
     val V1_1: Map<String, TokenType> =
         V1 +
             linkedMapOf(
                 "\\bif\\b" to IfType, // if
                 "\\breadInput\\b" to ReadInputType, // readInput
+
                 "\\bBoolean\\b" to BooleanType,
                 "\\btrue\\b|\\bfalse\\b" to LiteralBoolean,
                 "\\belse\\b" to ElseType,
@@ -45,5 +57,6 @@ object ConfiguredTokens {
                 "\\bconst\b" to ModifierType, // vale la pena separar el token type de let y const??
             )
 
-    fun providerV11(): TokenProvider = TokenProvider.fromMap(V1_1)
+    fun providerV11(): TokenProvider = TokenProvider(IGNORED_RULES + TokenProvider.fromMap(V1_1).rules())
+
 }

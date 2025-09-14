@@ -1,8 +1,8 @@
 package test.lexerTest
 
-import DefaultLexer
-import lexer.TokenRule
+import main.kotlin.lexer.DefaultLexer
 import main.kotlin.lexer.TokenProvider
+import main.kotlin.lexer.TokenRule
 import org.example.TokenType
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test

@@ -11,6 +11,7 @@ import rules.PrintlnRule
 import rules.RuleMatcher
 import types.IdentifierType
 import types.OperatorType
+import types.PrintlnType
 import types.PunctuationType
 import kotlin.test.*
 
@@ -26,7 +27,7 @@ class RuleMatcherTests {
 
         val tokens =
             listOf(
-                Token(IdentifierType, "println", 1, 1),
+                Token(PrintlnType, "println", 1, 1),
                 Token(PunctuationType, "(", 1, 8),
                 Token(LiteralString, "\"test\"", 1, 9),
                 Token(PunctuationType, ")", 1, 15),

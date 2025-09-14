@@ -215,8 +215,93 @@ class BinaryExpressionStrategyTests {
     }
 
     @Test
-    fun binaryExpressionStrategy_should_throw_exception_for_non_numeric_operands() {
-        // Arrange - simular que visit devuelve string en lugar de número
+    fun binaryExpressionStrategy_should_handle_string_concatenation() {
+        // Arrange - simular que visit devuelve strings
+        val mockOutput =
+            object : Output {
+                override infix fun write(msg: String) {}
+            }
+        val servicesWithStringResult =
+            Services(
+                context = emptyMap(),
+                output = mockOutput,
+                visit = { _, _ -> "hello" }, // devuelve string
+            )
+
+        val leftNode =
+            LiteralNode(
+                "hello",
+                object : org.example.TokenType {
+                    override val name = "STRING"
+                },
+            )
+        val rightNode =
+            LiteralNode(
+                "world",
+                object : org.example.TokenType {
+                    override val name = "STRING"
+                },
+            )
+        val binaryNode = BinaryOpNode(leftNode, "+", rightNode)
+
+        // Act
+        val result = binaryExpressionStrategy.visit(servicesWithStringResult, binaryNode)
+
+        // Assert
+        assertEquals("hellohello", result) // Se concatena con el mock
+    }
+
+    @Test
+    fun binaryExpressionStrategy_should_handle_string_number_concatenation() {
+        // Arrange - simular que visit devuelve string + number
+        val mockOutput =
+            object : Output {
+                override infix fun write(msg: String) {}
+            }
+        val servicesWithMixedResult =
+            Services(
+                context = emptyMap(),
+                output = mockOutput,
+                visit = { _, node ->
+                    when (node) {
+                        is LiteralNode -> {
+                            if (node.value == "hello") {
+                                "hello"
+                            } else {
+                                42.0
+                            }
+                        }
+                        else -> null
+                    }
+                },
+            )
+
+        val leftNode =
+            LiteralNode(
+                "hello",
+                object : org.example.TokenType {
+                    override val name = "STRING"
+                },
+            )
+        val rightNode =
+            LiteralNode(
+                "42",
+                object : org.example.TokenType {
+                    override val name = "NUMBER"
+                },
+            )
+        val binaryNode = BinaryOpNode(leftNode, "+", rightNode)
+
+        // Act
+        val result = binaryExpressionStrategy.visit(servicesWithMixedResult, binaryNode)
+
+        // Assert
+        assertEquals("hello42", result) // String + Number (formateado sin decimales)
+    }
+
+    @Test
+    fun binaryExpressionStrategy_should_throw_exception_for_non_numeric_operands_in_arithmetic() {
+        // Arrange - simular que visit devuelve string en lugar de número para operación aritmética
         val mockOutput =
             object : Output {
                 override infix fun write(msg: String) {}
@@ -242,7 +327,7 @@ class BinaryExpressionStrategyTests {
                     override val name = "NUMBER"
                 },
             )
-        val binaryNode = BinaryOpNode(leftNode, "+", rightNode)
+        val binaryNode = BinaryOpNode(leftNode, "-", rightNode) // operación aritmética
 
         // Act & Assert
         assertFailsWith<RuntimeException> {

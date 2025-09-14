@@ -9,7 +9,7 @@ import org.example.ast.LiteralNode
 import org.example.ast.PrintlnNode
 import rules.PrintlnRule
 import rules.RuleMatcher
-import types.IdentifierType
+import types.PrintlnType
 import types.PunctuationType
 import kotlin.test.*
 
@@ -19,7 +19,7 @@ class DefaultParserTest {
         // Arrange - similar a como haces en MainTest
         val tokens =
             listOf(
-                Token(IdentifierType, "println", 1, 1),
+                Token(PrintlnType, "println", 1, 1),
                 Token(PunctuationType, "(", 1, 8),
                 Token(LiteralString, "\"hola\"", 1, 9),
                 Token(PunctuationType, ")", 1, 15),
@@ -49,7 +49,7 @@ class DefaultParserTest {
         // Arrange
         val tokens =
             listOf(
-                Token(IdentifierType, "println", 1, 1),
+                Token(PrintlnType, "println", 1, 1),
                 Token(PunctuationType, "(", 1, 8),
                 Token(LiteralNumber, "42", 1, 9),
                 Token(PunctuationType, ")", 1, 11),

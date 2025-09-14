@@ -7,6 +7,7 @@ import org.example.LiteralNumber
 import rules.PrintlnRule
 import rules.RuleMatcher
 import types.IdentifierType
+import types.PrintlnType
 import types.PunctuationType
 import kotlin.test.*
 
@@ -38,7 +39,7 @@ class DefaultParserFailureTests {
         // Arrange - tokens that start valid but become invalid
         val tokens =
             listOf(
-                Token(IdentifierType, "println", 1, 1),
+                Token(PrintlnType, "println", 1, 1),
                 Token(PunctuationType, "(", 1, 8),
                 Token(LiteralNumber, "42", 1, 9),
                 Token(IdentifierType, "invalid", 1, 12), // This should cause failure
