@@ -8,7 +8,9 @@ import parser.rules.VariableDeclarationRule
 import types.AssignmentType
 import types.IdentifierType
 import types.ModifierType
+import types.NumberType
 import types.PunctuationType
+import types.StringType
 import kotlin.test.*
 
 class VariableDeclarationRuleTests {
@@ -111,6 +113,74 @@ class VariableDeclarationRuleTests {
                 Token(AssignmentType, "=", 1, 14),
                 Token(LiteralString, "\"Juan\"", 1, 16),
                 Token(PunctuationType, ";", 1, 22),
+            )
+
+        // Act
+        val result = rule.matcher.match(tokens, 0)
+
+        // Assert
+        assertNull(result) // no debería matchear
+    }
+
+    @Test
+    fun variableDeclarationRule_should_match_declaration_without_initialization_number() {
+        // Arrange - let pi: number;
+        val rule = VariableDeclarationRule(VariableDeclarationBuilder())
+        val tokens =
+            listOf(
+                Token(ModifierType, "let", 1, 1),
+                Token(IdentifierType, "pi", 1, 5),
+                Token(PunctuationType, ":", 1, 7),
+                Token(NumberType, "number", 1, 9),
+                Token(PunctuationType, ";", 1, 15),
+            )
+
+        // Act
+        val result = rule.matcher.match(tokens, 0)
+
+        // Assert
+        assertNotNull(result)
+        assertTrue(result is ParseResult.Success)
+        val success = result as ParseResult.Success
+        assertEquals(5, (success.node as List<*>).size) // let, pi, :, number, ;
+        assertEquals(5, success.nextPosition)
+    }
+
+    @Test
+    fun variableDeclarationRule_should_match_declaration_without_initialization_string() {
+        // Arrange - let name: string;
+        val rule = VariableDeclarationRule(VariableDeclarationBuilder())
+        val tokens =
+            listOf(
+                Token(ModifierType, "let", 1, 1),
+                Token(IdentifierType, "name", 1, 5),
+                Token(PunctuationType, ":", 1, 9),
+                Token(StringType, "string", 1, 11),
+                Token(PunctuationType, ";", 1, 17),
+            )
+
+        // Act
+        val result = rule.matcher.match(tokens, 0)
+
+        // Assert
+        assertNotNull(result)
+        assertTrue(result is ParseResult.Success)
+        val success = result as ParseResult.Success
+        assertEquals(5, (success.node as List<*>).size) // let, name, :, string, ;
+        assertEquals(5, success.nextPosition)
+    }
+
+    @Test
+    fun variableDeclarationRule_should_not_match_declaration_without_initialization_wrong_type() {
+        // Arrange - let x: invalid;
+        val rule = VariableDeclarationRule(VariableDeclarationBuilder())
+        val tokens =
+            listOf(
+                Token(ModifierType, "let", 1, 1),
+                Token(IdentifierType, "x", 1, 5),
+                Token(PunctuationType, ":", 1, 6),
+                Token(IdentifierType, "invalid", 1, 8), // no es NumberType ni StringType
+                Token(PunctuationType, ";", 1, 15),
             )
 
         // Act
