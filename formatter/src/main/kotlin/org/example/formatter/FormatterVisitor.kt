@@ -20,7 +20,7 @@ data class FormatterVisitor(
                     append(type)
                 }
                 node.value?.let { value ->
-                    append(config.spaceAroundEqualsRule().apply())
+                    append(config.spaceAroundAssignmentRule().apply())
                     evaluate(value)
                 }
                 endStatement()
@@ -28,7 +28,7 @@ data class FormatterVisitor(
 
             is AssignmentNode -> {
                 append(node.identifier.name)
-                append(config.spaceAroundEqualsRule().apply())
+                append(config.spaceAroundAssignmentRule().apply())
                 evaluate(node.value)
                 endStatement()
             }

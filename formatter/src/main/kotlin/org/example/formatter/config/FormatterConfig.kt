@@ -12,6 +12,7 @@ data class FormatterConfig(
     val spaceAroundEquals: Boolean,
     val spaceBeforeColon: Boolean,
     val spaceAfterColon: Boolean,
+    val spaceAroundAssignment: Boolean,
 ) {
     init {
         // lineBreaksBeforePrints debe estar entre 0 y 2 -> valid
@@ -29,4 +30,6 @@ data class FormatterConfig(
     fun spaceAroundEqualsRule(): SpaceAroundEquals = SpaceAroundEquals(spaceAroundEquals)
 
     fun spaceAroundColonsRule(): SpaceAroundColons = SpaceAroundColons(spaceBeforeColon, spaceAfterColon)
+
+    fun spaceAroundAssignmentRule(): SpaceAroundEquals = SpaceAroundEquals(spaceAroundAssignment)
 }

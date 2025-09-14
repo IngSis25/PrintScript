@@ -13,14 +13,13 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class FormatterVisitorTest {
-    // AAA: Arrange, Act, Assert
-
     private fun defaultConfig(): FormatterConfig =
         FormatterConfig(
             lineBreaksBeforePrints = 1,
             spaceAroundEquals = true,
             spaceBeforeColon = false,
             spaceAfterColon = true,
+            spaceAroundAssignment = true,
         )
 
     @Test

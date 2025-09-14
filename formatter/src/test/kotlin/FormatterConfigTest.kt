@@ -20,6 +20,7 @@ class FormatterConfigTest {
                 spaceAroundEquals = true,
                 spaceBeforeColon = false,
                 spaceAfterColon = true,
+                spaceAroundAssignment = true,
             )
 
         // Act
@@ -43,6 +44,7 @@ class FormatterConfigTest {
                 spaceAroundEquals = false,
                 spaceBeforeColon = false,
                 spaceAfterColon = false,
+                spaceAroundAssignment = false,
             )
         }
     }

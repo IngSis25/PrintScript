@@ -17,6 +17,7 @@ class FormatterVisitorMoreTest {
             spaceAroundEquals = true,
             spaceBeforeColon = false,
             spaceAfterColon = false,
+            spaceAroundAssignment = true,
         )
 
     @Test
