@@ -46,7 +46,7 @@ class PrintlnStrategyTests {
 
         // Assert
         assertEquals("hello world", capturedOutput) // sin comillas
-        assertNull(result) // println no devuelve valor
+        assertTrue(result is Services) // println ahora devuelve Services para preservar contexto
     }
 
     @Test
@@ -86,7 +86,7 @@ class PrintlnStrategyTests {
 
         // Assert
         assertEquals("42.0", capturedOutput) // número como string
-        assertNull(result)
+        assertTrue(result is Services) // println ahora devuelve Services para preservar contexto
     }
 
     @Test
@@ -126,7 +126,7 @@ class PrintlnStrategyTests {
 
         // Assert
         assertEquals("3.14", capturedOutput)
-        assertNull(result)
+        assertTrue(result is Services) // println ahora devuelve Services para preservar contexto
     }
 
     @Test
@@ -166,7 +166,7 @@ class PrintlnStrategyTests {
 
         // Assert
         assertEquals("", capturedOutput) // string vacío
-        assertNull(result)
+        assertTrue(result is Services) // println ahora devuelve Services para preservar contexto
     }
 
     @Test
@@ -201,6 +201,6 @@ class PrintlnStrategyTests {
 
         // Assert
         assertEquals("123", capturedOutput) // convertido a string
-        assertNull(result)
+        assertTrue(result is Services) // println ahora devuelve Services para preservar contexto
     }
 }
