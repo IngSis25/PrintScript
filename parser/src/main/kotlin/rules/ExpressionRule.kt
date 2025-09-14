@@ -1,8 +1,8 @@
 package rules
 
+import TokenMatcher
 import builders.NodeBuilder
 import matchers.SequenceMatcher
-import matchers.TokenMatcher
 import org.example.LiteralNumber
 import parser.rules.ParserRule
 import types.OperatorType

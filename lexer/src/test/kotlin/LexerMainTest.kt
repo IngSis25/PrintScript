@@ -11,6 +11,7 @@ class LexerMainTest {
         val factory = LexerFactoryRegistry.getFactory("1.0")
         val lexer = factory.create()
 
+
         val code = "println(\"This is a text\");"
         val tokens = lexer.tokenize(code)
 

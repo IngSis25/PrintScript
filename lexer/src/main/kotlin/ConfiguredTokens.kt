@@ -4,6 +4,7 @@ import org.example.LiteralNumber
 import org.example.LiteralString
 import org.example.TokenType
 import types.*
+import types.IdentifierType
 
 object ConfiguredTokens {
     // Reglas que se ignoran (espacios, saltos de línea, comentarios)
@@ -46,7 +47,9 @@ object ConfiguredTokens {
             linkedMapOf(
                 "\\bif\\b" to IfType, // if
                 "\\breadInput\\b" to ReadInputType, // readInput
-                "\\bboolean\\b" to BooleanType,
+
+                "\\bBoolean\\b" to BooleanType,
+                "\\btrue\\b|\\bfalse\\b" to LiteralBoolean,
                 "\\belse\\b" to ElseType,
                 "\\breadEnv\\b" to ReadEnvType, // función readEnv
                 "\\{" to PunctuationType,
@@ -55,4 +58,5 @@ object ConfiguredTokens {
             )
 
     fun providerV11(): TokenProvider = TokenProvider(IGNORED_RULES + TokenProvider.fromMap(V1_1).rules())
+
 }
