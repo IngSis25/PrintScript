@@ -2,9 +2,9 @@ import builders.ExpressionBuilder
 import builders.PrintBuilder
 import builders.VariableDeclarationBuilder
 import parser.rules.ParserRule
-import parser.rules.VariableDeclarationRule
 import rules.ExpressionRule
 import rules.PrintlnRule
+import rules.VariableDeclarationRule
 
 object ConfiguredRules {
     // Versión 1.0 configuración de reglas del parser
@@ -15,4 +15,14 @@ object ConfiguredRules {
             VariableDeclarationRule(VariableDeclarationBuilder()),
             ExpressionRule(ExpressionBuilder()),
         )
+
+//    val V1_1: List<ParserRule> =
+//        V1 + listOf(
+//            IfRule(IfNodeBuilder()),
+//            ElseRule(ElseNodeBuilder()),
+//            BlockRule(
+//                BlockBuilder()),
+//            ConstRule(ConstBuilder()),
+//
+//        )
 }

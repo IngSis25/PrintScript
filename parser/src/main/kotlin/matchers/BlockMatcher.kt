@@ -6,7 +6,10 @@ import parser.matchers.Matcher
 import types.PunctuationType
 
 class BlockMatcher : Matcher<List<Token>> {
-    override fun match(tokens: List<Token>, pos: Int): ParseResult<List<Token>>? {
+    override fun match(
+        tokens: List<Token>,
+        pos: Int,
+    ): ParseResult<List<Token>>? {
         if (pos >= tokens.size) return null
 
         val start = tokens[pos]

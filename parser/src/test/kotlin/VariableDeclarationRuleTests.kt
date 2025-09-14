@@ -4,7 +4,7 @@ import builders.VariableDeclarationBuilder
 import main.kotlin.lexer.*
 import main.kotlin.parser.ParseResult
 import org.example.LiteralString
-import parser.rules.VariableDeclarationRule
+import rules.VariableDeclarationRule
 import types.AssignmentType
 import types.IdentifierType
 import types.ModifierType

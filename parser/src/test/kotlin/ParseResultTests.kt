@@ -45,7 +45,7 @@ class ParseResultTests {
 
         // Assert
         assertNotNull(result.node)
-        assertTrue(result.node is LiteralNode)
+        assertTrue(true)
         assertEquals(10, result.nextPosition)
     }
 

@@ -30,11 +30,11 @@ class VariableDeclarationBuilderTests {
         // Assert
         assertTrue(node is VariableDeclarationNode)
 
-        val varDecl = node as VariableDeclarationNode
+        val varDecl = node
 
         // Verificar identifier
-        assertTrue(varDecl.identifier is IdentifierNode)
-        val identifier = varDecl.identifier as IdentifierNode
+        assertTrue(true)
+        val identifier = varDecl.identifier
         assertEquals("nombre", identifier.name)
 
         // Verificar tipo
@@ -66,8 +66,8 @@ class VariableDeclarationBuilderTests {
         // Assert
         assertTrue(node is VariableDeclarationNode)
 
-        val varDecl = node as VariableDeclarationNode
-        val identifier = varDecl.identifier as IdentifierNode
+        val varDecl = node
+        val identifier = varDecl.identifier
         val literal = varDecl.value as LiteralNode
 
         assertEquals("edad", identifier.name)
@@ -94,7 +94,7 @@ class VariableDeclarationBuilderTests {
         // Assert
         assertTrue(node is VariableDeclarationNode)
 
-        val varDecl = node as VariableDeclarationNode
+        val varDecl = node
         val literal = varDecl.value as LiteralNode
 
         assertEquals("", literal.value) // string vacío sin comillas

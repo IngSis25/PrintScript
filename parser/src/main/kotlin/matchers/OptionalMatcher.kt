@@ -5,9 +5,12 @@ import main.kotlin.parser.ParseResult
 import parser.matchers.Matcher
 
 class OptionalMatcher<T>(
-    private val inner: Matcher<T>
+    private val inner: Matcher<T>,
 ) : Matcher<T?> {
-    override fun match(tokens: List<Token>, pos: Int): ParseResult<T?>? {
+    override fun match(
+        tokens: List<Token>,
+        pos: Int,
+    ): ParseResult<T?>? {
         val result = inner.match(tokens, pos)
 
         return when (result) {
@@ -17,5 +20,5 @@ class OptionalMatcher<T>(
     }
 }
 
-//para el else opcional, si encuentra un else lo procesa, pero si no hay else no tira error
-//si no hay else arma el nodo solo con if
+// para el else opcional, si encuentra un else lo procesa, pero si no hay else no tira error
+// si no hay else arma el nodo solo con if

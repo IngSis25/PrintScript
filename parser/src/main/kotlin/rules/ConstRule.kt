@@ -1,8 +1,7 @@
-package rules
-
-import TokenMatcher
 import builders.NodeBuilder
+import matchers.MultiTypeTokenMatcher
 import matchers.SequenceMatcher
+import org.example.LiteralNumber
 import org.example.LiteralString
 import parser.matchers.Matcher
 import parser.rules.ParserRule
@@ -11,17 +10,20 @@ import types.IdentifierType
 import types.ModifierType
 import types.PunctuationType
 
-class VariableDeclarationRule(
+class ConstRule(
     override val builder: NodeBuilder,
 ) : ParserRule {
     override val matcher: Matcher<*> =
         SequenceMatcher(
             listOf(
-                TokenMatcher(ModifierType),
+                TokenMatcher(ModifierType, "const"),
                 TokenMatcher(IdentifierType),
                 TokenMatcher(AssignmentType),
-                TokenMatcher(LiteralString),
-                TokenMatcher(PunctuationType),
+                // el valor puede ser string o number
+                MultiTypeTokenMatcher(
+                    listOf(LiteralString, LiteralNumber),
+                ),
+                TokenMatcher(PunctuationType, ";"), // ;
             ),
         )
 }

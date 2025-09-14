@@ -5,9 +5,12 @@ import parser.matchers.Matcher
 
 class TokenMatcher(
     private val type: TokenType,
-    private val expectedValue: String? = null //si quiero matchear un valor especifico dentro de un type
+    private val expectedValue: String? = null, // si quiero matchear un valor especifico dentro de un type
 ) : Matcher<Token> {
-    override fun match(tokens: List<Token>, pos: Int): ParseResult<Token>? {
+    override fun match(
+        tokens: List<Token>,
+        pos: Int,
+    ): ParseResult<Token>? {
         if (pos >= tokens.size) return null
 
         val token = tokens[pos]

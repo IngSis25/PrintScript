@@ -1,10 +1,9 @@
-import types.IdentifierType
-import main.kotlin.lexer.Token
 import main.kotlin.lexer.TokenProvider
 import org.example.LiteralNumber
 import org.example.LiteralString
 import org.example.TokenType
 import types.*
+import types.IdentifierType
 
 object ConfiguredTokens {
     // Versión 1 configuración de tokens
@@ -14,7 +13,6 @@ object ConfiguredTokens {
             "\\bnumber\\b" to NumberType,
             "\\bstring\\b" to StringType,
             "\\blet\\b|\\bvar\\b" to ModifierType, // modificadores
-
             // Operadores y asignación
             "=" to AssignmentType, // asignación
             "==|!=|<=|>=" to OperatorType, // comparaciones
@@ -34,17 +32,18 @@ object ConfiguredTokens {
     fun providerV1(): TokenProvider = TokenProvider.fromMap(V1)
 
     val V1_1: Map<String, TokenType> =
-        V1 + linkedMapOf(
-            "\\bif\\b" to IfType, // if
-            "\\breadInput\\b" to ReadInputType, // readInput
-            "\\bboolean\\b" to BooleanType,
-            "\\belse\\b" to ElseType,
-            "\\breadEnv\\b" to ReadEnvType,       // función readEnv
-            "\\{" to PunctuationType,
-            "\\}" to PunctuationType,
-            "\\bconst\b" to ModifierType, // vale la pena separar el token type de let y const??
-        )
+        V1 +
+            linkedMapOf(
+                "\\bif\\b" to IfType, // if
+                "\\breadInput\\b" to ReadInputType, // readInput
+                "\\bBoolean\\b" to BooleanType,
+                "\\btrue\\b|\\bfalse\\b" to LiteralBoolean,
+                "\\belse\\b" to ElseType,
+                "\\breadEnv\\b" to ReadEnvType, // función readEnv
+                "\\{" to PunctuationType,
+                "\\}" to PunctuationType,
+                "\\bconst\b" to ModifierType, // vale la pena separar el token type de let y const??
+            )
 
-    fun providerV1_1(): TokenProvider = TokenProvider.fromMap(V1_1)
-
+    fun providerV11(): TokenProvider = TokenProvider.fromMap(V1_1)
 }
