@@ -8,6 +8,8 @@ class TokenProvider(
     fun rules(): List<TokenRule> = rules
 
     companion object {
+        fun fromRules(rules: List<TokenRule>): TokenProvider = TokenProvider(rules)
+
         fun fromMap(tokenMap: Map<String, TokenType>): TokenProvider {
             val listaToken =
                 tokenMap.map { (regex, type) ->
