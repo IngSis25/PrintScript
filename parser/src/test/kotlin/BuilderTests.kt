@@ -7,6 +7,7 @@ import org.example.LiteralString
 import org.example.ast.*
 import types.IdentifierType
 import types.OperatorType
+import types.PrintlnType
 import types.PunctuationType
 import kotlin.test.*
 
@@ -17,7 +18,7 @@ class BuilderTests {
         val builder = PrintBuilder()
         val tokens =
             listOf(
-                Token(IdentifierType, "println", 1, 1),
+                Token(PrintlnType, "println", 1, 1),
                 Token(PunctuationType, "(", 1, 8),
                 Token(LiteralString, "\"hello\"", 1, 9),
                 Token(PunctuationType, ")", 1, 16),
@@ -44,7 +45,7 @@ class BuilderTests {
         val builder = PrintBuilder()
         val tokens =
             listOf(
-                Token(IdentifierType, "println", 1, 1),
+                Token(PrintlnType, "println", 1, 1),
                 Token(PunctuationType, "(", 1, 8),
                 Token(LiteralNumber, "123", 1, 9),
                 Token(PunctuationType, ")", 1, 12),
@@ -71,7 +72,7 @@ class BuilderTests {
         val builder = PrintBuilder()
         val tokens =
             listOf(
-                Token(IdentifierType, "println", 1, 1),
+                Token(PrintlnType, "println", 1, 1),
                 Token(PunctuationType, "(", 1, 8),
                 Token(LiteralNumber, "12", 1, 9),
                 Token(OperatorType, "+", 1, 12),
@@ -109,7 +110,7 @@ class BuilderTests {
         val builder = PrintBuilder()
         val tokens =
             listOf(
-                Token(IdentifierType, "println", 1, 1),
+                Token(PrintlnType, "println", 1, 1),
                 Token(PunctuationType, "(", 1, 8),
                 Token(IdentifierType, "variable", 1, 9),
                 Token(PunctuationType, ")", 1, 17),
@@ -135,7 +136,7 @@ class BuilderTests {
         // tokens que producirán inner.size == 2 (no soportado)
         val tokens =
             listOf(
-                Token(IdentifierType, "println", 1, 1),
+                Token(PrintlnType, "println", 1, 1),
                 Token(PunctuationType, "(", 1, 8),
                 Token(LiteralNumber, "1", 1, 9),
                 Token(LiteralNumber, "2", 1, 10), // dos tokens dentro de ()

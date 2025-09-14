@@ -6,6 +6,7 @@ import main.kotlin.parser.ParseResult
 import org.example.LiteralString
 import rules.PrintlnRule
 import types.IdentifierType
+import types.PrintlnType
 import types.PunctuationType
 import kotlin.test.*
 
@@ -16,7 +17,7 @@ class ParserRuleTests {
         val rule = PrintlnRule(PrintBuilder())
         val tokens =
             listOf(
-                Token(IdentifierType, "println", 1, 1),
+                Token(PrintlnType, "println", 1, 1),
                 Token(PunctuationType, "(", 1, 8),
                 Token(LiteralString, "\"test\"", 1, 9),
                 Token(PunctuationType, ")", 1, 15),
@@ -41,7 +42,7 @@ class ParserRuleTests {
         val rule = PrintlnRule(PrintBuilder())
         val tokens =
             listOf(
-                Token(IdentifierType, "println", 1, 1),
+                Token(PrintlnType, "println", 1, 1),
                 Token(PunctuationType, "(", 1, 8),
                 Token(LiteralString, "\"test\"", 1, 9),
                 Token(PunctuationType, ")", 1, 15),

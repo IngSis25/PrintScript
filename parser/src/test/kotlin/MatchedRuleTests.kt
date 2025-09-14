@@ -5,7 +5,7 @@ import main.kotlin.lexer.*
 import org.example.LiteralString
 import rules.MatchedRule
 import rules.PrintlnRule
-import types.IdentifierType
+import types.PrintlnType
 import types.PunctuationType
 import kotlin.test.*
 
@@ -16,7 +16,7 @@ class MatchedRuleTests {
         val rule = PrintlnRule(PrintBuilder())
         val tokens =
             listOf(
-                Token(IdentifierType, "println", 1, 1),
+                Token(PrintlnType, "println", 1, 1),
                 Token(PunctuationType, "(", 1, 8),
                 Token(LiteralString, "\"test\"", 1, 9),
                 Token(PunctuationType, ")", 1, 15),
@@ -52,7 +52,7 @@ class MatchedRuleTests {
         val rule = PrintlnRule(PrintBuilder())
         val tokens =
             listOf(
-                Token(IdentifierType, "println", 1, 1),
+                Token(PrintlnType, "println", 1, 1),
                 Token(PunctuationType, "(", 1, 8),
                 Token(LiteralString, "\"hello\"", 1, 9),
                 Token(PunctuationType, ")", 1, 16),
@@ -76,7 +76,7 @@ class MatchedRuleTests {
         val rule = PrintlnRule(PrintBuilder())
         val originalTokens =
             listOf(
-                Token(IdentifierType, "println", 1, 1),
+                Token(PrintlnType, "println", 1, 1),
                 Token(PunctuationType, "(", 1, 8),
             )
 
