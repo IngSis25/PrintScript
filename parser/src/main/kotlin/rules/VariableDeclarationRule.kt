@@ -65,7 +65,8 @@ class VariableDeclarationRule(
                     (tokens[currentPos + 1].type == StringType || tokens[currentPos + 1].type == NumberType) &&
                     currentPos + 2 < tokens.size &&
                     tokens[currentPos + 2].type == PunctuationType &&
-                    tokens[currentPos + 2].value == ";"
+                    tokens[currentPos + 2].value == ";" &&
+                    !(currentPos + 2 < tokens.size && tokens[currentPos + 2].type == AssignmentType)
                 ) {
                     return matchDeclarationWithoutInit(tokens, currentPos, collected)
                 }

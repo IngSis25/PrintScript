@@ -296,7 +296,7 @@ class BinaryExpressionStrategyTests {
         val result = binaryExpressionStrategy.visit(servicesWithMixedResult, binaryNode)
 
         // Assert
-        assertEquals("hello42.0", result) // String + Number
+        assertEquals("hello42", result) // String + Number (formateado sin decimales)
     }
 
     @Test

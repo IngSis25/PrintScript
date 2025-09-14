@@ -16,8 +16,8 @@ val binaryExpressionStrategy =
                 // Concatenación de strings o suma de números
                 when {
                     leftVal is String && rightVal is String -> leftVal + rightVal
-                    leftVal is String && rightVal is Double -> leftVal + rightVal.toString()
-                    leftVal is Double && rightVal is String -> leftVal.toString() + rightVal
+                    leftVal is String && rightVal is Double -> leftVal + formatNumber(rightVal)
+                    leftVal is Double && rightVal is String -> formatNumber(leftVal) + rightVal
                     leftVal is Double && rightVal is Double -> leftVal + rightVal
                     else -> throw RuntimeException(
                         "Operación + no soportada entre ${leftVal!!::class.simpleName} y ${rightVal!!::class.simpleName}",
@@ -42,3 +42,12 @@ val binaryExpressionStrategy =
             else -> throw RuntimeException("Operador no soportado: ${node.operator}")
         }
     }
+
+private fun formatNumber(value: Double): String {
+    // Si es un número entero, mostrarlo sin decimales
+    return if (value == value.toLong().toDouble()) {
+        value.toLong().toString()
+    } else {
+        value.toString()
+    }
+}

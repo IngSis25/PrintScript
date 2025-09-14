@@ -51,6 +51,11 @@ class VariableDeclarationBuilder : NodeBuilder {
             )
         }
 
+        // Verificar que tenemos tokens para el valor
+        if (valueStartIndex >= matchedTokens.size - 1) {
+            throw RuntimeException("No hay valor para la variable: $matchedTokens")
+        }
+
         val valueTokens = matchedTokens.subList(valueStartIndex, matchedTokens.size - 1) // excluir ;
         val valueNode = buildValueNode(valueTokens)
 
