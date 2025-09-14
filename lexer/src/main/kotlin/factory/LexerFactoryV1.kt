@@ -4,7 +4,6 @@ import main.kotlin.lexer.Lexer
 
 class LexerFactoryV1 : LexerFactory {
     override fun create(): Lexer {
-
         val provider = ConfiguredTokens.providerV1()
 
         return DefaultLexer(provider)

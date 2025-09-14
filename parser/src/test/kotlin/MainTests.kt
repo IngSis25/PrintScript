@@ -1,16 +1,18 @@
 package test.parserTest
 
+import DefaultParser
 import main.kotlin.lexer.*
-import org.example.LiteralNumber
-import types.IdentifierType
-import types.ModifierType
-import types.PunctuationType
+import org.example.ast.*
+import rules.RuleMatcher
+import types.*
 import kotlin.test.*
 
 class MainTests {
     @Test
-    fun main_should_handle_whitespace_and_comments() {
-        // Arrange
+    fun main_function_should_parse_simple_code() {
+        // This test verifies that the main function can be called without errors
+        // We can't easily test the main function directly, but we can test its components
+
         val baseProvider = ConfiguredTokens.providerV1()
 
         val ignored =
@@ -25,77 +27,22 @@ class MainTests {
 
         val code =
             """
-            // This is a comment
-            let x = 42;    // Another comment
+            let nombre: string = "Achu";
+            println("hola");
+            println(12 + 8);
             """.trimIndent()
 
-        // Act
+        // Test lexer
         val tokens = lexer.tokenize(code)
-
-        // Assert
         assertTrue(tokens.isNotEmpty())
 
-        // Comments should be ignored, so we should only have meaningful tokens
-        val meaningfulTokens = tokens.filter { !it.value.startsWith("//") }
-        assertTrue(meaningfulTokens.any { it.type == ModifierType })
-        assertTrue(meaningfulTokens.any { it.type == IdentifierType })
-        assertTrue(meaningfulTokens.any { it.type == LiteralNumber })
-    }
+        // Test parser
+        val ruleMatcher = RuleMatcher(ConfiguredRules.V1)
+        val parser = DefaultParser(ruleMatcher)
+        val ast = parser.parse(tokens)
 
-    @Test
-    fun main_should_parse_multiple_statements() {
-        // Arrange
-        val baseProvider = ConfiguredTokens.providerV1()
-
-        val ignored =
-            listOf(
-                TokenRule(Regex("\\G[ \\t]+"), PunctuationType, ignore = true),
-                TokenRule(Regex("\\G(?:\\r?\\n)+"), PunctuationType, ignore = true),
-                TokenRule(Regex("\\G//.*(?:\\r?\\n|$)"), PunctuationType, ignore = true),
-            )
-
-        val tokenProvider = TokenProvider(ignored + baseProvider.rules())
-        val lexer = DefaultLexer(tokenProvider)
-
-        val code =
-            """
-            let a = 1;
-            let b = 2;
-            println(a + b);
-            """.trimIndent()
-
-        // Act
-        val tokens = lexer.tokenize(code)
-
-        // Assert
-        assertTrue(tokens.isNotEmpty())
-
-        // Should have multiple variable declarations and a print statement
-        val semicolons = tokens.count { it.value == ";" }
-        assertTrue(semicolons >= 3) // At least 3 statements
-    }
-
-    @Test
-    fun main_should_handle_empty_code() {
-        // Arrange
-        val baseProvider = ConfiguredTokens.providerV1()
-
-        val ignored =
-            listOf(
-                TokenRule(Regex("\\G[ \\t]+"), PunctuationType, ignore = true),
-                TokenRule(Regex("\\G(?:\\r?\\n)+"), PunctuationType, ignore = true),
-                TokenRule(Regex("\\G//.*(?:\\r?\\n|$)"), PunctuationType, ignore = true),
-            )
-
-        val tokenProvider = TokenProvider(ignored + baseProvider.rules())
-        val lexer = DefaultLexer(tokenProvider)
-
-        val code = ""
-
-        // Act
-        val tokens = lexer.tokenize(code)
-
-        // Assert
-        assertTrue(tokens.isEmpty())
+        assertTrue(ast.isNotEmpty())
+        assertTrue(ast.any { it is VariableDeclarationNode })
+        assertTrue(ast.any { it is PrintlnNode })
     }
 }

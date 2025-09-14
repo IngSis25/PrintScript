@@ -7,9 +7,9 @@ import main.kotlin.lexer.*
 import org.example.LiteralNumber
 import org.example.LiteralString
 import org.example.ast.*
-import parser.rules.VariableDeclarationRule
 import rules.PrintlnRule
 import rules.RuleMatcher
+import rules.VariableDeclarationRule
 import types.*
 import kotlin.test.*
 

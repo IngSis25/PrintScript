@@ -47,7 +47,6 @@ object ConfiguredTokens {
             linkedMapOf(
                 "\\bif\\b" to IfType, // if
                 "\\breadInput\\b" to ReadInputType, // readInput
-
                 "\\bBoolean\\b" to BooleanType,
                 "\\btrue\\b|\\bfalse\\b" to LiteralBoolean,
                 "\\belse\\b" to ElseType,
@@ -58,5 +57,4 @@ object ConfiguredTokens {
             )
 
     fun providerV11(): TokenProvider = TokenProvider(IGNORED_RULES + TokenProvider.fromMap(V1_1).rules())
-
 }
