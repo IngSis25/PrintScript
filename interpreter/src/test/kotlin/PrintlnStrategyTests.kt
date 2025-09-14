@@ -85,7 +85,7 @@ class PrintlnStrategyTests {
         val result = printlnStrategy.visit(services, printNode)
 
         // Assert
-        assertEquals("42.0", capturedOutput) // número como string
+        assertEquals("42", capturedOutput) // número entero sin decimales
         assertTrue(result is Services) // println ahora devuelve Services para preservar contexto
     }
 

@@ -41,6 +41,16 @@ class VariableDeclarationBuilder : NodeBuilder {
             valueStartIndex = 3
         }
 
+        // Verificar si es una declaración sin inicialización
+        if (matchedTokens.size == 4 && matchedTokens[2].value == ":" && matchedTokens[3].value == ";") {
+            // let variable: type; (sin inicialización)
+            return VariableDeclarationNode(
+                identifier = identifierNode,
+                varType = varType,
+                value = null, // Sin valor inicial
+            )
+        }
+
         val valueTokens = matchedTokens.subList(valueStartIndex, matchedTokens.size - 1) // excluir ;
         val valueNode = buildValueNode(valueTokens)
 

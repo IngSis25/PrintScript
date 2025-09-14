@@ -58,6 +58,18 @@ class VariableDeclarationRule(
                     return matchTypedDeclaration(tokens, currentPos, collected)
                 }
 
+                // Caso 3: let variable: type; (declaración sin inicialización)
+                if (currentPos + 1 < tokens.size &&
+                    tokens[currentPos].type == PunctuationType &&
+                    tokens[currentPos].value == ":" &&
+                    (tokens[currentPos + 1].type == StringType || tokens[currentPos + 1].type == NumberType) &&
+                    currentPos + 2 < tokens.size &&
+                    tokens[currentPos + 2].type == PunctuationType &&
+                    tokens[currentPos + 2].value == ";"
+                ) {
+                    return matchDeclarationWithoutInit(tokens, currentPos, collected)
+                }
+
                 return null
             }
 
@@ -115,6 +127,18 @@ class VariableDeclarationRule(
                     return ParseResult.Success(collected, pos + 1)
                 }
                 return null
+            }
+
+            private fun matchDeclarationWithoutInit(
+                tokens: List<Token>,
+                currentPos: Int,
+                collected: MutableList<Token>,
+            ): ParseResult<List<Token>>? {
+                collected.add(tokens[currentPos]) // :
+                collected.add(tokens[currentPos + 1]) // string/number
+                collected.add(tokens[currentPos + 2]) // ;
+
+                return ParseResult.Success(collected, currentPos + 3)
             }
         }
 }
