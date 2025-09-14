@@ -1,12 +1,12 @@
 package parser.rules
 
 import builders.NodeBuilder
-import main.kotlin.lexer.IdentifierType
 import matchers.SequenceMatcher
 import matchers.TokenMatcher
 import org.example.LiteralString
 import parser.matchers.Matcher
 import types.AssignmentType
+import types.IdentifierType
 import types.ModifierType
 import types.PunctuationType
 

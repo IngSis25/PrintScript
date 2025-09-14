@@ -1,18 +1,27 @@
-import main.kotlin.lexer.IdentifierType
 import main.kotlin.lexer.TokenProvider
+import main.kotlin.lexer.TokenRule
 import org.example.LiteralNumber
 import org.example.LiteralString
 import org.example.TokenType
 import types.*
 
 object ConfiguredTokens {
+    // Reglas que se ignoran (espacios, saltos de línea, comentarios)
+    val IGNORED_RULES: List<TokenRule> =
+        listOf(
+            TokenRule(Regex("\\G[ \\t]+"), PunctuationType, ignore = true),
+            TokenRule(Regex("\\G(?:\\r?\\n)+"), PunctuationType, ignore = true),
+            TokenRule(Regex("\\G//.*(?:\\r?\\n|$)"), PunctuationType, ignore = true),
+        )
+
     // Versión 1 configuración de tokens
     val V1: Map<String, TokenType> =
         linkedMapOf(
             // Palabras clave
             "\\bnumber\\b" to NumberType,
             "\\bstring\\b" to StringType,
-            "\\bconst\\b|\\blet\\b|\\bvar\\b" to ModifierType, // modificadores
+            "\\blet\\b|\\bvar\\b" to ModifierType, // modificadores
+            "\\bprintln\\b" to PrintlnType, // función println
             // Operadores y asignación
             "=" to AssignmentType, // asignación
             "==|!=|<=|>=" to OperatorType, // comparaciones
@@ -28,6 +37,21 @@ object ConfiguredTokens {
             "\\)" to PunctuationType, // paréntesis de cierre
         )
 
-    // Método para obtener el provider listo para usar
-    fun providerV1(): TokenProvider = TokenProvider.fromMap(V1)
+    // Método para obtener el provider listo para usar (incluye reglas ignoradas)
+    fun providerV1(): TokenProvider = TokenProvider(IGNORED_RULES + TokenProvider.fromMap(V1).rules())
+
+    val V1_1: Map<String, TokenType> =
+        V1 +
+            linkedMapOf(
+                "\\bif\\b" to IfType, // if
+                "\\breadInput\\b" to ReadInputType, // readInput
+                "\\bboolean\\b" to BooleanType,
+                "\\belse\\b" to ElseType,
+                "\\breadEnv\\b" to ReadEnvType, // función readEnv
+                "\\{" to PunctuationType,
+                "\\}" to PunctuationType,
+                "\\bconst\b" to ModifierType, // vale la pena separar el token type de let y const??
+            )
+
+    fun providerV11(): TokenProvider = TokenProvider(IGNORED_RULES + TokenProvider.fromMap(V1_1).rules())
 }

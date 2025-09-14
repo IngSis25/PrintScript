@@ -6,6 +6,7 @@ import main.kotlin.lexer.*
 import org.example.LiteralNumber
 import rules.PrintlnRule
 import rules.RuleMatcher
+import types.IdentifierType
 import types.PunctuationType
 import kotlin.test.*
 

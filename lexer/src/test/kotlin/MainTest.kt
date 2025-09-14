@@ -4,6 +4,7 @@ import main.kotlin.lexer.TokenProvider
 import org.example.LiteralNumber
 import org.junit.jupiter.api.Assertions.assertEquals
 import types.AssignmentType
+import types.IdentifierType
 import types.PunctuationType
 import kotlin.test.Test
 
@@ -28,7 +29,7 @@ class MainTest {
         assertEquals(4, tokens.size)
 
         assertEquals("x", tokens[0].value)
-        assertEquals(main.kotlin.lexer.IdentifierType, tokens[0].type)
+        assertEquals(IdentifierType, tokens[0].type)
         assertEquals(1, tokens[0].line)
         assertEquals(1, tokens[0].column)
 

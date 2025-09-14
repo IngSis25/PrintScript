@@ -1,10 +1,10 @@
 package builders
 
-import main.kotlin.lexer.IdentifierType
 import main.kotlin.lexer.Token
 import org.example.LiteralNumber
 import org.example.LiteralString
 import org.example.ast.*
+import types.IdentifierType
 import types.OperatorType
 
 class PrintBuilder : NodeBuilder {
