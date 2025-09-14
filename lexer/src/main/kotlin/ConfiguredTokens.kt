@@ -32,6 +32,7 @@ object ConfiguredTokens {
             // Identificadores
             "[A-Za-z_][A-Za-z_0-9]*" to IdentifierType, // variables, funciones
             // Puntuación
+            ":" to PunctuationType, // dos puntos para declaraciones de tipo
             ";" to PunctuationType,
             "\\(" to PunctuationType, // paréntesis de apertura
             "\\)" to PunctuationType, // paréntesis de cierre

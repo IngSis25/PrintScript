@@ -1,6 +1,8 @@
+import builders.AssignmentBuilder
 import builders.ExpressionBuilder
 import builders.PrintBuilder
 import builders.VariableDeclarationBuilder
+import parser.rules.AssignmentRule
 import parser.rules.ParserRule
 import parser.rules.VariableDeclarationRule
 import rules.ExpressionRule
@@ -13,6 +15,7 @@ object ConfiguredRules {
             // Order matters: more specific rules first
             PrintlnRule(PrintBuilder()),
             VariableDeclarationRule(VariableDeclarationBuilder()),
+            AssignmentRule(AssignmentBuilder()),
             ExpressionRule(ExpressionBuilder()),
         )
 }
