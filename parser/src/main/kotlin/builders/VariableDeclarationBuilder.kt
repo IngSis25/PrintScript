@@ -42,7 +42,7 @@ class VariableDeclarationBuilder : NodeBuilder {
         }
 
         // Verificar si es una declaración sin inicialización
-        if (matchedTokens.size == 4 && matchedTokens[2].value == ":" && matchedTokens[3].value == ";") {
+        if (matchedTokens.size == 5 && matchedTokens[2].value == ":" && matchedTokens[4].value == ";") {
             // let variable: type; (sin inicialización)
             return VariableDeclarationNode(
                 identifier = identifierNode,
