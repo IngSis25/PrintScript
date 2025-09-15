@@ -261,4 +261,334 @@ class TCKFormatterTests {
             tempFile.delete()
         }
     }
+
+    // ========================================
+    // TESTS PARA ASSIGNMENTS
+    // ========================================
+
+    @Test
+    fun test_assignment_with_spacing_around_equals() {
+        val jsonContent = """{"enforce-spacing-around-equals": true}"""
+        val nodes =
+            listOf(
+                VariableDeclarationNode(
+                    identifier = IdentifierNode("myVar"),
+                    varType = "number",
+                    value = null,
+                ),
+                AssignmentNode(
+                    identifier = IdentifierNode("myVar"),
+                    value = LiteralNode("42", org.example.LiteralNumber),
+                ),
+            )
+
+        val result = formatMultipleWithJson(nodes, jsonContent)
+        val expected = "let myVar: number;\nmyVar = 42;\n"
+
+        println("=== assignment-with-spacing-around-equals ===")
+        println("Config: $jsonContent")
+        println("Expected: '${expected.replace("\n", "\\n")}'")
+        println("Actual  : '${result.replace("\n", "\\n")}'")
+
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun test_assignment_with_no_spacing_around_equals() {
+        val jsonContent = """{"enforce-no-spacing-around-equals": true}"""
+        val nodes =
+            listOf(
+                VariableDeclarationNode(
+                    identifier = IdentifierNode("myVar"),
+                    varType = "string",
+                    value = null,
+                ),
+                AssignmentNode(
+                    identifier = IdentifierNode("myVar"),
+                    value = LiteralNode("hello", LiteralString),
+                ),
+            )
+
+        val result = formatMultipleWithJson(nodes, jsonContent)
+        val expected = "let myVar: string;\nmyVar=\"hello\";\n"
+
+        println("=== assignment-with-no-spacing-around-equals ===")
+        println("Config: $jsonContent")
+        println("Expected: '${expected.replace("\n", "\\n")}'")
+        println("Actual  : '${result.replace("\n", "\\n")}'")
+
+        assertEquals(expected, result)
+    }
+
+    // ========================================
+    // TESTS PARA EXPRESIONES COMPLEJAS
+    // ========================================
+
+    @Test
+    fun test_complex_expression_formatting() {
+        val jsonContent = """{"enforce-spacing-around-equals": true}"""
+        val complexExpression = BinaryOpNode(
+            left = BinaryOpNode(
+                left = LiteralNode("5", org.example.LiteralNumber),
+                operator = "*",
+                right = LiteralNode("5", org.example.LiteralNumber),
+            ),
+            operator = "-",
+            right = LiteralNode("8", org.example.LiteralNumber),
+        )
+
+        val node = VariableDeclarationNode(
+            identifier = IdentifierNode("result"),
+            varType = "number",
+            value = complexExpression,
+        )
+
+        val result = formatWithJson(node, jsonContent)
+        val expected = "let result: number = 5 * 5 - 8;\n"
+
+        println("=== complex-expression-formatting ===")
+        println("Config: $jsonContent")
+        println("Expected: '${expected.replace("\n", "\\n")}'")
+        println("Actual  : '${result.replace("\n", "\\n")}'")
+
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun test_string_concatenation_expression() {
+        val jsonContent = """{"enforce-spacing-around-equals": true}"""
+        val concatenation = BinaryOpNode(
+            left = LiteralNode("Hello ", LiteralString),
+            operator = "+",
+            right = LiteralNode("World", LiteralString),
+        )
+
+        val node = VariableDeclarationNode(
+            identifier = IdentifierNode("greeting"),
+            varType = "string",
+            value = concatenation,
+        )
+
+        val result = formatWithJson(node, jsonContent)
+        val expected = "let greeting: string = \"Hello \" + \"World\";\n"
+
+        println("=== string-concatenation-expression ===")
+        println("Config: $jsonContent")
+        println("Expected: '${expected.replace("\n", "\\n")}'")
+        println("Actual  : '${result.replace("\n", "\\n")}'")
+
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun test_mixed_string_number_concatenation() {
+        val jsonContent = """{"enforce-spacing-around-equals": true}"""
+        val concatenation = BinaryOpNode(
+            left = LiteralNode("Number: ", LiteralString),
+            operator = "+",
+            right = LiteralNode("42", org.example.LiteralNumber),
+        )
+
+        val node = VariableDeclarationNode(
+            identifier = IdentifierNode("message"),
+            varType = "string",
+            value = concatenation,
+        )
+
+        val result = formatWithJson(node, jsonContent)
+        val expected = "let message: string = \"Number: \" + 42;\n"
+
+        println("=== mixed-string-number-concatenation ===")
+        println("Config: $jsonContent")
+        println("Expected: '${expected.replace("\n", "\\n")}'")
+        println("Actual  : '${result.replace("\n", "\\n")}'")
+
+        assertEquals(expected, result)
+    }
+
+    // ========================================
+    // TESTS PARA ESCENARIOS MIXTOS
+    // ========================================
+
+    @Test
+    fun test_complete_program_with_line_breaks() {
+        val jsonContent = """{"line-breaks-after-println": 1, "enforce-spacing-around-equals": true}"""
+        val nodes =
+            listOf(
+                VariableDeclarationNode(
+                    identifier = IdentifierNode("name"),
+                    varType = "string",
+                    value = LiteralNode("Alice", LiteralString),
+                ),
+                VariableDeclarationNode(
+                    identifier = IdentifierNode("age"),
+                    varType = "number",
+                    value = null,
+                ),
+                AssignmentNode(
+                    identifier = IdentifierNode("age"),
+                    value = LiteralNode("25", org.example.LiteralNumber),
+                ),
+                PrintlnNode(IdentifierNode("name")),
+                PrintlnNode(IdentifierNode("age")),
+            )
+
+        val result = formatMultipleWithJson(nodes, jsonContent)
+        val expected = "let name: string = \"Alice\";\nlet age: number;\nage = 25;\nprintln(name);\n\nprintln(age);\n"
+
+        println("=== complete-program-with-line-breaks ===")
+        println("Config: $jsonContent")
+        println("Expected: '${expected.replace("\n", "\\n")}'")
+        println("Actual  : '${result.replace("\n", "\\n")}'")
+
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun test_complete_program_no_spacing() {
+        val jsonContent = """{"line-breaks-after-println": 0, "enforce-no-spacing-around-equals": true}"""
+        val nodes =
+            listOf(
+                VariableDeclarationNode(
+                    identifier = IdentifierNode("x"),
+                    varType = "number",
+                    value = LiteralNode("10", org.example.LiteralNumber),
+                ),
+                VariableDeclarationNode(
+                    identifier = IdentifierNode("y"),
+                    varType = "number",
+                    value = null,
+                ),
+                AssignmentNode(
+                    identifier = IdentifierNode("y"),
+                    value = BinaryOpNode(
+                        left = IdentifierNode("x"),
+                        operator = "*",
+                        right = LiteralNode("2", org.example.LiteralNumber),
+                    ),
+                ),
+                PrintlnNode(IdentifierNode("y")),
+            )
+
+        val result = formatMultipleWithJson(nodes, jsonContent)
+        val expected = "let x: number=\"10\";\nlet y: number;\ny=x * 2;\nprintln(y);\n"
+
+        println("=== complete-program-no-spacing ===")
+        println("Config: $jsonContent")
+        println("Expected: '${expected.replace("\n", "\\n")}'")
+        println("Actual  : '${result.replace("\n", "\\n")}'")
+
+        assertEquals(expected, result)
+    }
+
+    // ========================================
+    // TESTS PARA CASOS EXTREMOS
+    // ========================================
+
+    @Test
+    fun test_declaration_without_initialization_formatting() {
+        val jsonContent = """{"enforce-spacing-before-colon-in-declaration": true, "enforce-spacing-after-colon-in-declaration": true}"""
+        val node = VariableDeclarationNode(
+            identifier = IdentifierNode("emptyVar"),
+            varType = "string",
+            value = null,
+        )
+
+        val result = formatWithJson(node, jsonContent)
+        val expected = "let emptyVar : string;\n"
+
+        println("=== declaration-without-initialization-formatting ===")
+        println("Config: $jsonContent")
+        println("Expected: '${expected.replace("\n", "\\n")}'")
+        println("Actual  : '${result.replace("\n", "\\n")}'")
+
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun test_multiple_println_with_max_line_breaks() {
+        val jsonContent = """{"line-breaks-after-println": 2}"""
+        val nodes =
+            listOf(
+                PrintlnNode(LiteralNode("First", LiteralString)),
+                PrintlnNode(LiteralNode("Second", LiteralString)),
+                PrintlnNode(LiteralNode("Third", LiteralString)),
+            )
+
+        val result = formatMultipleWithJson(nodes, jsonContent)
+        val expected = "println(\"First\");\n\n\nprintln(\"Second\");\n\n\nprintln(\"Third\");\n"
+
+        println("=== multiple-println-with-max-line-breaks ===")
+        println("Config: $jsonContent")
+        println("Expected: '${expected.replace("\n", "\\n")}'")
+        println("Actual  : '${result.replace("\n", "\\n")}'")
+
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun test_nested_expression_assignment() {
+        val jsonContent = """{"enforce-spacing-around-equals": true}"""
+        val nestedExpression = BinaryOpNode(
+            left = BinaryOpNode(
+                left = LiteralNode("10", org.example.LiteralNumber),
+                operator = "+",
+                right = LiteralNode("5", org.example.LiteralNumber),
+            ),
+            operator = "*",
+            right = BinaryOpNode(
+                left = LiteralNode("3", org.example.LiteralNumber),
+                operator = "-",
+                right = LiteralNode("1", org.example.LiteralNumber),
+            ),
+        )
+
+        val nodes =
+            listOf(
+                VariableDeclarationNode(
+                    identifier = IdentifierNode("complex"),
+                    varType = "number",
+                    value = null,
+                ),
+                AssignmentNode(
+                    identifier = IdentifierNode("complex"),
+                    value = nestedExpression,
+                ),
+            )
+
+        val result = formatMultipleWithJson(nodes, jsonContent)
+        val expected = "let complex: number;\ncomplex = 10 + 5 * 3 - 1;\n"
+
+        println("=== nested-expression-assignment ===")
+        println("Config: $jsonContent")
+        println("Expected: '${expected.replace("\n", "\\n")}'")
+        println("Actual  : '${result.replace("\n", "\\n")}'")
+
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun test_all_spacing_options_combined() {
+        val jsonContent = """{"enforce-spacing-before-colon-in-declaration": true, "enforce-spacing-after-colon-in-declaration": true, "enforce-spacing-around-equals": true, "line-breaks-after-println": 1}"""
+        val nodes =
+            listOf(
+                VariableDeclarationNode(
+                    identifier = IdentifierNode("fullSpacing"),
+                    varType = "string",
+                    value = LiteralNode("test", LiteralString),
+                ),
+                PrintlnNode(IdentifierNode("fullSpacing")),
+                PrintlnNode(LiteralNode("Done", LiteralString)),
+            )
+
+        val result = formatMultipleWithJson(nodes, jsonContent)
+        val expected = "let fullSpacing : string = \"test\";\nprintln(fullSpacing);\n\nprintln(\"Done\");\n"
+
+        println("=== all-spacing-options-combined ===")
+        println("Config: $jsonContent")
+        println("Expected: '${expected.replace("\n", "\\n")}'")
+        println("Actual  : '${result.replace("\n", "\\n")}'")
+
+        assertEquals(expected, result)
+    }
 }

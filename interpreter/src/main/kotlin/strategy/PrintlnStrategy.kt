@@ -15,6 +15,7 @@ val printlnStrategy =
                         value.toString()
                     }
                 }
+
                 else -> value.toString()
             }
         services.output write formattedValue

@@ -1,5 +1,4 @@
 package org.example.strategy
-
 import org.example.ast.BinaryOpNode
 import org.example.util.Services
 
@@ -24,6 +23,7 @@ val binaryExpressionStrategy =
                     )
                 }
             }
+
             "-", "*", "/" -> {
                 // Solo operaciones numéricas
                 val leftNum = leftVal as? Double ?: throw RuntimeException("Operando izquierdo no es número: $leftVal")
@@ -36,9 +36,11 @@ val binaryExpressionStrategy =
                         if (rightNum == 0.0) throw ArithmeticException("División por cero")
                         leftNum / rightNum
                     }
+
                     else -> throw RuntimeException("Operador no soportado: ${node.operator}")
                 }
             }
+
             else -> throw RuntimeException("Operador no soportado: ${node.operator}")
         }
     }

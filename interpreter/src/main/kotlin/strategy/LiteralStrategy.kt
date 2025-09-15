@@ -12,7 +12,7 @@ val literalStrategy =
                 (
                     (raw.first() == '"' && raw.last() == '"') ||
                         (raw.first() == '\'' && raw.last() == '\'')
-                ) ->
+                    ) ->
                 raw.substring(1, raw.length - 1)
 
             // número
