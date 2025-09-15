@@ -4,7 +4,6 @@ import org.example.ast.ASTNode
 import org.example.strategy.Strategy
 import org.example.strategy.StrategyProvider
 
-
 /**
  * Builder usado para armar un StrategyProvider con un DSL.
  */

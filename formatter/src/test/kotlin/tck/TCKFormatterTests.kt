@@ -327,21 +327,24 @@ class TCKFormatterTests {
     @Test
     fun test_complex_expression_formatting() {
         val jsonContent = """{"enforce-spacing-around-equals": true}"""
-        val complexExpression = BinaryOpNode(
-            left = BinaryOpNode(
-                left = LiteralNode("5", org.example.LiteralNumber),
-                operator = "*",
-                right = LiteralNode("5", org.example.LiteralNumber),
-            ),
-            operator = "-",
-            right = LiteralNode("8", org.example.LiteralNumber),
-        )
+        val complexExpression =
+            BinaryOpNode(
+                left =
+                    BinaryOpNode(
+                        left = LiteralNode("5", org.example.LiteralNumber),
+                        operator = "*",
+                        right = LiteralNode("5", org.example.LiteralNumber),
+                    ),
+                operator = "-",
+                right = LiteralNode("8", org.example.LiteralNumber),
+            )
 
-        val node = VariableDeclarationNode(
-            identifier = IdentifierNode("result"),
-            varType = "number",
-            value = complexExpression,
-        )
+        val node =
+            VariableDeclarationNode(
+                identifier = IdentifierNode("result"),
+                varType = "number",
+                value = complexExpression,
+            )
 
         val result = formatWithJson(node, jsonContent)
         val expected = "let result: number = 5 * 5 - 8;\n"
@@ -357,17 +360,19 @@ class TCKFormatterTests {
     @Test
     fun test_string_concatenation_expression() {
         val jsonContent = """{"enforce-spacing-around-equals": true}"""
-        val concatenation = BinaryOpNode(
-            left = LiteralNode("Hello ", LiteralString),
-            operator = "+",
-            right = LiteralNode("World", LiteralString),
-        )
+        val concatenation =
+            BinaryOpNode(
+                left = LiteralNode("Hello ", LiteralString),
+                operator = "+",
+                right = LiteralNode("World", LiteralString),
+            )
 
-        val node = VariableDeclarationNode(
-            identifier = IdentifierNode("greeting"),
-            varType = "string",
-            value = concatenation,
-        )
+        val node =
+            VariableDeclarationNode(
+                identifier = IdentifierNode("greeting"),
+                varType = "string",
+                value = concatenation,
+            )
 
         val result = formatWithJson(node, jsonContent)
         val expected = "let greeting: string = \"Hello \" + \"World\";\n"
@@ -383,17 +388,19 @@ class TCKFormatterTests {
     @Test
     fun test_mixed_string_number_concatenation() {
         val jsonContent = """{"enforce-spacing-around-equals": true}"""
-        val concatenation = BinaryOpNode(
-            left = LiteralNode("Number: ", LiteralString),
-            operator = "+",
-            right = LiteralNode("42", org.example.LiteralNumber),
-        )
+        val concatenation =
+            BinaryOpNode(
+                left = LiteralNode("Number: ", LiteralString),
+                operator = "+",
+                right = LiteralNode("42", org.example.LiteralNumber),
+            )
 
-        val node = VariableDeclarationNode(
-            identifier = IdentifierNode("message"),
-            varType = "string",
-            value = concatenation,
-        )
+        val node =
+            VariableDeclarationNode(
+                identifier = IdentifierNode("message"),
+                varType = "string",
+                value = concatenation,
+            )
 
         val result = formatWithJson(node, jsonContent)
         val expected = "let message: string = \"Number: \" + 42;\n"
@@ -461,17 +468,18 @@ class TCKFormatterTests {
                 ),
                 AssignmentNode(
                     identifier = IdentifierNode("y"),
-                    value = BinaryOpNode(
-                        left = IdentifierNode("x"),
-                        operator = "*",
-                        right = LiteralNode("2", org.example.LiteralNumber),
-                    ),
+                    value =
+                        BinaryOpNode(
+                            left = IdentifierNode("x"),
+                            operator = "*",
+                            right = LiteralNode("2", org.example.LiteralNumber),
+                        ),
                 ),
                 PrintlnNode(IdentifierNode("y")),
             )
 
         val result = formatMultipleWithJson(nodes, jsonContent)
-        val expected = "let x: number=\"10\";\nlet y: number;\ny=x * 2;\nprintln(y);\n"
+        val expected = "let x: number=10;\nlet y: number;\ny=x * 2;\nprintln(y);\n"
 
         println("=== complete-program-no-spacing ===")
         println("Config: $jsonContent")
@@ -487,12 +495,15 @@ class TCKFormatterTests {
 
     @Test
     fun test_declaration_without_initialization_formatting() {
-        val jsonContent = """{"enforce-spacing-before-colon-in-declaration": true, "enforce-spacing-after-colon-in-declaration": true}"""
-        val node = VariableDeclarationNode(
-            identifier = IdentifierNode("emptyVar"),
-            varType = "string",
-            value = null,
-        )
+        val jsonContent =
+            """{"enforce-spacing-before-colon-in-declaration": true, """ +
+                """"enforce-spacing-after-colon-in-declaration": true}"""
+        val node =
+            VariableDeclarationNode(
+                identifier = IdentifierNode("emptyVar"),
+                varType = "string",
+                value = null,
+            )
 
         val result = formatWithJson(node, jsonContent)
         val expected = "let emptyVar : string;\n"
@@ -529,19 +540,22 @@ class TCKFormatterTests {
     @Test
     fun test_nested_expression_assignment() {
         val jsonContent = """{"enforce-spacing-around-equals": true}"""
-        val nestedExpression = BinaryOpNode(
-            left = BinaryOpNode(
-                left = LiteralNode("10", org.example.LiteralNumber),
-                operator = "+",
-                right = LiteralNode("5", org.example.LiteralNumber),
-            ),
-            operator = "*",
-            right = BinaryOpNode(
-                left = LiteralNode("3", org.example.LiteralNumber),
-                operator = "-",
-                right = LiteralNode("1", org.example.LiteralNumber),
-            ),
-        )
+        val nestedExpression =
+            BinaryOpNode(
+                left =
+                    BinaryOpNode(
+                        left = LiteralNode("10", org.example.LiteralNumber),
+                        operator = "+",
+                        right = LiteralNode("5", org.example.LiteralNumber),
+                    ),
+                operator = "*",
+                right =
+                    BinaryOpNode(
+                        left = LiteralNode("3", org.example.LiteralNumber),
+                        operator = "-",
+                        right = LiteralNode("1", org.example.LiteralNumber),
+                    ),
+            )
 
         val nodes =
             listOf(
@@ -569,7 +583,10 @@ class TCKFormatterTests {
 
     @Test
     fun test_all_spacing_options_combined() {
-        val jsonContent = """{"enforce-spacing-before-colon-in-declaration": true, "enforce-spacing-after-colon-in-declaration": true, "enforce-spacing-around-equals": true, "line-breaks-after-println": 1}"""
+        val jsonContent =
+            """{"enforce-spacing-before-colon-in-declaration": true, """ +
+                """"enforce-spacing-after-colon-in-declaration": true, "enforce-spacing-around-equals": true, """ +
+                """"line-breaks-after-println": 1}"""
         val nodes =
             listOf(
                 VariableDeclarationNode(

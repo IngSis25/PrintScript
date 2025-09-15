@@ -1,6 +1,5 @@
 package org.example.strategy
 
-
 object PreConfiguredProviders {
     val VERSION_1_0 =
         StrategyProvider builder {
