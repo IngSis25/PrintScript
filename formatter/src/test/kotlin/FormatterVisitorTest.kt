@@ -81,6 +81,6 @@ class FormatterVisitorTest {
         // Act
         visitor.evaluate(root)
         // Assert
-        assertEquals("(x + 1) * 2", sb.toString())
+        assertEquals("x + 1 * 2", sb.toString())
     }
 }

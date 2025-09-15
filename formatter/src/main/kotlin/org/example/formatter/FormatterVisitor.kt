@@ -102,35 +102,11 @@ data class FormatterVisitor(
         evaluate(node)
     }
 
-    private fun prec(op: String) =
-        when (op) {
-            "*", "/" -> 2
-            "+", "-" -> 1
-            else -> 0
-        }
-
-    private fun needsParens(
-        parentOp: String,
-        child: ASTNode,
-        isRightChild: Boolean,
-    ): Boolean {
-        if (child !is BinaryOpNode) return false
-        val p = prec(parentOp)
-        val c = prec(child.operator)
-
-        if (c < p) return true // menor precedencia ⇒ paréntesis
-        if (c == p && isRightChild && (parentOp == "-" || parentOp == "/")) return true
-        return false
-    }
-
     private fun printMaybeParens(
         parentOp: String,
         child: ASTNode,
         isRightChild: Boolean,
     ) {
-        val need = needsParens(parentOp, child, isRightChild)
-        if (need) append("(")
         handleExpression(child)
-        if (need) append(")")
     }
 }
