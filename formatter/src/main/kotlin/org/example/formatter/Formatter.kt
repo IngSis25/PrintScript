@@ -23,4 +23,20 @@ data object Formatter {
 
         return result.toString()
     }
+
+    fun formatMultiple(
+        nodes: List<ASTNode>,
+        json: File,
+    ): String {
+        // 1. Leer y parsear JSON con Gson
+        val config = Gson().fromJson(json.readText(Charsets.UTF_8), FormatterConfig::class.java)
+
+        // 2. Crear visitor y procesar múltiples nodos con line breaks inteligentes
+        val result = StringBuilder()
+        val visitor = FormatterVisitor(config, result)
+        // Procesar múltiples AST con line breaks
+        visitor.evaluateMultiple(nodes)
+
+        return result.toString()
+    }
 }
