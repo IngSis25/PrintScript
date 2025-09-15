@@ -11,6 +11,18 @@ data class FormatterVisitor(
     private val config: FormatterConfig,
     private val outputCode: StringBuilder,
 ) {
+    fun evaluateMultiple(nodes: List<ASTNode>) {
+        for (i in nodes.indices) {
+            val node = nodes[i]
+            evaluate(node)
+
+            // Si es un PrintlnNode y hay más nodos después, aplicar line breaks
+            if (node is PrintlnNode && i < nodes.size - 1) {
+                append(config.lineBreaksBeforePrintsRule().apply())
+            }
+        }
+    }
+
     fun evaluate(node: ASTNode) {
         when (node) {
             is VariableDeclarationNode -> {
@@ -34,7 +46,6 @@ data class FormatterVisitor(
             }
 
             is PrintlnNode -> {
-                append(config.lineBreaksBeforePrintsRule().apply())
                 append("println(")
                 evaluate(node.value)
                 append(")")
