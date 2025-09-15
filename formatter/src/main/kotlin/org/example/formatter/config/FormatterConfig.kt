@@ -8,11 +8,11 @@ import org.example.formatter.rule.SpaceAroundEquals
 // todas las opciones de formateo y crea las reglas correspondientes
 
 data class FormatterConfig(
-    val lineBreaksBeforePrints: Int,
-    val spaceAroundEquals: Boolean,
-    val spaceBeforeColon: Boolean,
-    val spaceAfterColon: Boolean,
-    val spaceAroundAssignment: Boolean,
+    val lineBreaksBeforePrints: Int = 0,
+    val spaceAroundEquals: Boolean = true,
+    val spaceBeforeColon: Boolean = false,
+    val spaceAfterColon: Boolean = false,
+    val spaceAroundAssignment: Boolean = true,
 ) {
     init {
         // lineBreaksBeforePrints debe estar entre 0 y 2 -> valid
