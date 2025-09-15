@@ -41,10 +41,16 @@ data class FormatterVisitor(
                 endStatement()
             }
 
-            is BinaryOpNode -> {
+            /*is BinaryOpNode -> {
                 handleExpression(node.left)
                 append(" ${node.operator} ")
                 handleExpression(node.right)
+            }*/
+            is BinaryOpNode -> {
+                val op = node.operator
+                printMaybeParens(op, node.left, isRightChild = false)
+                append(" $op ")
+                printMaybeParens(op, node.right, isRightChild = true)
             }
 
             is LiteralNode -> {
@@ -79,7 +85,7 @@ data class FormatterVisitor(
         outputCode.append(")")
     }
 
-    private fun handleExpression(node: ASTNode) {
+    /*private fun handleExpression(node: ASTNode) {
         if (node is LiteralNode) {
             evaluate(node)
         } else if (node is IdentifierNode) {
@@ -91,5 +97,40 @@ data class FormatterVisitor(
         } else {
             evaluate(node)
         }
+    }*/
+    private fun handleExpression(node: ASTNode) {
+        evaluate(node)
+    }
+
+    private fun prec(op: String) =
+        when (op) {
+            "*", "/" -> 2
+            "+", "-" -> 1
+            else -> 0
+        }
+
+    private fun needsParens(
+        parentOp: String,
+        child: ASTNode,
+        isRightChild: Boolean,
+    ): Boolean {
+        if (child !is BinaryOpNode) return false
+        val p = prec(parentOp)
+        val c = prec(child.operator)
+
+        if (c < p) return true // menor precedencia ⇒ paréntesis
+        if (c == p && isRightChild && (parentOp == "-" || parentOp == "/")) return true
+        return false
+    }
+
+    private fun printMaybeParens(
+        parentOp: String,
+        child: ASTNode,
+        isRightChild: Boolean,
+    ) {
+        val need = needsParens(parentOp, child, isRightChild)
+        if (need) append("(")
+        handleExpression(child)
+        if (need) append(")")
     }
 }
