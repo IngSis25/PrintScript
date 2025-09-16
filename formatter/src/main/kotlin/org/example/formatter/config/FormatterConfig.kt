@@ -27,15 +27,14 @@ data class FormatterConfig(
         }
     }
 
-    // Factory methods
+    // Factory methods para crear las reglas de formato
+    fun lineBreaksBeforePrintsRule() = LineBreaksBeforePrints(lineBreaksBeforePrints)
 
-    fun lineBreaksBeforePrintsRule(): LineBreaksBeforePrints = LineBreaksBeforePrints(lineBreaksBeforePrints)
+    fun spaceAroundEqualsRule() = SpaceAroundEquals(spaceAroundEquals)
 
-    fun spaceAroundEqualsRule(): SpaceAroundEquals = SpaceAroundEquals(spaceAroundEquals)
+    fun spaceAroundAssignmentRule() = SpaceAroundEquals(spaceAroundAssignment)
 
-    fun spaceAroundColonsRule(): SpaceAroundColons = SpaceAroundColons(spaceBeforeColon, spaceAfterColon)
+    fun spaceInsideParenthesesRule() = SpaceInsideParentheses(spaceInsideParentheses)
 
-    fun spaceAroundAssignmentRule(): SpaceAroundEquals = SpaceAroundEquals(spaceAroundAssignment)
-
-    fun spaceInsideParenthesesRule(): SpaceInsideParentheses = SpaceInsideParentheses(spaceInsideParentheses)
+    fun spaceAroundColonsRule() = SpaceAroundColons(spaceBeforeColon, spaceAfterColon)
 }
