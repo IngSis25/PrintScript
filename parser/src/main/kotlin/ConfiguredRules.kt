@@ -1,9 +1,11 @@
 import BooleanIdentifierRule
+import ConstRule
 import DefaultParser
 import LiteralBooleanRule
 import builders.AssignmentBuilder
 import builders.BlockBuilder
 import builders.BooleanIdentifierBuilder
+import builders.ConstBuilder
 import builders.ElseNodeBuilder
 import builders.ExpressionBuilder
 import builders.IfNodeBuilder
@@ -26,6 +28,7 @@ object ConfiguredRules {
         listOf(
             // Order matters: more specific rules first
             PrintlnRule(PrintBuilder()),
+            ConstRule(ConstBuilder()),
             VariableDeclarationRule(VariableDeclarationBuilder()),
             AssignmentRule(AssignmentBuilder()),
             ExpressionRule(ExpressionBuilder()),

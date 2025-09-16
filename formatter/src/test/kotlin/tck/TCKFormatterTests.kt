@@ -21,11 +21,6 @@ class TCKFormatterTests {
         val result = formatWithJson(node, jsonContent)
         val expected = "let something: string=\"a really cool thing\";\n"
 
-        println("=== assign-no-spacing-surrounding-equals ===")
-        println("Config: $jsonContent")
-        println("Expected: '${expected.replace("\n", "\\n")}'")
-        println("Actual  : '${result.replace("\n", "\\n")}'")
-
         assertEquals(expected, result)
     }
 
@@ -41,11 +36,6 @@ class TCKFormatterTests {
 
         val result = formatWithJson(node, jsonContent)
         val expected = "let something: string = \"a really cool thing\";\n"
-
-        println("=== assign-spacing-surrounding-equals ===")
-        println("Config: $jsonContent")
-        println("Expected: '${expected.replace("\n", "\\n")}'")
-        println("Actual  : '${result.replace("\n", "\\n")}'")
 
         assertEquals(expected, result)
     }
@@ -63,11 +53,6 @@ class TCKFormatterTests {
         val result = formatWithJson(node, jsonContent)
         val expected = "let something: string = \"a really cool thing\";\n"
 
-        println("=== enforce-decl-spacing-after-colon ===")
-        println("Config: $jsonContent")
-        println("Expected: '${expected.replace("\n", "\\n")}'")
-        println("Actual  : '${result.replace("\n", "\\n")}'")
-
         assertEquals(expected, result)
     }
 
@@ -83,11 +68,6 @@ class TCKFormatterTests {
 
         val result = formatWithJson(node, jsonContent)
         val expected = "let something :string = \"a really cool thing\";\n"
-
-        println("=== enforce-decl-spacing-before-colon ===")
-        println("Config: $jsonContent")
-        println("Expected: '${expected.replace("\n", "\\n")}'")
-        println("Actual  : '${result.replace("\n", "\\n")}'")
 
         assertEquals(expected, result)
     }
@@ -111,11 +91,6 @@ class TCKFormatterTests {
             "let something:string = \"a really cool thing\";\nprintln(something);\nprintln(\"in the way " +
                 "she moves\");\n"
 
-        println("=== print-0-line-breaks-after ===")
-        println("Config: $jsonContent")
-        println("Expected: '${expected.replace("\n", "\\n")}'")
-        println("Actual  : '${result.replace("\n", "\\n")}'")
-
         assertEquals(expected, result)
     }
 
@@ -138,11 +113,6 @@ class TCKFormatterTests {
             "let something:string = \"a really cool thing\";\nprintln(something);\n\nprintln(\"in " +
                 "the way she moves\");\n"
 
-        println("=== print-1-line-breaks-after ===")
-        println("Config: $jsonContent")
-        println("Expected: '${expected.replace("\n", "\\n")}'")
-        println("Actual  : '${result.replace("\n", "\\n")}'")
-
         assertEquals(expected, result)
     }
 
@@ -164,11 +134,6 @@ class TCKFormatterTests {
         val expected =
             "let something:string = \"a really cool thing\";\nprintln(something);\n\n\nprintln(\"in the" +
                 " way she moves\");\n"
-
-        println("=== print-2-line-breaks-after ===")
-        println("Config: $jsonContent")
-        println("Expected: '${expected.replace("\n", "\\n")}'")
-        println("Actual  : '${result.replace("\n", "\\n")}'")
 
         assertEquals(expected, result)
     }

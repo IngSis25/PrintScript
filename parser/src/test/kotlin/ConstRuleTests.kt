@@ -73,19 +73,20 @@ class ConstRuleTests {
     }
 
     @Test
-    fun should_not_match_invalid_literal_type() {
+    fun should_match_const_with_identifier_value() {
         val tokens =
             listOf(
                 Token(ModifierType, "const", 1, 1),
                 Token(IdentifierType, "message", 1, 7),
                 Token(AssignmentType, "=", 1, 15),
-                Token(IdentifierType, "invalid", 1, 17),
+                Token(IdentifierType, "otherVariable", 1, 17),
                 Token(PunctuationType, ";", 1, 24),
             )
 
         val result = constRule.matcher.match(tokens, 0)
 
-        assertNull(result)
+        assertNotNull(result)
+        assertTrue(result is main.kotlin.parser.ParseResult.Success)
     }
 
     @Test
