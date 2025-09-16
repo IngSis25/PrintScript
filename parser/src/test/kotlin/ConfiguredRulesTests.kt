@@ -1,8 +1,8 @@
 package test.parserTest
 
-import ConstRule
 import builders.*
 import parser.rules.AssignmentRule
+import rules.ConstRule
 import rules.ExpressionRule
 import rules.PrintlnRule
 import rules.VariableDeclarationRule

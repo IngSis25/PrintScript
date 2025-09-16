@@ -1,4 +1,3 @@
-import ConstRule
 import DefaultParser
 import LiteralBooleanRule
 import builders.AssignmentBuilder
@@ -13,13 +12,7 @@ import builders.PrintBuilder
 import builders.VariableDeclarationBuilder
 import parser.rules.AssignmentRule
 import parser.rules.ParserRule
-import rules.BlockRule
-import rules.ElseRule
-import rules.ExpressionRule
-import rules.IfRule
-import rules.PrintlnRule
-import rules.RuleMatcher
-import rules.VariableDeclarationRule
+import rules.*
 import rules.booleanExpressions.BooleanIdentifierRule
 
 object ConfiguredRules {
