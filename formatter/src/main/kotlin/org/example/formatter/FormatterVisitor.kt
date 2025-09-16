@@ -28,10 +28,7 @@ data class FormatterVisitor(
             is VariableDeclarationNode -> {
                 append("let ${node.identifier.name}")
                 node.varType?.let { type ->
-                    // Aplicar espacios por separado según la configuración
-                    if (config.spaceBeforeColon) append(" ")
-                    append(":")
-                    if (config.spaceAfterColon) append(" ")
+                    append(config.spaceAroundColonsRule().apply())
                     append(type)
                 }
                 node.value?.let { value ->
