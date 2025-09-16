@@ -1,9 +1,9 @@
 package test.parserTest
 
-import DefaultParser
 import builders.PrintBuilder
 import builders.VariableDeclarationBuilder
 import main.kotlin.lexer.*
+import main.kotlin.parser.DefaultParser
 import org.example.LiteralNumber
 import org.example.LiteralString
 import org.example.ast.*

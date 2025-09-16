@@ -1,7 +1,7 @@
 package factory
 
-import ConfiguredRules
-import DefaultParser
+import main.kotlin.parser.ConfiguredRules
+import main.kotlin.parser.DefaultParser
 import rules.RuleMatcher
 
 class ParserFactoryV1 : ParserFactory {

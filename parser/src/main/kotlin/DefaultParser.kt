@@ -1,3 +1,4 @@
+package main.kotlin.parser
 import main.kotlin.lexer.Token
 import main.kotlin.parser.ParseResult
 import org.example.ast.ASTNode

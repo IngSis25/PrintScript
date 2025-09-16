@@ -1,6 +1,6 @@
 package factory
 
-import DefaultParser
+import main.kotlin.parser.DefaultParser
 
 interface ParserFactory {
     fun create(): DefaultParser

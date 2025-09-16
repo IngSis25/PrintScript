@@ -1,4 +1,4 @@
-import DefaultParser
+package main.kotlin.parser
 import LiteralBooleanRule
 import builders.AssignmentBuilder
 import builders.BlockBuilder
@@ -10,6 +10,7 @@ import builders.IfNodeBuilder
 import builders.LiteralBooleanBuilder
 import builders.PrintBuilder
 import builders.VariableDeclarationBuilder
+import main.kotlin.parser.DefaultParser
 import parser.rules.AssignmentRule
 import parser.rules.ParserRule
 import rules.*

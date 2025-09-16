@@ -1,7 +1,7 @@
 package builders
 
-import DefaultParser
 import main.kotlin.lexer.Token
+import main.kotlin.parser.DefaultParser
 import org.example.ast.ASTNode
 import org.example.ast.BlockNode
 import org.example.ast.IfNode
