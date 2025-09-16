@@ -1,5 +1,6 @@
 package test.parserTest
 
+import ConstRule
 import builders.*
 import parser.rules.AssignmentRule
 import rules.ExpressionRule
@@ -12,10 +13,11 @@ class ConfiguredRulesTests {
     fun v1_should_contain_expected_rules() {
         val rules = ConfiguredRules.V1
 
-        assertEquals(4, rules.size)
+        assertEquals(5, rules.size)
 
         // Check that all expected rule types are present
         assertTrue(rules.any { it is PrintlnRule })
+        assertTrue(rules.any { it is ConstRule })
         assertTrue(rules.any { it is VariableDeclarationRule })
         assertTrue(rules.any { it is AssignmentRule })
         assertTrue(rules.any { it is ExpressionRule })
@@ -28,6 +30,9 @@ class ConfiguredRulesTests {
         // Check that rules have the expected builders
         val printlnRule = rules.find { it is PrintlnRule } as PrintlnRule
         assertTrue(printlnRule.builder is PrintBuilder)
+
+        val constRule = rules.find { it is ConstRule } as ConstRule
+        assertTrue(constRule.builder is ConstBuilder)
 
         val varDeclRule = rules.find { it is VariableDeclarationRule } as VariableDeclarationRule
         assertTrue(varDeclRule.builder is VariableDeclarationBuilder)
