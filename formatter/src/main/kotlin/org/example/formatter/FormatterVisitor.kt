@@ -3,7 +3,6 @@ package org.example.formatter
 import org.example.LiteralString
 import org.example.ast.*
 import org.example.formatter.config.FormatterConfig
-import org.example.formatter.rule.SpaceAroundColons
 
 // org.example.formatter.FormatterVisitor SIMPLE
 // Sin métodos visit separados, más directo y fácil de leer
@@ -44,15 +43,12 @@ data class FormatterVisitor(
     fun evaluate(node: ASTNode) {
         when (node) {
             is VariableDeclarationNode -> {
-                writeIndentIfLineStart()
                 append("let ${node.identifier.name}")
                 node.varType?.let { type ->
-                    val colonRule =
-                        SpaceAroundColons(
-                            spaceBefore = config.spaceBeforeColon,
-                            spaceAfter = config.spaceAfterColon,
-                        )
-                    append(colonRule.apply())
+                    // Aplicar espacios por separado según la configuración
+                    if (config.spaceBeforeColon) append(" ")
+                    append(":")
+                    if (config.spaceAfterColon) append(" ")
                     append(type)
                 }
                 node.value?.let { value ->
