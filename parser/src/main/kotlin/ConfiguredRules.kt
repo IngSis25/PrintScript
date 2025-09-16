@@ -1,11 +1,23 @@
+import BooleanIdentifierRule
+import DefaultParser
+import LiteralBooleanRule
 import builders.AssignmentBuilder
+import builders.BlockBuilder
+import builders.BooleanIdentifierBuilder
+import builders.ElseNodeBuilder
 import builders.ExpressionBuilder
+import builders.IfNodeBuilder
+import builders.LiteralBooleanBuilder
 import builders.PrintBuilder
 import builders.VariableDeclarationBuilder
 import parser.rules.AssignmentRule
 import parser.rules.ParserRule
+import rules.BlockRule
+import rules.ElseRule
 import rules.ExpressionRule
+import rules.IfRule
 import rules.PrintlnRule
+import rules.RuleMatcher
 import rules.VariableDeclarationRule
 
 object ConfiguredRules {
@@ -19,17 +31,29 @@ object ConfiguredRules {
             ExpressionRule(ExpressionBuilder()),
         )
 
-//    val parserV1_1 by lazy {
-//        DefaultParser(RuleMatcher(V1_1_rules))
-//    }
-//
-//    val V1_1_rules: List<ParserRule> by lazy {
-//        V1 +
-//            listOf(
-//                IfRule(IfNodeBuilder(parserV1_1)),
-//                ElseRule(ElseNodeBuilder(parserV1_1)),
-//                BlockRule(BlockBuilder(parserV1_1)),
-//                ConstRule(ConstBuilder(parserV1_1)),
-//            )
-//    }
+    // Función para crear las reglas V1_1 con un parser
+    fun createV11Rules(parser: DefaultParser): List<ParserRule> {
+        // Crear reglas de expresiones booleanas primero
+        val booleanRules =
+            listOf(
+                LiteralBooleanRule(LiteralBooleanBuilder()),
+                BooleanIdentifierRule(BooleanIdentifierBuilder()),
+            )
+
+        // Crear un parser especializado solo para condiciones (sin reglas de if/else para evitar recursión)
+        val conditionRules = V1 + booleanRules
+        val conditionParser = DefaultParser(RuleMatcher(conditionRules))
+
+        // Crear las reglas finales
+        val allRules =
+            conditionRules +
+                listOf(
+                    // Reglas para estructuras de control
+                    IfRule(IfNodeBuilder(conditionParser)),
+                    ElseRule(ElseNodeBuilder(conditionParser)),
+                    BlockRule(BlockBuilder(conditionParser), RuleMatcher(conditionRules)),
+                )
+
+        return allRules
+    }
 }

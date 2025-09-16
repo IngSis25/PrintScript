@@ -45,7 +45,7 @@ class PrintlnStrategyTests {
         val result = printlnStrategy.visit(services, printNode)
 
         // Assert
-        assertEquals("hello world", capturedOutput) // sin comillas
+        assertEquals("hello world\n", capturedOutput) // con newline
         assertTrue(result is Services) // println ahora devuelve Services para preservar contexto
     }
 
@@ -85,7 +85,7 @@ class PrintlnStrategyTests {
         val result = printlnStrategy.visit(services, printNode)
 
         // Assert
-        assertEquals("42", capturedOutput) // número entero sin decimales
+        assertEquals("42\n", capturedOutput) // número entero sin decimales, con newline
         assertTrue(result is Services) // println ahora devuelve Services para preservar contexto
     }
 
@@ -125,7 +125,7 @@ class PrintlnStrategyTests {
         val result = printlnStrategy.visit(services, printNode)
 
         // Assert
-        assertEquals("3.14", capturedOutput)
+        assertEquals("3.14\n", capturedOutput) // con newline
         assertTrue(result is Services) // println ahora devuelve Services para preservar contexto
     }
 
@@ -165,7 +165,7 @@ class PrintlnStrategyTests {
         val result = printlnStrategy.visit(services, printNode)
 
         // Assert
-        assertEquals("", capturedOutput) // string vacío
+        assertEquals("\n", capturedOutput) // string vacío pero con newline
         assertTrue(result is Services) // println ahora devuelve Services para preservar contexto
     }
 
@@ -200,7 +200,7 @@ class PrintlnStrategyTests {
         val result = printlnStrategy.visit(services, printNode)
 
         // Assert
-        assertEquals("123", capturedOutput) // convertido a string
+        assertEquals("123\n", capturedOutput) // convertido a string con newline
         assertTrue(result is Services) // println ahora devuelve Services para preservar contexto
     }
 }

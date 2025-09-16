@@ -1,23 +1,19 @@
 package main.kotlin.cli
 
-import DefaultParser
-import factory.LexerFactoryV1
+import factory.LexerFactoryRegistry
+import factory.ParserFactoryRegistry
 import main.kotlin.analyzer.ConfigLoader
 import main.kotlin.analyzer.DefaultAnalyzer
 import org.example.DefaultInterpreter
 import org.example.formatter.Formatter
 import org.example.output.Output
 import org.example.strategy.PreConfiguredProviders
-import rules.RuleMatcher
 import java.io.File
 
 /**
  * Main CLI orchestrator that handles all PrintScript operations
  */
 class PrintScriptCLI {
-    private val lexerFactory = LexerFactoryV1()
-    private val ruleMatcher = RuleMatcher(ConfiguredRules.V1)
-    private val parser = DefaultParser(ruleMatcher)
     private val analyzer = DefaultAnalyzer()
 
     /**
@@ -34,11 +30,14 @@ class PrintScriptCLI {
             onProgress("File read successfully (${sourceCode.length} characters)")
 
             onProgress("Performing lexical analysis...")
+            val lexerFactory = LexerFactoryRegistry.getFactory(version)
             val lexer = lexerFactory.create()
             val tokens = lexer.tokenize(sourceCode)
             onProgress("Lexical analysis completed (${tokens.size} tokens found)")
 
             onProgress("Performing syntax analysis...")
+            val parserFactory = ParserFactoryRegistry.getFactory(version)
+            val parser = parserFactory.create()
             val ast = parser.parse(tokens)
             onProgress("Syntax analysis completed (${ast.size} statements parsed)")
 
@@ -110,7 +109,11 @@ class PrintScriptCLI {
                         }
                     }
 
-                val strategyProvider = PreConfiguredProviders.VERSION_1_0
+                val strategyProvider =
+                    when (version) {
+                        "1.1" -> PreConfiguredProviders.VERSION_1_1
+                        else -> PreConfiguredProviders.VERSION_1_0
+                    }
                 val interpreter = DefaultInterpreter(output, strategyProvider)
 
                 // Execute each statement

@@ -1,12 +1,12 @@
 package test.parserTest
 
-import BooleanType
 import main.kotlin.lexer.*
 import main.kotlin.parser.ParseResult
 import matchers.MultiTypeTokenMatcher
 import org.example.LiteralNumber
 import org.example.LiteralString
 import types.*
+import types.BooleanType
 import kotlin.test.*
 
 class MultiTypeTokenMatcherTests {

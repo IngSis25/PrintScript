@@ -1,16 +1,18 @@
 package rules
 
-import IfType
 import TokenMatcher
 import builders.NodeBuilder
 import main.kotlin.lexer.Token
 import matchers.BlockMatcher
+import matchers.MultiTypeTokenMatcher
 import matchers.OptionalMatcher
 import matchers.SequenceMatcher
 import parser.matchers.Matcher
 import parser.rules.ParserRule
 import types.ElseType
 import types.IdentifierType
+import types.IfType
+import types.LiteralBoolean
 import types.PunctuationType
 
 class IfRule(
@@ -21,7 +23,7 @@ class IfRule(
             listOf(
                 TokenMatcher(IfType),
                 TokenMatcher(PunctuationType, "("),
-                TokenMatcher(IdentifierType),
+                MultiTypeTokenMatcher(listOf(IdentifierType, LiteralBoolean)), // Acepta identificadores y literales
                 TokenMatcher(PunctuationType, ")"),
                 BlockMatcher(),
                 OptionalMatcher(

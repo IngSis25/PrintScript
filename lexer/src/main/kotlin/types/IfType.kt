@@ -1,3 +1,5 @@
+package types
+
 import org.example.TokenType
 
 object IfType : TokenType {

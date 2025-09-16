@@ -18,6 +18,6 @@ val printlnStrategy =
 
                 else -> value.toString()
             }
-        services.output write formattedValue
+        services.output write "$formattedValue\n"
         services // ← Devolver el Services actual para preservar el contexto
     }
