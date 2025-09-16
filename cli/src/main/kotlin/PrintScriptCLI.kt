@@ -1,108 +1,272 @@
-import registry.CommandRegistry
-import services.DefaultFileService
-import services.DefaultOutputService
+package main.kotlin.cli
+
+import DefaultParser
+import factory.LexerFactoryV1
+import main.kotlin.analyzer.ConfigLoader
+import main.kotlin.analyzer.DefaultAnalyzer
+import org.example.DefaultInterpreter
+import org.example.formatter.Formatter
+import org.example.output.Output
+import org.example.strategy.PreConfiguredProviders
+import rules.RuleMatcher
+import java.io.File
 
 /**
- * Main CLI class - SUPER SIMPLE to demonstrate Builder pattern
+ * Main CLI orchestrator that handles all PrintScript operations
  */
 class PrintScriptCLI {
-    private val commandRegistry = CommandRegistry()
-    private val fileService = DefaultFileService()
-    private val outputService = DefaultOutputService()
+    private val lexerFactory = LexerFactoryV1()
+    private val ruleMatcher = RuleMatcher(ConfiguredRules.V1)
+    private val parser = DefaultParser(ruleMatcher)
+    private val analyzer = DefaultAnalyzer()
 
-    companion object {
-        const val VERSION = "1.0.0"
-    }
-
-    fun run(args: Array<String>) {
+    /**
+     * Processes a PrintScript file through the complete pipeline
+     */
+    fun processFile(
+        sourceFile: File,
+        version: String = "1.0",
+        onProgress: (String) -> Unit = {},
+    ): ProcessingResult {
         try {
-            when {
-                args.isEmpty() -> showHelp()
-                args[0] == "--help" || args[0] == "-h" -> showHelp()
-                args[0] == "--version" || args[0] == "-v" -> showVersion()
-                args.size < 2 -> {
-                    outputService.printError("Missing required arguments")
-                    showUsage()
-                }
-                else -> executeCommand(args)
-            }
+            onProgress("Reading source file...")
+            val sourceCode = sourceFile.readText(Charsets.UTF_8)
+            onProgress("File read successfully (${sourceCode.length} characters)")
+
+            onProgress("Performing lexical analysis...")
+            val lexer = lexerFactory.create()
+            val tokens = lexer.tokenize(sourceCode)
+            onProgress("Lexical analysis completed (${tokens.size} tokens found)")
+
+            onProgress("Performing syntax analysis...")
+            val ast = parser.parse(tokens)
+            onProgress("Syntax analysis completed (${ast.size} statements parsed)")
+
+            return ProcessingResult.Success(
+                sourceCode = sourceCode,
+                tokens = tokens,
+                ast = ast,
+                file = sourceFile,
+                version = version,
+            )
         } catch (e: Exception) {
-            outputService.printError("Unexpected error: ${e.message}")
+            return ProcessingResult.Error(
+                error = e,
+                file = sourceFile,
+                version = version,
+            )
         }
     }
 
-    private fun executeCommand(args: Array<String>) {
-        val commandName = args[0]
-        val filePath = args[1]
-        val version = if (args.size > 2) args[2] else "1.0"
+    /**
+     * Validates a PrintScript file (syntax and semantics)
+     */
+    fun validate(
+        sourceFile: File,
+        version: String = "1.0",
+        onProgress: (String) -> Unit = {},
+    ): ValidationResult {
+        val result = processFile(sourceFile, version, onProgress)
 
-        try {
-            outputService.println("PrintScript CLI v$VERSION")
-            outputService.println("Command: $commandName | File: $filePath | Version: $version")
-            outputService.println("=".repeat(50))
-
-            val command =
-                commandRegistry.createCommand(
-                    commandName = commandName,
-                    filePath = filePath,
-                    version = version,
-                    fileService = fileService,
-                    outputService = outputService,
+        return when (result) {
+            is ProcessingResult.Success -> {
+                onProgress("Validation completed successfully!")
+                ValidationResult.Success(
+                    file = result.file,
+                    version = result.version,
+                    tokenCount = result.tokens.size,
+                    statementCount = result.ast.size,
                 )
-
-            val result = command.execute()
-
-            outputService.println("=".repeat(50))
-            if (result.success) {
-                outputService.printSuccess("Operation completed successfully")
-            } else {
-                outputService.printError("Operation failed: ${result.message}")
-                System.exit(1)
             }
-        } catch (e: IllegalArgumentException) {
-            outputService.printError(e.message ?: "Invalid command")
-            showAvailableCommands()
-            System.exit(1)
+            is ProcessingResult.Error -> {
+                onProgress("Validation failed!")
+                ValidationResult.Error(
+                    error = result.error,
+                    file = result.file,
+                    version = result.version,
+                )
+            }
         }
     }
 
-    private fun showHelp() {
-        outputService.println(
+    /**
+     * Executes a PrintScript file
+     */
+    fun execute(
+        sourceFile: File,
+        version: String = "1.0",
+        onProgress: (String) -> Unit = {},
+    ): ExecutionResult {
+        val result = processFile(sourceFile, version, onProgress)
+
+        return when (result) {
+            is ProcessingResult.Success -> {
+                onProgress("⚡ Executing program...")
+
+                val output =
+                    object : Output {
+                        override fun write(msg: String) {
+                            kotlin.io.print(msg)
+                        }
+                    }
+
+                val strategyProvider = PreConfiguredProviders.VERSION_1_0
+                val interpreter = DefaultInterpreter(output, strategyProvider)
+
+                // Execute each statement
+                result.ast.forEach { node ->
+                    interpreter.interpret(node)
+                }
+
+                onProgress("Execution completed successfully!")
+                ExecutionResult.Success(
+                    file = result.file,
+                    version = result.version,
+                    tokenCount = result.tokens.size,
+                    statementCount = result.ast.size,
+                )
+            }
+            is ProcessingResult.Error -> {
+                onProgress("Execution failed!")
+                ExecutionResult.Error(
+                    error = result.error,
+                    file = result.file,
+                    version = result.version,
+                )
+            }
+        }
+    }
+
+    /**
+     * Formats a PrintScript file according to configuration
+     */
+    fun format(
+        sourceFile: File,
+        configFile: File? = null,
+        outputFile: File? = null,
+        version: String = "1.0",
+        onProgress: (String) -> Unit = {},
+    ): FormattingResult {
+        val result = processFile(sourceFile, version, onProgress)
+
+        return when (result) {
+            is ProcessingResult.Success -> {
+                onProgress("Applying formatting rules...")
+
+                val configFileToUse = configFile ?: File("formatter-config.json")
+
+                if (!configFileToUse.exists()) {
+                    onProgress("Configuration file not found, using default rules...")
+                    createDefaultFormatterConfig(configFileToUse)
+                }
+
+                val formattedCode = Formatter.formatMultiple(result.ast, configFileToUse)
+                onProgress("Formatting completed")
+
+                if (outputFile != null) {
+                    onProgress("Writing formatted code to: ${outputFile.absolutePath}")
+                    outputFile.writeText(formattedCode)
+                    onProgress("File written successfully")
+                }
+
+                FormattingResult.Success(
+                    file = result.file,
+                    version = result.version,
+                    tokenCount = result.tokens.size,
+                    statementCount = result.ast.size,
+                    formattedCode = formattedCode,
+                    configFile = configFileToUse,
+                    outputFile = outputFile,
+                )
+            }
+            is ProcessingResult.Error -> {
+                onProgress("Formatting failed!")
+                FormattingResult.Error(
+                    error = result.error,
+                    file = result.file,
+                    version = result.version,
+                )
+            }
+        }
+    }
+
+    /**
+     * Analyzes a PrintScript file for code quality and style issues
+     */
+    fun analyze(
+        sourceFile: File,
+        configFile: File? = null,
+        version: String = "1.0",
+        onProgress: (String) -> Unit = {},
+    ): AnalysisResult {
+        val result = processFile(sourceFile, version, onProgress)
+
+        return when (result) {
+            is ProcessingResult.Success -> {
+                onProgress("Performing static analysis...")
+
+                val configFileToUse = configFile ?: File("analyzer-config.json")
+
+                if (!configFileToUse.exists()) {
+                    onProgress("Configuration file not found, using default rules...")
+                    createDefaultAnalyzerConfig(configFileToUse)
+                }
+
+                val config = ConfigLoader.loadFromJson(configFileToUse)
+                val analysisResult = analyzer.analyze(result.ast, config)
+                onProgress("Static analysis completed")
+
+                AnalysisResult.Success(
+                    file = result.file,
+                    version = result.version,
+                    tokenCount = result.tokens.size,
+                    statementCount = result.ast.size,
+                    analysisResult = analysisResult,
+                    configFile = configFileToUse,
+                )
+            }
+            is ProcessingResult.Error -> {
+                onProgress("Analysis failed!")
+                AnalysisResult.Error(
+                    error = result.error,
+                    file = result.file,
+                    version = result.version,
+                )
+            }
+        }
+    }
+
+    private fun createDefaultFormatterConfig(configFile: File) {
+        configFile.writeText(
             """
-            PrintScript CLI v$VERSION - Builder Pattern Demo
-            
-            USAGE:
-                printscript <command> <file> [version]
-            
-            EXAMPLES:
-                printscript validate example.ps
-                printscript execute example.ps 1.0
-                printscript format example.ps
-                printscript analyze example.ps
-                
-            OPTIONS:
-                -h, --help     Show this help
-                -v, --version  Show version
+            {
+              "lineBreaksBeforePrints": 1,
+              "spaceAroundEquals": true,
+              "spaceBeforeColon": false,
+              "spaceAfterColon": false,
+              "spaceAroundAssignment": true
+            }
             """.trimIndent(),
         )
-        showAvailableCommands()
     }
 
-    private fun showAvailableCommands() {
-        outputService.println("\nAVAILABLE COMMANDS:")
-        commandRegistry.getMainCommands().forEach { command ->
-            outputService.println("  • $command")
-        }
-        outputService.println("\n✨ Adding new commands is SUPER EASY with builders!")
-    }
-
-    private fun showVersion() {
-        outputService.println("PrintScript CLI v$VERSION")
-        outputService.println("Using Builder Pattern for extensibility! 🚀")
-    }
-
-    private fun showUsage() {
-        outputService.println("Usage: printscript <command> <file> [version]")
-        outputService.println("Use --help for more information")
+    private fun createDefaultAnalyzerConfig(configFile: File) {
+        configFile.writeText(
+            """
+            {
+              "identifierFormat": {
+                "enabled": true,
+                "format": "CAMEL_CASE"
+              },
+              "printlnRestrictions": {
+                "enabled": true,
+                "allowOnlyIdentifiersAndLiterals": true
+              },
+              "maxErrors": 10,
+              "enableWarnings": true,
+              "strictMode": false
+            }
+            """.trimIndent(),
+        )
     }
 }

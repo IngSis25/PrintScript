@@ -131,7 +131,7 @@ fun printAnalysisResults(result: AnalysisResult) {
             if (diagnostic.suggestions.isNotEmpty()) {
                 println("  Sugerencias:")
                 diagnostic.suggestions.forEach { suggestion ->
-                    println("      • $suggestion")
+                    println("   $suggestion")
                 }
             }
             println()
