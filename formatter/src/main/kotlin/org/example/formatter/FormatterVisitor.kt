@@ -11,6 +11,23 @@ data class FormatterVisitor(
     private val config: FormatterConfig,
     private val outputCode: StringBuilder,
 ) {
+    private var indentLevel = 0
+    private var atLineStart = true
+
+    private fun indentString(): String = " ".repeat(config.indentSize * indentLevel)
+
+    private fun writeIndentIfLineStart() {
+        if (atLineStart) {
+            outputCode.append(indentString())
+            atLineStart = false
+        }
+    }
+
+    private fun newLine() {
+        outputCode.append("\n")
+        atLineStart = true
+    }
+
     fun evaluateMultiple(nodes: List<ASTNode>) {
         for (i in nodes.indices) {
             val node = nodes[i]
@@ -42,6 +59,7 @@ data class FormatterVisitor(
             }
 
             is AssignmentNode -> {
+                writeIndentIfLineStart()
                 append(node.identifier.name)
                 append(config.spaceAroundAssignmentRule().apply())
                 evaluate(node.value)
@@ -49,6 +67,7 @@ data class FormatterVisitor(
             }
 
             is PrintlnNode -> {
+                writeIndentIfLineStart()
                 val parenthesesRule = config.spaceInsideParenthesesRule()
                 append("println")
                 append(parenthesesRule.applyOpen())
@@ -74,6 +93,82 @@ data class FormatterVisitor(
             is IdentifierNode -> {
                 append(node.name)
             }
+            is IfNode -> {
+                // if (...) {  ← llave en misma línea si así lo pide la config
+                writeIndentIfLineStart()
+                val p = config.spaceInsideParenthesesRule()
+                append("if ")
+                append(p.applyOpen())
+                evaluate(node.condition)
+                append(p.applyClose())
+
+                if (config.ifBraceSameLine) {
+                    append(" {")
+                    newLine()
+                } else {
+                    newLine()
+                    writeIndentIfLineStart()
+                    append("{")
+                    newLine()
+                }
+
+                // Cuerpo del then con indentación
+                indentLevel++
+                when (val thenPart = node.thenBlock) {
+                    is BlockNode -> evaluate(thenPart) // delega al case de BlockNode
+                    else -> {
+                        writeIndentIfLineStart()
+                        evaluate(thenPart) // statements simples (println, let, assign, etc.)
+                    }
+                }
+                indentLevel--
+
+                // Cerrar bloque del then
+                writeIndentIfLineStart()
+                append("}")
+                newLine()
+
+                // else (opcional)
+                node.elseBlock?.let { elsePart ->
+                    writeIndentIfLineStart()
+                    append("else")
+                    when (elsePart) {
+                        is IfNode -> {
+                            append(" ")
+                            // soporta "else if (...) { ... }"
+                            evaluate(elsePart)
+                        }
+                        is BlockNode -> {
+                            append(" {")
+                            newLine()
+                            indentLevel++
+                            evaluate(elsePart)
+                            indentLevel--
+                            writeIndentIfLineStart()
+                            append("}")
+                            newLine()
+                        }
+                        else -> {
+                            append(" {")
+                            newLine()
+                            indentLevel++
+                            writeIndentIfLineStart()
+                            evaluate(elsePart)
+                            indentLevel--
+                            writeIndentIfLineStart()
+                            append("}")
+                            newLine()
+                        }
+                    }
+                }
+            }
+
+            is BlockNode -> {
+                node.statements.forEach { stmt ->
+                    writeIndentIfLineStart()
+                    evaluate(stmt)
+                }
+            }
 
             else -> throw IllegalArgumentException("Nodo no soportado: ${node::class}")
         }
@@ -85,7 +180,8 @@ data class FormatterVisitor(
     }
 
     private fun endStatement() {
-        outputCode.append(";\n")
+        outputCode.append(";")
+        newLine()
     }
 
     private fun openExpression() {
