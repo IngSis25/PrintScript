@@ -1,5 +1,6 @@
-import TokenMatcher
+package rules.booleanExpressions
 import builders.NodeBuilder
+import matchers.TokenMatcher
 import parser.matchers.Matcher
 import parser.rules.BooleanExpressionRule
 import types.IdentifierType

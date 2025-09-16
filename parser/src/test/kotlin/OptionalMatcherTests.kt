@@ -1,9 +1,9 @@
 package test.parserTest
 
-import TokenMatcher
 import main.kotlin.lexer.*
 import main.kotlin.parser.ParseResult
 import matchers.OptionalMatcher
+import matchers.TokenMatcher
 import org.example.LiteralNumber
 import org.example.LiteralString
 import types.*

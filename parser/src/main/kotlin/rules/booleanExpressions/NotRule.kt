@@ -1,9 +1,9 @@
 package parser.rules
 
-import TokenMatcher
 import builders.NodeBuilder
 import main.kotlin.lexer.Token
 import matchers.SequenceMatcher
+import matchers.TokenMatcher
 import parser.matchers.Matcher
 import types.PunctuationType
 

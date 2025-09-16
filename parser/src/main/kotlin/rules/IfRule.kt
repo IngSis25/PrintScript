@@ -1,12 +1,8 @@
 package rules
 
-import TokenMatcher
 import builders.NodeBuilder
 import main.kotlin.lexer.Token
-import matchers.BlockMatcher
-import matchers.MultiTypeTokenMatcher
-import matchers.OptionalMatcher
-import matchers.SequenceMatcher
+import matchers.*
 import parser.matchers.Matcher
 import parser.rules.ParserRule
 import types.ElseType

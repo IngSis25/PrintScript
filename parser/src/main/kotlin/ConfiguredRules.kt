@@ -1,4 +1,3 @@
-import BooleanIdentifierRule
 import ConstRule
 import DefaultParser
 import LiteralBooleanRule
@@ -21,6 +20,7 @@ import rules.IfRule
 import rules.PrintlnRule
 import rules.RuleMatcher
 import rules.VariableDeclarationRule
+import rules.booleanExpressions.BooleanIdentifierRule
 
 object ConfiguredRules {
     // Versión 1.0 configuración de reglas del parser
