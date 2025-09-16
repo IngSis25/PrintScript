@@ -46,17 +46,14 @@ data class FormatterVisitor(
             }
 
             is PrintlnNode -> {
-                append("println(")
+                val parenthesesRule = config.spaceInsideParenthesesRule()
+                append("println")
+                append(parenthesesRule.applyOpen())
                 evaluate(node.value)
-                append(")")
+                append(parenthesesRule.applyClose())
                 endStatement()
             }
 
-            /*is BinaryOpNode -> {
-                handleExpression(node.left)
-                append(" ${node.operator} ")
-                handleExpression(node.right)
-            }*/
             is BinaryOpNode -> {
                 val op = node.operator
                 printMaybeParens(op, node.left, isRightChild = false)
@@ -96,19 +93,6 @@ data class FormatterVisitor(
         outputCode.append(")")
     }
 
-    /*private fun handleExpression(node: ASTNode) {
-        if (node is LiteralNode) {
-            evaluate(node)
-        } else if (node is IdentifierNode) {
-            evaluate(node)
-        } else if (node is BinaryOpNode) {
-            openExpression()
-            evaluate(node)
-            closeExpression()
-        } else {
-            evaluate(node)
-        }
-    }*/
     private fun handleExpression(node: ASTNode) {
         evaluate(node)
     }

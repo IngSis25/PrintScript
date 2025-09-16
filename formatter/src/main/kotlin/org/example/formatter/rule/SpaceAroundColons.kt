@@ -9,8 +9,8 @@ package org.example.formatter.rule
 // spaceBefore=false, spaceAfter=false → ":"
 
 data class SpaceAroundColons(
-    private val spaceBefore: Boolean,
-    private val spaceAfter: Boolean,
+    val spaceBefore: Boolean,
+    val spaceAfter: Boolean,
 ) : FormatRule {
     override fun apply(): String {
         val before = if (spaceBefore) " " else ""
