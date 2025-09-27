@@ -12,11 +12,12 @@ data class FormatterConfig(
     val lineBreaksBeforePrints: Int = 0,
     val spaceAroundEquals: Boolean = true,
     val spaceBeforeColon: Boolean = false,
-    val spaceAfterColon: Boolean = true,
+    val spaceAfterColon: Boolean = false,
     val spaceAroundAssignment: Boolean = true,
     val spaceInsideParentheses: Boolean = false,
     val indentSize: Int = 2,
     val ifBraceSameLine: Boolean = true,
+    val onlyLineBreakAfterStatement: Boolean = false,
 ) {
     init {
         // lineBreaksBeforePrints debe estar entre 0 y 2 -> valid
