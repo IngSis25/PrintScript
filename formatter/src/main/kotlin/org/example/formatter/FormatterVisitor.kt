@@ -38,6 +38,10 @@ data class FormatterVisitor(
                 append(config.lineBreaksBeforePrintsRule().apply())
             }
         }
+        // Remueve \n final si quedó (los tests no lo esperan)
+        if (outputCode.isNotEmpty() && outputCode.last() == '\n') {
+            outputCode.deleteCharAt(outputCode.length - 1)
+        }
     }
 
     fun evaluate(node: ASTNode) {
