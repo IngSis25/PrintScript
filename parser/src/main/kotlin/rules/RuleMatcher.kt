@@ -3,7 +3,6 @@ package rules
 import main.kotlin.lexer.Token
 import main.kotlin.parser.ParseResult
 
-
 class RuleMatcher(
     private val rules: List<ParserRule>,
 ) {
