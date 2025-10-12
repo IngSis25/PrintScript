@@ -10,11 +10,6 @@ import builders.IfNodeBuilder
 import builders.LiteralBooleanBuilder
 import builders.PrintBuilder
 import builders.VariableDeclarationBuilder
-import main.kotlin.parser.DefaultParser
-import parser.rules.AssignmentRule
-import parser.rules.ConstRule
-import parser.rules.LetRule
-import parser.rules.ParserRule
 import rules.*
 import rules.booleanExpressions.BooleanIdentifierRule
 
@@ -41,7 +36,7 @@ object ConfiguredRules {
 
         // Crear un parser especializado solo para condiciones (sin reglas de if/else para evitar recursión)
         val conditionRules = V1 + booleanRules
-        val conditionParser = DefaultParser(RuleMatcher(conditionRules))
+        val conditionParser = DefaultParser(RuleMatcher(conditionRules as List<ParserRule>))
 
         // Crear las reglas finales
         val allRules =

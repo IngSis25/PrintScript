@@ -2,8 +2,8 @@ package test.parserTest
 
 import builders.*
 import main.kotlin.parser.ConfiguredRules
-import parser.rules.AssignmentRule
-import parser.rules.ConstRule
+import rules.AssignmentRule
+import rules.ConstRule
 import rules.ExpressionRule
 import rules.PrintlnRule
 import rules.VariableDeclarationRule

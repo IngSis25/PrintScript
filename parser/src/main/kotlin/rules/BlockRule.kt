@@ -7,7 +7,6 @@ import matchers.BlockMatcher
 import org.example.ast.ASTNode
 import org.example.ast.BlockNode
 import parser.matchers.Matcher
-import parser.rules.ParserRule
 import rules.RuleMatcher
 
 class BlockRule(

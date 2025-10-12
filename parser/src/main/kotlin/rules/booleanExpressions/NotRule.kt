@@ -5,6 +5,7 @@ import main.kotlin.lexer.Token
 import matchers.SequenceMatcher
 import matchers.TokenMatcher
 import parser.matchers.Matcher
+import rules.BooleanExpressionRule
 import types.PunctuationType
 
 class NotRule(

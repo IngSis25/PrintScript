@@ -4,7 +4,7 @@ import builders.ConstBuilder
 import main.kotlin.lexer.*
 import org.example.LiteralString
 import org.example.ast.*
-import parser.rules.ConstRule
+import rules.ConstRule
 import types.*
 import kotlin.test.*
 
