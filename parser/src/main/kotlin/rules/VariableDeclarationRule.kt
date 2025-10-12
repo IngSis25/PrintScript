@@ -5,7 +5,6 @@ import main.kotlin.lexer.Token
 import main.kotlin.parser.ParseResult
 import matchers.FlexibleExpressionMatcher
 import parser.matchers.Matcher
-import parser.rules.ParserRule
 import types.AssignmentType
 import types.BooleanType
 import types.IdentifierType

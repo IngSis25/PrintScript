@@ -1,4 +1,4 @@
-package parser.rules
+package rules
 
 import builders.NodeBuilder
 import parser.matchers.Matcher
