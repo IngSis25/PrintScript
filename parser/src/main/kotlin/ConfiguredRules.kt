@@ -52,7 +52,7 @@ object ConfiguredRules {
                     ElseRule(ElseNodeBuilder(conditionParser)),
                     BlockRule(BlockBuilder(conditionParser), RuleMatcher(conditionRules)),
                     LetRule(VariableDeclarationBuilder()),
-                    ConstRule(ConstBuilder())
+                    ConstRule(ConstBuilder()),
                 )
 
         return allRules

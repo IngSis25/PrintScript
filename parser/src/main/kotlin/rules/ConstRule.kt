@@ -7,6 +7,7 @@ import matchers.FlexibleExpressionMatcher
 import parser.matchers.Matcher
 import types.AssignmentType
 import types.IdentifierType
+import types.ModifierType
 import types.PunctuationType
 
 /**
@@ -17,16 +18,18 @@ import types.PunctuationType
 class ConstRule(
     override val builder: NodeBuilder,
 ) : ParserRule {
-
     override val matcher: Matcher<*> =
         object : Matcher<List<Token>> {
-            override fun match(tokens: List<Token>, pos: Int): ParseResult<List<Token>>? {
+            override fun match(
+                tokens: List<Token>,
+                pos: Int,
+            ): ParseResult<List<Token>>? {
                 var i = pos
                 if (i >= tokens.size) return null
 
                 // 1) Keyword 'const'
                 val t0 = tokens[i]
-                if (t0.type != IdentifierType || t0.value != "const") return null
+                if (t0.type != ModifierType || t0.value != "const") return null
 
                 val collected = mutableListOf<Token>()
                 collected.add(t0)

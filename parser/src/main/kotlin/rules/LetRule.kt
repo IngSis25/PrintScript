@@ -17,10 +17,12 @@ import types.PunctuationType
 class LetRule(
     override val builder: NodeBuilder,
 ) : ParserRule {
-
     override val matcher: Matcher<*> =
         object : Matcher<List<Token>> {
-            override fun match(tokens: List<Token>, pos: Int): ParseResult<List<Token>>? {
+            override fun match(
+                tokens: List<Token>,
+                pos: Int,
+            ): ParseResult<List<Token>>? {
                 var i = pos
                 if (i >= tokens.size) return null
 
@@ -37,7 +39,6 @@ class LetRule(
                 collected.add(tokens[i])
                 i++
 
-
                 if (i < tokens.size &&
                     tokens[i].type == PunctuationType &&
                     tokens[i].value == ":"
@@ -45,17 +46,14 @@ class LetRule(
                     collected.add(tokens[i]) // ':'
                     i++
 
-
                     if (i >= tokens.size || tokens[i].type != IdentifierType) return null
                     collected.add(tokens[i]) // type name (e.g., number|string|boolean)
                     i++
                 }
 
-
                 if (i < tokens.size && tokens[i].type == AssignmentType) {
                     collected.add(tokens[i]) // '='
                     i++
-
 
                     val exprMatcher = FlexibleExpressionMatcher()
                     val exprResult = exprMatcher.match(tokens, i) ?: return null
