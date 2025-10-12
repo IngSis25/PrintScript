@@ -10,11 +10,11 @@ import types.IdentifierType
 import types.PunctuationType
 
 /**
- * Regla para declaraciones const
- * Forma: const <id> ( : <type> )? = <expr> ;
- * Nota: el inicializador es OBLIGATORIO en const.
+ * Regla para declaraciones let
+ * Forma: let <id> ( : <type> )? ( = <expr> )? ;
+ * Nota: el inicializador es opcional en let.
  */
-class ConstRule(
+class LetRule(
     override val builder: NodeBuilder,
 ) : ParserRule {
 
@@ -24,20 +24,20 @@ class ConstRule(
                 var i = pos
                 if (i >= tokens.size) return null
 
-                // 1) Keyword 'const'
+                // 1) Keyword 'let'
                 val t0 = tokens[i]
-                if (t0.type != IdentifierType || t0.value != "const") return null
+                if (t0.type != IdentifierType || t0.value != "let") return null
 
                 val collected = mutableListOf<Token>()
                 collected.add(t0)
                 i++
 
-                // 2) Identifier (variable name)
+                // 2) Identifier
                 if (i >= tokens.size || tokens[i].type != IdentifierType) return null
                 collected.add(tokens[i])
                 i++
 
-                // 3) Optional ': <type>'
+
                 if (i < tokens.size &&
                     tokens[i].type == PunctuationType &&
                     tokens[i].value == ":"
@@ -45,30 +45,31 @@ class ConstRule(
                     collected.add(tokens[i]) // ':'
                     i++
 
-                    // tipo esperado (usamos IdentifierType por simplicidad)
+
                     if (i >= tokens.size || tokens[i].type != IdentifierType) return null
-                    collected.add(tokens[i]) // type name
+                    collected.add(tokens[i]) // type name (e.g., number|string|boolean)
                     i++
                 }
 
-                // 4) '=' obligatorio
-                if (i >= tokens.size || tokens[i].type != AssignmentType) return null
-                collected.add(tokens[i]) // '='
-                i++
 
-                // 5) Expresión obligatoria
-                val exprMatcher = FlexibleExpressionMatcher()
-                val exprResult = exprMatcher.match(tokens, i) ?: return null
+                if (i < tokens.size && tokens[i].type == AssignmentType) {
+                    collected.add(tokens[i]) // '='
+                    i++
 
-                when (exprResult) {
-                    is ParseResult.Success -> {
-                        collected.addAll(exprResult.node)
-                        i = exprResult.nextPosition
+
+                    val exprMatcher = FlexibleExpressionMatcher()
+                    val exprResult = exprMatcher.match(tokens, i) ?: return null
+
+                    when (exprResult) {
+                        is ParseResult.Success -> {
+                            collected.addAll(exprResult.node)
+                            i = exprResult.nextPosition
+                        }
+                        is ParseResult.Failure -> return null
                     }
-                    is ParseResult.Failure -> return null
                 }
 
-                // 6) ';' obligatorio
+                // 5) Termina con ';'
                 if (i < tokens.size &&
                     tokens[i].type == PunctuationType &&
                     tokens[i].value == ";"

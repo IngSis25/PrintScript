@@ -12,6 +12,8 @@ import builders.PrintBuilder
 import builders.VariableDeclarationBuilder
 import main.kotlin.parser.DefaultParser
 import parser.rules.AssignmentRule
+import parser.rules.ConstRule
+import parser.rules.LetRule
 import parser.rules.ParserRule
 import rules.*
 import rules.booleanExpressions.BooleanIdentifierRule
@@ -49,6 +51,8 @@ object ConfiguredRules {
                     IfRule(IfNodeBuilder(conditionParser)),
                     ElseRule(ElseNodeBuilder(conditionParser)),
                     BlockRule(BlockBuilder(conditionParser), RuleMatcher(conditionRules)),
+                    LetRule(VariableDeclarationBuilder()),
+                    ConstRule(ConstBuilder())
                 )
 
         return allRules
