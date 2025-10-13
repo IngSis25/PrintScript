@@ -6,6 +6,7 @@ import org.example.LiteralNumber
 import org.example.LiteralString
 import parser.matchers.Matcher
 import types.IdentifierType
+import types.LiteralBoolean
 import types.OperatorType
 
 /**
@@ -39,7 +40,7 @@ class FlexibleExpressionMatcher : Matcher<List<Token>> {
 
     private fun isPrimaryToken(token: Token): Boolean =
         when (token.type) {
-            LiteralString, LiteralNumber, IdentifierType -> true
+            LiteralString, LiteralNumber, IdentifierType, LiteralBoolean -> true
             else -> false
         }
 
