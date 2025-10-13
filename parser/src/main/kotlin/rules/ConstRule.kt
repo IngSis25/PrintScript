@@ -7,8 +7,11 @@ import matchers.FlexibleExpressionMatcher
 import parser.matchers.Matcher
 import types.AssignmentType
 import types.IdentifierType
+import types.BooleanType
 import types.ModifierType
+import types.NumberType
 import types.PunctuationType
+import types.StringType
 
 /**
  * Regla para declaraciones const
@@ -48,8 +51,14 @@ class ConstRule(
                     collected.add(tokens[i]) // ':'
                     i++
 
-                    // tipo esperado (usamos IdentifierType por simplicidad)
-                    if (i >= tokens.size || tokens[i].type != IdentifierType) return null
+                    // tipo esperado: string | number | boolean
+                    if (i >= tokens.size ||
+                        !(
+                            tokens[i].type == StringType ||
+                                tokens[i].type == NumberType ||
+                                tokens[i].type == BooleanType
+                        )
+                    ) return null
                     collected.add(tokens[i]) // type name
                     i++
                 }
