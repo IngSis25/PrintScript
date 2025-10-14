@@ -5,7 +5,6 @@ import main.kotlin.lexer.Token
 import main.kotlin.parser.ParseResult
 import matchers.FlexibleExpressionMatcher
 import parser.matchers.Matcher
-import parser.rules.ParserRule
 import types.AssignmentType
 import types.BooleanType
 import types.IdentifierType
@@ -35,7 +34,11 @@ class VariableDeclarationRule(
                 if (pos + 2 >= tokens.size) return null
 
                 // Debe empezar con let/var
-                if (tokens[pos].type != ModifierType) return null
+                if (tokens[pos].type != ModifierType ||
+                    (tokens[pos].value != "let" && tokens[pos].value != "var")
+                ) {
+                    return null
+                }
 
                 // Debe tener un identificador
                 if (tokens[pos + 1].type != IdentifierType) return null

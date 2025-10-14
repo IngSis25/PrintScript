@@ -5,7 +5,7 @@ import matchers.TokenMatcher
 import org.example.LiteralNumber
 import org.example.LiteralString
 import parser.matchers.Matcher
-import parser.rules.BooleanExpressionRule
+import rules.BooleanExpressionRule
 import types.ComparisonOperatorType
 import types.IdentifierType
 

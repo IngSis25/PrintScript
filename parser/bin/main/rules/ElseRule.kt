@@ -6,7 +6,6 @@ import matchers.BlockMatcher
 import matchers.SequenceMatcher
 import matchers.TokenMatcher
 import parser.matchers.Matcher
-import parser.rules.ParserRule
 import types.ElseType
 
 class ElseRule(

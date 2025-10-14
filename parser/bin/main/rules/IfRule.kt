@@ -4,7 +4,6 @@ import builders.NodeBuilder
 import main.kotlin.lexer.Token
 import matchers.*
 import parser.matchers.Matcher
-import parser.rules.ParserRule
 import types.ElseType
 import types.IdentifierType
 import types.IfType

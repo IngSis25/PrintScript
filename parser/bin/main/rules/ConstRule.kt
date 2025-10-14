@@ -5,7 +5,6 @@ import main.kotlin.lexer.Token
 import main.kotlin.parser.ParseResult
 import matchers.FlexibleExpressionMatcher
 import parser.matchers.Matcher
-import parser.rules.ParserRule
 import types.AssignmentType
 import types.BooleanType
 import types.IdentifierType
@@ -15,9 +14,9 @@ import types.PunctuationType
 import types.StringType
 
 /**
- * Regla para declaraciones const que puede manejar:
- * - const variable = value;
- * - const variable: type = value;
+ * Regla para declaraciones const
+ * Forma: const <id> ( : <type> )? = <expr> ;
+ * Nota: el inicializador es OBLIGATORIO en const.
  */
 class ConstRule(
     override val builder: NodeBuilder,
@@ -28,94 +27,70 @@ class ConstRule(
                 tokens: List<Token>,
                 pos: Int,
             ): ParseResult<List<Token>>? {
-                if (pos + 2 >= tokens.size) return null
+                var i = pos
+                if (i >= tokens.size) return null
 
-                // Debe empezar con const
-                if (tokens[pos].type != ModifierType || tokens[pos].value != "const") return null
+                // 1) Keyword 'const'
+                val t0 = tokens[i]
+                if (t0.type != ModifierType || t0.value != "const") return null
 
-                // Debe tener un identificador
-                if (tokens[pos + 1].type != IdentifierType) return null
-
-                var currentPos = pos + 2
                 val collected = mutableListOf<Token>()
-                collected.add(tokens[pos]) // const
-                collected.add(tokens[pos + 1]) // identifier
+                collected.add(t0)
+                i++
 
-                // Caso 1: const variable = value; (sin tipo)
-                if (currentPos < tokens.size && tokens[currentPos].type == AssignmentType) {
-                    return matchSimpleConstDeclaration(tokens, currentPos, collected)
-                }
+                // 2) Identifier (variable name)
+                if (i >= tokens.size || tokens[i].type != IdentifierType) return null
+                collected.add(tokens[i])
+                i++
 
-                // Caso 2: const variable: type = value; (con tipo)
-                if (currentPos + 2 < tokens.size &&
-                    tokens[currentPos].type == PunctuationType &&
-                    tokens[currentPos].value == ":" &&
-                    (
-                        tokens[currentPos + 1].type == StringType ||
-                            tokens[currentPos + 1].type == NumberType ||
-                            tokens[currentPos + 1].type == BooleanType
-                    ) &&
-                    tokens[currentPos + 2].type == AssignmentType
+                // 3) Optional ': <type>'
+                if (i < tokens.size &&
+                    tokens[i].type == PunctuationType &&
+                    tokens[i].value == ":"
                 ) {
-                    return matchTypedConstDeclaration(tokens, currentPos, collected)
+                    collected.add(tokens[i]) // ':'
+                    i++
+
+                    // tipo esperado: string | number | boolean
+                    if (i >= tokens.size ||
+                        !(
+                            tokens[i].type == StringType ||
+                                tokens[i].type == NumberType ||
+                                tokens[i].type == BooleanType
+                        )
+                    ) {
+                        return null
+                    }
+                    collected.add(tokens[i]) // type name
+                    i++
                 }
 
-                return null
-            }
+                // 4) '=' obligatorio
+                if (i >= tokens.size || tokens[i].type != AssignmentType) return null
+                collected.add(tokens[i]) // '='
+                i++
 
-            private fun matchSimpleConstDeclaration(
-                tokens: List<Token>,
-                currentPos: Int,
-                collected: MutableList<Token>,
-            ): ParseResult<List<Token>>? {
-                collected.add(tokens[currentPos]) // =
-                var pos = currentPos + 1
+                // 5) Expresión obligatoria
+                val exprMatcher = FlexibleExpressionMatcher()
+                val exprResult = exprMatcher.match(tokens, i) ?: return null
 
-                // Buscar la expresión usando el matcher flexible
-                val expressionMatcher = FlexibleExpressionMatcher()
-                val expressionResult = expressionMatcher.match(tokens, pos) ?: return null
-                when (expressionResult) {
+                when (exprResult) {
                     is ParseResult.Success -> {
-                        collected.addAll(expressionResult.node)
-                        pos = expressionResult.nextPosition
+                        collected.addAll(exprResult.node)
+                        i = exprResult.nextPosition
                     }
                     is ParseResult.Failure -> return null
                 }
 
-                // Debe terminar con ;
-                if (pos < tokens.size && tokens[pos].type == PunctuationType) {
-                    collected.add(tokens[pos])
-                    return ParseResult.Success(collected, pos + 1)
-                }
-                return null
-            }
-
-            private fun matchTypedConstDeclaration(
-                tokens: List<Token>,
-                currentPos: Int,
-                collected: MutableList<Token>,
-            ): ParseResult<List<Token>>? {
-                collected.add(tokens[currentPos]) // :
-                collected.add(tokens[currentPos + 1]) // string/number/boolean
-                collected.add(tokens[currentPos + 2]) // =
-                var pos = currentPos + 3
-
-                // Buscar la expresión usando el matcher flexible
-                val expressionMatcher = FlexibleExpressionMatcher()
-                val expressionResult = expressionMatcher.match(tokens, pos) ?: return null
-                when (expressionResult) {
-                    is ParseResult.Success -> {
-                        collected.addAll(expressionResult.node)
-                        pos = expressionResult.nextPosition
-                    }
-                    is ParseResult.Failure -> return null
+                // 6) ';' obligatorio
+                if (i < tokens.size &&
+                    tokens[i].type == PunctuationType &&
+                    tokens[i].value == ";"
+                ) {
+                    collected.add(tokens[i])
+                    return ParseResult.Success(collected, i + 1)
                 }
 
-                // Debe terminar con ;
-                if (pos < tokens.size && tokens[pos].type == PunctuationType) {
-                    collected.add(tokens[pos])
-                    return ParseResult.Success(collected, pos + 1)
-                }
                 return null
             }
         }

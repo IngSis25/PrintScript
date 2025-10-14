@@ -22,8 +22,7 @@ data object Formatter {
         val config = Gson().fromJson(json.readText(Charsets.UTF_8), FormatterConfig::class.java)
 
         return if (config.onlyLineBreakAfterStatement) {
-            val s = breakOnlyAfterSemicolons(source)
-            if (s.isNotEmpty() && s.last() == '\n') s.dropLast(1) else s
+            breakOnlyAfterSemicolons(source)
         } else {
             source
         }
@@ -100,8 +99,10 @@ data object Formatter {
                 var j = i + 1
                 // Saltar espacios/tabs posteriores (los preservamos, no los borramos)
                 while (j < source.length && (source[j] == ' ' || source[j] == '\t')) j++
-                // Si no hay salto de línea, lo agregamos
-                if (!(j < source.length && source[j] == '\n')) out.append('\n')
+                // Si no hay salto de línea y no es el final del string, lo agregamos
+                if (!(j < source.length && source[j] == '\n') && j < source.length) {
+                    out.append('\n')
+                }
                 i = j
                 continue
             }
