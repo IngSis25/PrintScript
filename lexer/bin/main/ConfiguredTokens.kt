@@ -50,7 +50,7 @@ object ConfiguredTokens {
             "\\belse\\b" to ElseType,
             "\\breadInput\\b" to ReadInputType, // readInput
             "\\breadEnv\\b" to ReadEnvType, // función readEnv
-            "\\bBoolean\\b" to BooleanType,
+            "\\bBoolean\\b|\\bboolean\\b" to BooleanType,
             "\\btrue\\b|\\bfalse\\b" to LiteralBoolean,
             "\\bconst\\b" to ModifierType, // vale la pena separar el token type de let y const??
             // Palabras clave de V1

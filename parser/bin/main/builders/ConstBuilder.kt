@@ -6,6 +6,7 @@ import org.example.LiteralString
 import org.example.ast.*
 import types.BooleanType
 import types.IdentifierType
+import types.LiteralBoolean
 import types.NumberType
 import types.StringType
 
@@ -63,7 +64,7 @@ class ConstBuilder : NodeBuilder {
                 // Valor simple (literal o identificador)
                 val token = valueTokens[0]
                 when (token.type) {
-                    LiteralString, LiteralNumber -> LiteralNode(token.value, token.type)
+                    LiteralString, LiteralNumber, LiteralBoolean -> LiteralNode(token.value, token.type)
                     IdentifierType -> IdentifierNode(token.value)
                     else -> throw IllegalArgumentException("Tipo de token no soportado: ${token.type}")
                 }
