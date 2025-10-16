@@ -9,3 +9,5 @@ include 'analyzer'
 include 'cli'
 include 'common'
 
+
+include 'parser'
