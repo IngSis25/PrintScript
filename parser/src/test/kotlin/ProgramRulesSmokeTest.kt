@@ -119,7 +119,7 @@ class ProgramRulesSmokeTest {
     @Test
     fun should_find_rule() {
         val code =
-            "const booleanResult: Boolean = true;\n" +
+            "const booleanResult: boolean = true;\n" +
                 "if(booleanResult) {\n" +
                 "    println(\"else statement working correctly\");\n" +
                 "} else {\n" +
