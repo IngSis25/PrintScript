@@ -5,6 +5,7 @@ import org.example.LiteralNumber
 import org.example.LiteralString
 import org.example.ast.*
 import types.IdentifierType
+import types.LiteralBoolean
 import types.NumberType
 import types.StringType
 
@@ -76,6 +77,7 @@ class VariableDeclarationBuilder : NodeBuilder {
         return when (firstValueToken.type) {
             LiteralString -> "string"
             LiteralNumber -> "number"
+            LiteralBoolean -> "boolean"
             IdentifierType -> "unknown" // no podemos inferir el tipo de una variable
             else -> "unknown"
         }
@@ -117,6 +119,7 @@ class VariableDeclarationBuilder : NodeBuilder {
         when (token.type) {
             LiteralString -> LiteralNode(unquote(token.value), LiteralString)
             LiteralNumber -> LiteralNode(token.value, LiteralNumber)
+            LiteralBoolean -> LiteralBooleanNode(token.value.toBoolean())
             IdentifierType -> IdentifierNode(token.value)
             else -> error("Token no válido en expresión: ${token.type}")
         }
