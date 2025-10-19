@@ -58,22 +58,14 @@ class ConstBuilder : NodeBuilder {
         )
     }
 
-    private fun buildValue(valueTokens: List<Token>): ASTNode =
+    rivate fun buildValue(valueTokens: List<Token>): ASTNode =
         when {
             valueTokens.size == 1 -> {
                 // Valor simple (literal o identificador)
                 val token = valueTokens[0]
                 when (token.type) {
                     LiteralString, LiteralNumber -> LiteralNode(token.value, token.type)
-                    LiteralBoolean -> {
-                        val value =
-                            when (token.value) {
-                                "true" -> true
-                                "false" -> false
-                                else -> throw IllegalArgumentException("Invalid boolean literal: ${token.value}")
-                            }
-                        LiteralBooleanNode(value)
-                    }
+                    LiteralBoolean -> LiteralBooleanNode(token.value.toBoolean())
                     IdentifierType -> IdentifierNode(token.value)
                     else -> throw IllegalArgumentException("Tipo de token no soportado: ${token.type}")
                 }

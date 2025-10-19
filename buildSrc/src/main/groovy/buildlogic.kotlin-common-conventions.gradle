@@ -25,7 +25,7 @@ test {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(17)
 }
 
 /** Publicación segura para TODOS los módulos que apliquen este plugin */
