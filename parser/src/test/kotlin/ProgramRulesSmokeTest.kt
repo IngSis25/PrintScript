@@ -4,9 +4,15 @@ import builders.AssignmentBuilder
 import builders.ConstBuilder
 import builders.IfNodeBuilder
 import builders.PrintBuilder
+import factory.LexerFactoryV11
+import factory.ParserFactoryV11
 import main.kotlin.lexer.Token
+import main.kotlin.parser.ConfiguredRules
 import main.kotlin.parser.DefaultParser
+import org.example.DefaultInterpreter
 import org.example.LiteralString
+import org.example.output.Output
+import org.example.strategy.PreConfiguredProviders
 import org.junit.jupiter.api.Test
 import rules.AssignmentRule
 import rules.ConstRule
@@ -20,7 +26,7 @@ import kotlin.test.assertTrue
 
 class ProgramRulesSmokeTest {
     // Include IfRule; builder isn't used by matchNext so a simple parser is fine
-    private fun productionRules() =
+     fun productionRules() =
         listOf(
             ConstRule(ConstBuilder()),
             IfRule(IfNodeBuilder(DefaultParser(RuleMatcher(emptyList())))),
@@ -110,4 +116,34 @@ class ProgramRulesSmokeTest {
         assertNotNull(r3, "No matcheó el println final")
         assertTrue(r3 is main.kotlin.parser.ParseResult.Success, "println final no devolvió Success")
     }
+
+    @Test
+    fun should_find_rule() {
+        val code = "const booleanResult: boolean = true;\n" +
+            "if(booleanResult) {\n" +
+            "    println(\"else statement working correctly\");\n" +
+            "} else {\n" +
+            "    println(\"else statement not working correctly\");\n" +
+            "}\n" +
+            "println(\"outside of conditional\");\n"
+        val lexer = LexerFactoryV11().create()
+        val baseParser = DefaultParser(RuleMatcher(ConfiguredRules.V1))
+        val v11Rules = ConfiguredRules.createV11Rules(baseParser)
+        val v11RuleMatcher = RuleMatcher(v11Rules)
+        val matcher = RuleMatcher(v11Rules)
+        val parser = DefaultParser(matcher)
+        val output = object : Output {
+            override fun write(msg: String) {
+                println(msg)
+            }
+        }
+        val provider = PreConfiguredProviders.VERSION_1_1
+        val interpreter = DefaultInterpreter(output, provider)
+        val tokenized = lexer.tokenize(code)
+        val parsed = parser.parse(tokenized)
+        parsed.forEach {
+            interpreter.interpret(it)
+        }
+    }
+
 }

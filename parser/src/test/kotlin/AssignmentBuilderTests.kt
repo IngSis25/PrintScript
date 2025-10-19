@@ -8,6 +8,7 @@ import org.example.ast.*
 import types.*
 import kotlin.test.*
 
+
 class AssignmentBuilderTests {
     private val assignmentBuilder = AssignmentBuilder()
 
