@@ -19,7 +19,6 @@ object ConfiguredRules {
         listOf(
             // Order matters: more specific rules first
             PrintlnRule(PrintBuilder()),
-            ConstRule(ConstBuilder()),
             VariableDeclarationRule(VariableDeclarationBuilder()),
             AssignmentRule(AssignmentBuilder()),
             ExpressionRule(ExpressionBuilder()),
