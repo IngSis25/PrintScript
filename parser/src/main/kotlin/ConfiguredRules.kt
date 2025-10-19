@@ -46,7 +46,7 @@ object ConfiguredRules {
                     ElseRule(ElseNodeBuilder(conditionParser)),
                     BlockRule(BlockBuilder(conditionParser), RuleMatcher(conditionRules)),
                     LetRule(VariableDeclarationBuilder()),
-                    ConstRule(ConstBuilder()),
+                    // ConstRule is already included in V1, no need to add it again
                 )
 
         return allRules
