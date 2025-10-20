@@ -7,6 +7,7 @@ import matchers.FlexibleExpressionMatcher
 import parser.matchers.Matcher
 import types.AssignmentType
 import types.IdentifierType
+import types.ModifierType
 import types.PunctuationType
 
 /**
@@ -28,7 +29,7 @@ class LetRule(
 
                 // 1) Keyword 'let'
                 val t0 = tokens[i]
-                if (t0.type != IdentifierType || t0.value != "let") return null
+                if (t0.type != ModifierType || t0.value != "let") return null
 
                 val collected = mutableListOf<Token>()
                 collected.add(t0)

@@ -3,7 +3,7 @@ package rules
 import builders.NodeBuilder
 import main.kotlin.lexer.Token
 import main.kotlin.parser.ParseResult
-import matchers.FlexibleExpressionMatcher
+import matchers.ComprehensiveExpressionMatcher
 import parser.matchers.Matcher
 import types.AssignmentType
 import types.BooleanType
@@ -71,7 +71,7 @@ class ConstRule(
                 i++
 
                 // 5) Expresión obligatoria
-                val exprMatcher = FlexibleExpressionMatcher()
+                val exprMatcher = ComprehensiveExpressionMatcher()
                 val exprResult = exprMatcher.match(tokens, i) ?: return null
 
                 when (exprResult) {
