@@ -25,7 +25,7 @@ import kotlin.test.assertTrue
 
 class ProgramRulesSmokeTest {
     // Include IfRule; builder isn't used by matchNext so a simple parser is fine
-    fun productionRules() =
+    private fun productionRules() =
         listOf(
             ConstRule(ConstBuilder()),
             IfRule(IfNodeBuilder(DefaultParser(RuleMatcher(emptyList())))),

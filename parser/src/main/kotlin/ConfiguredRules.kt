@@ -3,20 +3,21 @@ import LiteralBooleanRule
 import builders.AssignmentBuilder
 import builders.BlockBuilder
 import builders.BooleanIdentifierBuilder
+import builders.ConstBuilder
 import builders.ElseNodeBuilder
 import builders.ExpressionBuilder
 import builders.IfNodeBuilder
 import builders.LiteralBooleanBuilder
 import builders.PrintBuilder
+import builders.ReadEnvBuilder
 import builders.VariableDeclarationBuilder
 import rules.*
 import rules.booleanExpressions.BooleanIdentifierRule
 
 object ConfiguredRules {
-    // Versión 1.0 configuración de reglas del parser
+    // Versión 1.0 de las reglas
     val V1: List<ParserRule> =
         listOf(
-            // Order matters: more specific rules first
             PrintlnRule(PrintBuilder()),
             VariableDeclarationRule(VariableDeclarationBuilder()),
             AssignmentRule(AssignmentBuilder()),
@@ -32,7 +33,6 @@ object ConfiguredRules {
                 BooleanIdentifierRule(BooleanIdentifierBuilder()),
             )
 
-        // Crear un parser especializado solo para condiciones (sin reglas de if/else para evitar recursión)
         val conditionRules = V1 + booleanRules
         val conditionParser = DefaultParser(RuleMatcher(conditionRules as List<ParserRule>))
 
@@ -45,7 +45,8 @@ object ConfiguredRules {
                     ElseRule(ElseNodeBuilder(conditionParser)),
                     BlockRule(BlockBuilder(conditionParser), RuleMatcher(conditionRules)),
                     LetRule(VariableDeclarationBuilder()),
-                    // ConstRule is already included in V1, no need to add it again
+                    ReadEnvRule(ReadEnvBuilder()),
+                    ConstRule(ConstBuilder()),
                 )
 
         return allRules
