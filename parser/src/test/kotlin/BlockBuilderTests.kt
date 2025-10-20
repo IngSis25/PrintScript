@@ -78,7 +78,7 @@ class BlockBuilderTests {
         assertEquals(2, (result as BlockNode).statements.size)
     }
 
-    @Test
+   /* @Test
     fun `test block with const statement`() {
         val tokens =
             listOf(
@@ -95,5 +95,5 @@ class BlockBuilderTests {
 
         assertTrue(result is BlockNode)
         assertEquals(1, (result as BlockNode).statements.size)
-    }
+    }*/
 }

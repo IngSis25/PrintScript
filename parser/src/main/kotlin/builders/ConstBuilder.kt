@@ -1,14 +1,15 @@
 package builders
 
+import ast.ReadEnvNode
 import main.kotlin.lexer.Token
 import org.example.LiteralNumber
 import org.example.LiteralString
 import org.example.ast.*
-import ast.ReadEnvNode
 import types.BooleanType
 import types.IdentifierType
 import types.LiteralBoolean
 import types.NumberType
+import types.PunctuationType
 import types.ReadEnvType
 import types.StringType
 
@@ -91,18 +92,19 @@ class ConstBuilder : NodeBuilder {
             }
         }
 
-    private fun isFunctionCall(tokens: List<Token>): Boolean {
-        return tokens.size == 4 &&
-                (tokens[0].type == IdentifierType || tokens[0].type == ReadEnvType) &&
-                tokens[1].type == PunctuationType && tokens[1].value == "(" &&
-                tokens[2].type == StringType &&
-                tokens[3].type == PunctuationType && tokens[3].value == ")"
-    }
+    private fun isFunctionCall(tokens: List<Token>): Boolean =
+        tokens.size == 4 &&
+            (tokens[0].type == IdentifierType || tokens[0].type == ReadEnvType) &&
+            tokens[1].type == PunctuationType &&
+            tokens[1].value == "(" &&
+            tokens[2].type == StringType &&
+            tokens[3].type == PunctuationType &&
+            tokens[3].value == ")"
 
     private fun buildFunctionCall(tokens: List<Token>): ASTNode {
         val functionName = tokens[0].value
         val argToken = tokens[2]
-        
+
         when (functionName) {
             "readEnv" -> {
                 val envName = argToken.value.trim('"')

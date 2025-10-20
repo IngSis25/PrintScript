@@ -66,9 +66,10 @@ class ComprehensiveExpressionMatcher : Matcher<List<Token>> {
         currentPos++
 
         // Debe tener '('
-        if (currentPos >= tokens.size || 
-            tokens[currentPos].type != PunctuationType || 
-            tokens[currentPos].value != "(") {
+        if (currentPos >= tokens.size ||
+            tokens[currentPos].type != PunctuationType ||
+            tokens[currentPos].value != "("
+        ) {
             return null
         }
         collected.add(tokens[currentPos])
@@ -82,9 +83,10 @@ class ComprehensiveExpressionMatcher : Matcher<List<Token>> {
         currentPos++
 
         // Debe tener ')'
-        if (currentPos >= tokens.size || 
-            tokens[currentPos].type != PunctuationType || 
-            tokens[currentPos].value != ")") {
+        if (currentPos >= tokens.size ||
+            tokens[currentPos].type != PunctuationType ||
+            tokens[currentPos].value != ")"
+        ) {
             return null
         }
         collected.add(tokens[currentPos])
