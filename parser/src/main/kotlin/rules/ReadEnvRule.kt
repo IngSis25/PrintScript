@@ -4,8 +4,8 @@ import builders.NodeBuilder
 import main.kotlin.lexer.Token
 import main.kotlin.parser.ParseResult
 import parser.matchers.Matcher
-import types.IdentifierType
 import types.PunctuationType
+import types.ReadEnvType
 import types.StringType
 
 class ReadEnvRule(
@@ -22,9 +22,9 @@ class ReadEnvRule(
 
                 val collected = mutableListOf<Token>()
 
-                // 1) 'readEnv' (tokenizado como Identifier)
+                // 1) 'readEnv' (tokenizado como ReadEnvType)
                 val t0 = tokens[i]
-                if (t0.type != IdentifierType || t0.value != "readEnv") return null
+                if (t0.type != ReadEnvType || t0.value != "readEnv") return null
                 collected.add(t0)
                 i++
 

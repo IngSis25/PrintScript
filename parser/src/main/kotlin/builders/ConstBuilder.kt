@@ -1,6 +1,8 @@
 package builders
 
 import main.kotlin.lexer.Token
+import main.kotlin.parser.ParseResult
+import matchers.ComprehensiveExpressionMatcher
 import org.example.LiteralNumber
 import org.example.LiteralString
 import org.example.ast.*
@@ -60,36 +62,52 @@ class ConstBuilder : NodeBuilder {
         )
     }
 
-    private fun buildValue(valueTokens: List<Token>): ASTNode =
-        when {
-            valueTokens.size == 1 -> {
-                // Valor simple (literal o identificador)
-                val token = valueTokens[0]
-                when (token.type) {
-                    LiteralString, LiteralNumber -> LiteralNode(token.value, token.type)
-                    LiteralBoolean -> {
-                        val value =
-                            when (token.value) {
-                                "true" -> true
-                                "false" -> false
-                                else -> throw IllegalArgumentException("Invalid boolean literal: ${token.value}")
+    private fun buildValue(valueTokens: List<Token>): ASTNode {
+        // Use ComprehensiveExpressionMatcher to parse the expression
+        val matcher = ComprehensiveExpressionMatcher()
+        val result = matcher.match(valueTokens, 0)
+        
+        when (result) {
+            is ParseResult.Success -> {
+                val matchedTokens = result.node
+                when (matchedTokens.size) {
+                    1 -> {
+                        // Valor simple (literal o identificador)
+                        val token = matchedTokens[0]
+                        when (token.type) {
+                            LiteralString, LiteralNumber -> LiteralNode(token.value, token.type)
+                            LiteralBoolean -> {
+                                val value =
+                                    when (token.value) {
+                                        "true" -> true
+                                        "false" -> false
+                                        else -> throw IllegalArgumentException("Invalid boolean literal: ${token.value}")
+                                    }
+                                LiteralBooleanNode(value)
                             }
-                        LiteralBooleanNode(value)
+                            IdentifierType -> IdentifierNode(token.value)
+                            else -> throw IllegalArgumentException("Tipo de token no soportado: ${token.type}")
+                        }
                     }
-                    IdentifierType -> IdentifierNode(token.value)
-                    else -> throw IllegalArgumentException("Tipo de token no soportado: ${token.type}")
+                    4 -> {
+                        // Llamada a función (como readEnv("param"))
+                        buildFunctionCall(matchedTokens)
+                    }
+                    else -> {
+                        // Expresión compleja - usar ExpressionBuilder
+                        val expressionBuilder = ExpressionBuilder()
+                        expressionBuilder.buildNode(matchedTokens)
+                    }
                 }
             }
-            valueTokens.size == 4 && isFunctionCall(valueTokens) -> {
-                // Llamada a función (como readEnv("param"))
-                buildFunctionCall(valueTokens)
+            is ParseResult.Failure -> {
+                throw RuntimeException("No se pudo parsear la expresión: $valueTokens")
             }
-            else -> {
-                // Expresión compleja - usar ExpressionBuilder
-                val expressionBuilder = ExpressionBuilder()
-                expressionBuilder.buildNode(valueTokens)
+            null -> {
+                throw RuntimeException("No se pudo parsear la expresión: $valueTokens")
             }
         }
+    }
 
     private fun isFunctionCall(tokens: List<Token>): Boolean {
         return tokens.size == 4 &&
