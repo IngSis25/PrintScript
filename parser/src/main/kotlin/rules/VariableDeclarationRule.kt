@@ -33,8 +33,9 @@ class VariableDeclarationRule(
             ): ParseResult<List<Token>>? {
                 if (pos + 2 >= tokens.size) return null
 
-                // Debe empezar con let/var
+                // Debe empezar con let/var (no const)
                 if (tokens[pos].type != ModifierType) return null
+                if (tokens[pos].value == "const") return null
 
                 // Debe tener un identificador
                 if (tokens[pos + 1].type != IdentifierType) return null
