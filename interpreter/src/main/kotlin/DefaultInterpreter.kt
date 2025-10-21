@@ -8,6 +8,7 @@ import org.example.util.Services
 class DefaultInterpreter(
     private val output: Output,
     private val provider: StrategyProvider,
+    private val environment: Map<String, String> = emptyMap(),
 ) {
     private var context = mutableMapOf<String, Any?>()
 
@@ -29,6 +30,7 @@ class DefaultInterpreter(
                     }
                     result
                 },
+                environment = environment,
             )
 
         val strategy =

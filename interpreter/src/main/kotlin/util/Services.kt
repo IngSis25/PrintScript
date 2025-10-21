@@ -13,4 +13,5 @@ data class Services(
     val context: Map<String, Any?>,
     val output: Output,
     val visit: (Services, ASTNode) -> Any?,
+    val environment: Map<String, String> = emptyMap(),
 )
