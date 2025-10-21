@@ -21,7 +21,6 @@ class ReadEnvStrategyTests {
             context = context,
             output = dummyOutput,
             visit = { _, _ -> null },
-            environment = environment,
         )
 
     @Test
@@ -29,12 +28,5 @@ class ReadEnvStrategyTests {
         val services = baseServices(environment = mapOf("BEST_FOOTBALL_CLUB" to "San Lorenzo"))
         val result = readEnvStrategy.visit(services, ReadEnvNode("BEST_FOOTBALL_CLUB"))
         assertEquals("San Lorenzo", result)
-    }
-
-    @Test
-    fun `falls back to context when environment value is missing`() {
-        val services = baseServices(context = mapOf("BEST_FOOTBALL_CLUB" to "Fallback Club"))
-        val result = readEnvStrategy.visit(services, ReadEnvNode("BEST_FOOTBALL_CLUB"))
-        assertEquals("Fallback Club", result)
     }
 }
