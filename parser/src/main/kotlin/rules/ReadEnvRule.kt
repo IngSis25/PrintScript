@@ -3,10 +3,11 @@ package rules
 import builders.NodeBuilder
 import main.kotlin.lexer.Token
 import main.kotlin.parser.ParseResult
+import org.example.LiteralString
 import parser.matchers.Matcher
 import types.IdentifierType
 import types.PunctuationType
-import types.StringType
+import types.ReadEnvType
 
 class ReadEnvRule(
     override val builder: NodeBuilder,
@@ -24,7 +25,8 @@ class ReadEnvRule(
 
                 // 1) 'readEnv' (tokenizado como Identifier)
                 val t0 = tokens[i]
-                if (t0.type != IdentifierType || t0.value != "readEnv") return null
+                if (t0.type != IdentifierType && t0.type != ReadEnvType) return null
+                if (t0.value != "readEnv") return null
                 collected.add(t0)
                 i++
 
@@ -39,7 +41,7 @@ class ReadEnvRule(
                 i++
 
                 // 3) STRING_LITERAL (nombre de la variable de entorno)
-                if (i >= tokens.size || tokens[i].type != StringType) return null
+                if (i >= tokens.size || tokens[i].type != LiteralString) return null
                 collected.add(tokens[i])
                 i++
 

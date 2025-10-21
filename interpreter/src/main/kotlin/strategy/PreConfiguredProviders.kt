@@ -17,6 +17,7 @@ object PreConfiguredProviders {
                 this addStrategy ifStrategy
                 this addStrategy literalBooleanStrategy
                 this addStrategy identifierBooleanStrategy
+                this addStrategy readEnvStrategy
             },
         )
 }

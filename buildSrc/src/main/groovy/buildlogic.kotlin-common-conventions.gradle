@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'io.printscript'
-version = '0.1.38-SNAPSHOT'
+version = '0.1.39-SNAPSHOT'
 
 repositories {
     mavenCentral()

@@ -8,7 +8,7 @@ import types.*
 import kotlin.test.*
 
 class ConstBuilderTests {
-    private val constBuilder = ConstBuilder()
+    private var constBuilder = ConstBuilder()
 
     @Test
     fun should_build_const_declaration_with_number() {

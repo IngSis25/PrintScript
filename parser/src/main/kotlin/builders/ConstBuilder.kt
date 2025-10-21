@@ -97,7 +97,7 @@ class ConstBuilder : NodeBuilder {
             (tokens[0].type == IdentifierType || tokens[0].type == ReadEnvType) &&
             tokens[1].type == PunctuationType &&
             tokens[1].value == "(" &&
-            tokens[2].type == StringType &&
+            tokens[2].type == LiteralString &&
             tokens[3].type == PunctuationType &&
             tokens[3].value == ")"
 

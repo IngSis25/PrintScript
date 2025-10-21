@@ -2,8 +2,8 @@ package builders
 
 import ast.ReadEnvNode
 import main.kotlin.lexer.Token
+import org.example.LiteralString
 import org.example.ast.ASTNode
-import types.StringType
 
 class ReadEnvBuilder : NodeBuilder {
     override fun buildNode(matchedTokens: List<Token>): ASTNode {
@@ -27,7 +27,7 @@ class ReadEnvBuilder : NodeBuilder {
 
         // 2: STRING literal
         val argTok = matchedTokens[2]
-        check(argTok.type == StringType) {
+        check(argTok.type == LiteralString) {
             "readEnv espera un literal string, llegó: ${argTok.type} '${argTok.value}'"
         }
 
