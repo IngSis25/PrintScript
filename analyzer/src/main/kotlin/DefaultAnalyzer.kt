@@ -103,6 +103,7 @@ class DefaultAnalyzer : Analyzer {
         listOf(
             IdentifierFormatRule(config.identifierFormat),
             PrintlnRestrictionRule(config.printlnRestrictions),
+            UndeclaredIdentifierRule(),
         )
 
     private fun buildSymbolTable(

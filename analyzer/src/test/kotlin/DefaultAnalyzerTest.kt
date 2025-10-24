@@ -20,8 +20,9 @@ class DefaultAnalyzerTest {
                     varType = "NUMBER",
                     value = LiteralNode("42", LiteralNumber),
                 ),
-                AssignmentNode(
+                VariableDeclarationNode(
                     identifier = IdentifierNode("anotherVariable"),
+                    varType = "STRING",
                     value = LiteralNode("hello", LiteralString),
                 ),
             )
