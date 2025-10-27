@@ -35,7 +35,6 @@ class Runner(
             else -> error("Versión de PrintScript no soportada: $version")
         }
 
-    /** Intenta parsear el programa completo y devuelve errores de sintaxis si los hay. */
     fun validate(): RunnerResult.Validate =
         try {
             parser.parse(tokens)
@@ -44,10 +43,6 @@ class Runner(
             RunnerResult.Validate(errors = listOf(e.message ?: "Syntax error"))
         }
 
-    /**
-     * Analiza estáticamente (linter/analyzer).
-     * Recibe tu AnalyzerConfig (con reglas como camel/snake y println restriction).
-     */
     fun analyze(config: AnalyzerConfig): RunnerResult.Analyze {
         val warnings = mutableListOf<String>()
         val errors = mutableListOf<String>()
@@ -78,10 +73,6 @@ class Runner(
         return RunnerResult.Analyze(warnings = warnings, errors = errors)
     }
 
-    /**
-     * Formatea usando tu visitor y configuración en archivo JSON (FormatterConfig).
-     * Si preferís el modo "simple" de cortar por ';', usá Formatter.formatSource(sourceCode, jsonFile).
-     */
     fun format(jsonConfigFile: File): RunnerResult.Format {
         val errors = mutableListOf<String>()
 
