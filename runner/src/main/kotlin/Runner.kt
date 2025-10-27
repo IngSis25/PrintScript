@@ -1,96 +1,135 @@
 package runner
 
 import factory.LexerFactoryRegistry
-import main.kotlin.analyzer.AnalyzerConfig
+import factory.ParserFactoryRegistry
+import kotlinx.serialization.json.JsonObject
+import main.kotlin.analyzer.ConfigLoader
 import main.kotlin.analyzer.DefaultAnalyzer
-import main.kotlin.analyzer.Diagnostic
 import main.kotlin.analyzer.DiagnosticSeverity
 import main.kotlin.lexer.Lexer
-import main.kotlin.parser.ConfiguredRules
+import main.kotlin.lexer.Token
 import main.kotlin.parser.DefaultParser
-import org.example.ast.ASTNode
+import org.example.DefaultInterpreter
 import org.example.formatter.Formatter
-import rules.RuleMatcher
+import org.example.output.Output
+import org.example.strategy.PreConfiguredProviders
+import runner.RunnerResult.Analyze
+import runner.RunnerResult.Format
+import runner.RunnerResult.Validate
 import java.io.File
+import java.io.Reader
+import kotlin.io.path.createTempFile
+import kotlin.io.readText
 
 class Runner(
     private val version: String,
-    private val sourceCode: String,
+    reader: Reader,
 ) {
-    private val lexer: Lexer = LexerFactoryRegistry.getFactory(version).create()
-    private val tokens = lexer.tokenize(sourceCode)
+    private val sourceCode: String = reader.readText()
+    private val lexer: Lexer
+    private val parser: DefaultParser
+    private val analyzer = DefaultAnalyzer()
+    private val formatter = Formatter
+    private val tokens: List<Token>
 
-    // Parser según versión de lenguaje
-    private val parser: DefaultParser =
-        when (version) {
-            "1.0" -> {
-                val rules = ConfiguredRules.V1
-                DefaultParser(RuleMatcher(rules))
+    init {
+        val lexerFactory = LexerFactoryRegistry.getFactory(version)
+        val parserFactory = ParserFactoryRegistry.getFactory(version)
+
+        lexer = lexerFactory.create()
+        parser = parserFactory.create()
+        tokens = lexer.tokenize(sourceCode)
+    }
+
+    fun execute(output: Output) {
+        val provider =
+            when (version) {
+                "1.0" -> PreConfiguredProviders.VERSION_1_0
+                "1.1" -> PreConfiguredProviders.VERSION_1_1
+                else -> error("Unsupported version: $version")
             }
-            "1.1" -> {
-                val dummy = DefaultParser(RuleMatcher(emptyList()))
-                val rules = ConfiguredRules.createV11Rules(dummy)
-                DefaultParser(RuleMatcher(rules))
-            }
-            else -> error("Versión de PrintScript no soportada: $version")
-        }
 
-    fun validate(): RunnerResult.Validate =
-        try {
-            parser.parse(tokens)
-            RunnerResult.Validate(errors = emptyList())
-        } catch (e: Exception) {
-            RunnerResult.Validate(errors = listOf(e.message ?: "Syntax error"))
-        }
+        val interpreter = DefaultInterpreter(output, provider)
+        parser.parse(tokens).forEach(interpreter::interpret)
+    }
 
-    fun analyze(config: AnalyzerConfig): RunnerResult.Analyze {
-        val warnings = mutableListOf<String>()
-        val errors = mutableListOf<String>()
-
-        val ast: List<ASTNode> =
+    fun analyze(jsonFile: JsonObject): Analyze {
+        val analyzerConfig =
             try {
-                parser.parse(tokens)
+                ConfigLoader.loadFromJsonString(jsonFile.toString())
             } catch (e: Exception) {
-                // Si la sintaxis falla, lo reportamos como error y salimos.
-                return RunnerResult.Analyze(
+                return Analyze(
                     warnings = emptyList(),
-                    errors = listOf("Syntax error: ${e.message ?: "unknown"}"),
+                    errors = listOf(e.message ?: "Invalid analyzer configuration"),
                 )
             }
 
-        val analyzer = DefaultAnalyzer()
-        val result = analyzer.analyze(ast, config)
-
-        // Mapeo simple de diagnostics → warnings/errors en texto
-        result.diagnostics.forEach { d: Diagnostic ->
-            when (d.severity) {
-                DiagnosticSeverity.WARNING -> warnings += d.message
-                DiagnosticSeverity.ERROR -> errors += d.message
-                else -> {}
-            }
-        }
-
-        return RunnerResult.Analyze(warnings = warnings, errors = errors)
-    }
-
-    fun format(jsonConfigFile: File): RunnerResult.Format {
-        val errors = mutableListOf<String>()
-
-        val ast: List<ASTNode> =
+        val ast =
             try {
                 parser.parse(tokens)
             } catch (e: Exception) {
-                return RunnerResult.Format(formattedCode = "", errors = listOf("Syntax error: ${e.message}"))
+                return Analyze(
+                    warnings = emptyList(),
+                    errors = listOf(e.message ?: "Syntax error"),
+                )
+            }
+
+        val diagnostics = analyzer.analyze(ast, analyzerConfig).diagnostics
+        val warnings = diagnostics.filter { it.severity == DiagnosticSeverity.WARNING }.map { it.message }
+        val errors = diagnostics.filter { it.severity == DiagnosticSeverity.ERROR }.map { it.message }
+
+        return Analyze(warnings, errors)
+    }
+
+    fun format(json: String, version: String): Format {
+        if (version != this.version) {
+            return Format(
+                formattedCode = "",
+                errors = listOf("Formatter version mismatch: expected ${this.version} but got $version"),
+            )
+        }
+
+        val ast =
+            try {
+                parser.parse(tokens)
+            } catch (e: Exception) {
+                return Format(
+                    formattedCode = "",
+                    errors = listOf(e.message ?: "Syntax error"),
+                )
+            }
+
+        val existingConfigFile = File(json)
+        val (configFile, tempFile) =
+            if (existingConfigFile.exists() && existingConfigFile.isFile) {
+                existingConfigFile to null
+            } else {
+                val temp = createTempFile(prefix = "formatter-config-", suffix = ".json").toFile()
+                temp.writeText(json)
+                temp.deleteOnExit()
+                temp to temp
             }
 
         val formatted =
             try {
-                Formatter.formatMultiple(ast, jsonConfigFile)
+                formatter.formatMultiple(ast, configFile)
             } catch (e: Exception) {
-                errors += "Formatter error: ${e.message}"
-                ""
+                tempFile?.delete()
+                return Format(
+                    formattedCode = "",
+                    errors = listOf(e.message ?: "Formatter error"),
+                )
             }
 
-        return RunnerResult.Format(formattedCode = formatted, errors = errors)
+        tempFile?.delete()
+        return Format(formattedCode = formatted, errors = emptyList())
     }
+
+    fun validate(): Validate =
+        try {
+            parser.parse(tokens)
+            Validate(errors = emptyList())
+        } catch (e: Exception) {
+            Validate(errors = listOf(e.message ?: "Unknown error"))
+        }
 }

@@ -1,10 +1,14 @@
 package runner
 
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
+import kotlinx.serialization.json.putJsonObject
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
+import java.io.StringReader
 import java.nio.file.Path
 
 class RunnerTests {
@@ -20,7 +24,7 @@ class RunnerTests {
         val runner =
             Runner(
                 version = "1.0",
-                sourceCode = code,
+                reader = StringReader(code),
             )
 
         val result = runner.validate()
@@ -41,17 +45,14 @@ class RunnerTests {
             let x:number=1; let y: number=2; println(x + y);
             """.trimIndent()
 
-        // Armamos el runner y validamos que parsee
         val runner =
             Runner(
                 version = "1.0",
-                sourceCode = code,
+                reader = StringReader(code),
             )
         val validate = runner.validate()
         assertTrue(validate.errors.isEmpty(), "El código base debe ser válido antes de formatear")
 
-        // Config mínima del formatter (ajustá si tu schema difiere)
-        // Esta bandera la mencionaste en tu suite previa: onlyLineBreakAfterStatement
         val formatterConfig =
             """
             {
@@ -64,26 +65,60 @@ class RunnerTests {
                 writeText(formatterConfig)
             }
 
-        val formatted = runner.format(configFile)
+        val formatted = runner.format(configFile.absolutePath, "1.0")
 
-        // Afirmaciones:
-        // 1) No debería haber errores del formatter
         assertTrue(formatted.errors.isEmpty(), "El formateo no debería fallar: ${formatted.errors}")
 
-        // 2) El código debería tener saltos de línea tras ';'
-        //    No nos casamos con el estilo exacto, pero al menos esperamos más de una línea.
         val lines = formatted.formattedCode.lines()
         assertTrue(
             lines.size >= 2,
             "Se esperaban múltiples líneas después del formateo. Fue:\n${formatted.formattedCode}",
         )
 
-        // 3) Sugerencia adicional: que siga conteniendo las tres sentencias
         assertTrue(
             formatted.formattedCode.contains("let x") &&
                 formatted.formattedCode.contains("let y") &&
                 formatted.formattedCode.contains("println"),
             "El formateo no debería eliminar sentencias. Fue:\n${formatted.formattedCode}",
+        )
+    }
+
+    @Test
+    @DisplayName("analyze(): usa configuración JSON y detecta identificadores inválidos")
+    fun analyze_uses_json_configuration() {
+        val code =
+            """
+            let InvalidName: number = 1;
+            println(InvalidName);
+            """.trimIndent()
+
+        val runner =
+            Runner(
+                version = "1.0",
+                reader = StringReader(code),
+            )
+
+        val config =
+            buildJsonObject {
+                putJsonObject("identifierFormat") {
+                    put("enabled", true)
+                    put("format", "CAMEL_CASE")
+                }
+                putJsonObject("printlnRestrictions") {
+                    put("enabled", true)
+                    put("allowOnlyIdentifiersAndLiterals", true)
+                }
+                put("maxErrors", 5)
+                put("enableWarnings", true)
+                put("strictMode", false)
+            }
+
+        val result = runner.analyze(config)
+
+        assertTrue(result.errors.isNotEmpty(), "La configuración JSON debería activar el análisis y reportar errores")
+        assertTrue(
+            result.errors.any { it.contains("Variable name") || it.contains("Identifier") },
+            "Se esperaba un error relacionado con el formato del identificador, pero fueron: ${result.errors}",
         )
     }
 }
