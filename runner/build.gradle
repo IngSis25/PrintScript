@@ -1,0 +1,13 @@
+plugins {
+    id 'buildlogic.kotlin-library-conventions'
+}
+
+dependencies {
+    implementation project(':common')
+    implementation project(':lexer')
+    implementation project(':parser')
+    implementation project(':interpreter')
+    implementation project(':analyzer')
+    implementation project(':formatter')
+    testImplementation "org.jetbrains.kotlin:kotlin-test:2.2.0"
+}
