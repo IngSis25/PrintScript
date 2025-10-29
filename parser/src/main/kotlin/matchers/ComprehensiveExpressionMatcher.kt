@@ -2,8 +2,6 @@ package matchers
 
 import main.kotlin.lexer.Token
 import main.kotlin.parser.ParseResult
-import org.example.LiteralNumber
-import org.example.LiteralString
 import parser.matchers.Matcher
 import types.IdentifierType
 import types.LiteralBoolean

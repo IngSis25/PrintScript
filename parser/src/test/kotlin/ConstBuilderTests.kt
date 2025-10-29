@@ -2,7 +2,6 @@ package test.parserTest
 
 import builders.ConstBuilder
 import main.kotlin.lexer.*
-import org.example.LiteralNumber
 import org.example.ast.*
 import types.*
 import kotlin.test.*

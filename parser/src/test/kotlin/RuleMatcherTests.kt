@@ -4,8 +4,6 @@ import builders.ExpressionBuilder
 import builders.PrintBuilder
 import main.kotlin.lexer.*
 import main.kotlin.parser.ParseResult
-import org.example.LiteralNumber
-import org.example.LiteralString
 import rules.ExpressionRule
 import rules.PrintlnRule
 import rules.RuleMatcher

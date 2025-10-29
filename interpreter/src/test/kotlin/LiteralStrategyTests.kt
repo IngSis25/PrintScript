@@ -1,6 +1,5 @@
 package test.interpreterTest
 
-import org.example.TokenType
 import org.example.ast.LiteralNode
 import org.example.output.Output
 import org.example.strategy.literalStrategy

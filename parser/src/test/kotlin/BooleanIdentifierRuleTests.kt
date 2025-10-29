@@ -3,8 +3,6 @@ package test.parserTest
 import builders.ExpressionBuilder
 import main.kotlin.lexer.*
 import main.kotlin.parser.ParseResult
-import org.example.LiteralNumber
-import org.example.LiteralString
 import rules.booleanExpressions.BooleanIdentifierRule
 import types.*
 import kotlin.test.*

@@ -9,7 +9,6 @@ import main.kotlin.lexer.Token
 import main.kotlin.parser.ConfiguredRules
 import main.kotlin.parser.DefaultParser
 import org.example.DefaultInterpreter
-import org.example.LiteralString
 import org.example.output.Output
 import org.example.strategy.PreConfiguredProviders
 import org.junit.jupiter.api.Test

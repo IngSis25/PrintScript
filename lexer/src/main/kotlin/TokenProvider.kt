@@ -1,26 +1,6 @@
 package main.kotlin.lexer
 
-import org.example.TokenType
-
-class TokenProvider(
-    private val rules: List<TokenRule>,
-) {
-    fun rules(): List<TokenRule> = rules
-
-    companion object {
-        fun fromRules(rules: List<TokenRule>): TokenProvider = TokenProvider(rules)
-
-        fun fromMap(tokenMap: Map<String, TokenType>): TokenProvider {
-            val listaToken =
-                tokenMap.map { (regex, type) ->
-                    val regexConG = if (regex.startsWith("\\G")) regex else "\\G$regex"
-                    val compiled = Regex(regexConG) // para sepan Regex es de kotlin , es string a objeto Regex.
-                    TokenRule(pattern = compiled, type = type)
-                }
-            return TokenProvider(listaToken)
-        }
-    }
-}
+class TokenProvider
 
 /*
 Flujo:

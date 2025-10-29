@@ -2,7 +2,6 @@ package matchers
 
 import main.kotlin.lexer.Token
 import main.kotlin.parser.ParseResult
-import org.example.TokenType
 import parser.matchers.Matcher
 
 class TokenMatcher(

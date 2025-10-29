@@ -3,7 +3,6 @@ package test.parserTest
 import builders.PrintBuilder
 import main.kotlin.lexer.*
 import main.kotlin.parser.DefaultParser
-import org.example.LiteralNumber
 import rules.PrintlnRule
 import rules.RuleMatcher
 import types.IdentifierType

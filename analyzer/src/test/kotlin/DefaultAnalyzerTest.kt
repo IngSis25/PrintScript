@@ -1,8 +1,6 @@
 package org.example
 
 import main.kotlin.analyzer.*
-import org.example.LiteralNumber
-import org.example.LiteralString
 import org.example.ast.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
