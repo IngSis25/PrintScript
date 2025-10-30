@@ -1,10 +1,10 @@
 package main.kotlin.lexer
+
 class TokenFactory {
-    fun createLexiconV10(): TokenResolver {
-        return TokenResolver(
+    fun createLexerV10(): TokenResolver =
+        TokenResolver(
             listOf(
                 "let" to "DeclarationToken",
-
                 "=" to "AssignationToken",
                 ";" to "SemicolonToken",
                 ":" to "ColonToken",
@@ -14,27 +14,22 @@ class TokenFactory {
                 "/" to "DivisionToken",
                 "\\(" to "OpenParenthesisToken",
                 "\\)" to "CloseParenthesisToken",
-
                 "println" to "PrintToken",
                 "number" to "TypeToken",
                 "string" to "TypeToken",
-
                 "[0-9]+" to "NumberToken",
                 "[0-9]+\\.[0-9]+" to "NumberToken",
                 "\".*\"" to "StringToken",
                 "\'.*\'" to "StringToken",
-
-                "[a-zA-Z_][a-zA-Z0-9_]*" to "IdentifierToken"
-            )
+                "[a-zA-Z_][a-zA-Z0-9_]*" to "IdentifierToken",
+            ),
         )
-    }
 
-    fun createLexiconV11(): TokenResolver {
-        return TokenResolver(
+    fun createLexerV11(): TokenResolver =
+        TokenResolver(
             listOf(
                 "let" to "DeclarationToken",
                 "const" to "DeclarationToken",
-
                 "=" to "AssignationToken",
                 ";" to "SemicolonToken",
                 ":" to "ColonToken",
@@ -46,27 +41,21 @@ class TokenFactory {
                 "\\)" to "CloseParenthesisToken",
                 "\\{" to "OpenBraceToken",
                 "\\}" to "CloseBraceToken",
-
                 "println" to "PrintToken",
                 "if" to "IfToken",
                 "else" to "ElseToken",
                 "readInput" to "ReadInputToken",
                 "readEnv" to "ReadEnvironmentToken",
-
                 "number" to "TypeToken",
                 "string" to "TypeToken",
                 "boolean" to "TypeToken",
-
                 "true" to "BooleanToken",
                 "false" to "BooleanToken",
                 "[0-9]+" to "NumberToken",
                 "[0-9]+\\.[0-9]+" to "NumberToken",
                 "\".*\"" to "StringToken",
                 "\'.*\'" to "StringToken",
-
-                "[a-zA-Z_][a-zA-Z0-9_]*" to "IdentifierToken"
-            )
+                "[a-zA-Z_][a-zA-Z0-9_]*" to "IdentifierToken",
+            ),
         )
-    }
 }
-
