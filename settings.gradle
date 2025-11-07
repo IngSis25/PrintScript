@@ -1,11 +1,9 @@
 
 
 rootProject.name = 'PrintScript'
-include 'parser'
+
 include 'lexer'
-include 'interpreter'
-include 'formatter'
-include 'analyzer'
-include 'cli'
+
+
+
 include 'common'
-include 'runner'

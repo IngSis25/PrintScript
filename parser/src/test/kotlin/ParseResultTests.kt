@@ -1,7 +1,6 @@
 package test.parserTest
 
 import main.kotlin.parser.ParseResult
-import org.example.LiteralNumber
 import org.example.ast.LiteralNode
 import kotlin.test.*
 

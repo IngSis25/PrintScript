@@ -3,7 +3,6 @@ package rules
 import builders.NodeBuilder
 import matchers.SequenceMatcher
 import matchers.TokenMatcher
-import org.example.LiteralNumber
 import types.OperatorType
 
 class ExpressionRule(
