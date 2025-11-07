@@ -1,6 +1,6 @@
 package main.kotlin.lexer
 
-import lexer.Location
+import org.example.Lexer.Location
 import org.example.Lexer.Token
 // esto va adevolver un token , desde un "let" y su ubicacion
 

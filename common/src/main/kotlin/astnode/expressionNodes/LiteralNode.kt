@@ -1,6 +1,6 @@
 package org.example.astnode.expressionNodes
 
-import lexer.Location
+import org.example.Lexer.Location
 import org.example.astnode.astNodeVisitor.ASTNodeVisitor
 import org.example.astnode.astNodeVisitor.VisitorResult
 

@@ -1,7 +1,5 @@
 package org.example.Lexer
 
-import lexer.Location
-
 class Token(
     val type: String,
     val value: String,

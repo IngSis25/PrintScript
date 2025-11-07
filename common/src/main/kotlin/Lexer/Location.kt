@@ -1,4 +1,4 @@
-package lexer
+package org.example.Lexer
 
 class Location(
     private val line: Int,
