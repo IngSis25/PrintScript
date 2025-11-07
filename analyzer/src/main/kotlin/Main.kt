@@ -1,7 +1,5 @@
 package main.kotlin.analyzer
 
-import org.example.LiteralNumber
-import org.example.LiteralString
 import org.example.ast.*
 import java.io.File
 

@@ -1,6 +1,5 @@
 package org.example.formatter
 
-import org.example.LiteralString
 import org.example.ast.*
 import org.example.formatter.config.FormatterConfig
 
