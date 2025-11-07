@@ -22,7 +22,7 @@ sealed class LiteralValue {
     data class StringValue(
         val value: String,
     ) : LiteralValue() {
-        override fun getType(): String = "String"
+        override fun getType(): String = "string"
 
         override fun toString(): String = value
     }
@@ -30,7 +30,7 @@ sealed class LiteralValue {
     data class NumberValue(
         val value: Number,
     ) : LiteralValue() {
-        override fun getType(): String = "Number"
+        override fun getType(): String = "number"
 
         override fun toString(): String = value.toString()
     }
