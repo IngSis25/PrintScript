@@ -7,3 +7,7 @@ include 'lexer'
 
 
 include 'common'
+
+include 'parser'
+
+include 'interpreter'

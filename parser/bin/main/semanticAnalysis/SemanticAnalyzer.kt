@@ -1,0 +1,17 @@
+package semanticAnalysis
+
+import org.example.astnode.ASTNode
+import semanticAnalysis.check.SemanticCheck
+
+class SemanticAnalyzer(
+    private val checks: List<SemanticCheck>,
+) {
+    private val semanticVisitor: SemanticVisitor = SemanticVisitor()
+
+    fun analyze(node: ASTNode) {
+        for (check in checks) {
+            check.check(node, semanticVisitor.symbolTable)
+        }
+        semanticVisitor.visit(node)
+    }
+}

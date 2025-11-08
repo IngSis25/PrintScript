@@ -1,6 +1,6 @@
 package org.example.builder
 
-import org.example.ast.ASTNode
+import org.example.astnode.ASTNode
 import org.example.strategy.Strategy
 import org.example.strategy.StrategyProvider
 
@@ -25,9 +25,4 @@ class StrategyProviderBuilder {
 
     /** Construye el StrategyProvider con todas las strategies registradas */
     fun build(): StrategyProvider = StrategyProvider implementation strategies
-
-    fun hola(assignmentStrategy: Strategy<org.example.ast.AssignmentNode>) {
-        addStrategy(org.example.ast.AssignmentNode::class.java, assignmentStrategy)
-        this addStrategy assignmentStrategy
-    }
 }

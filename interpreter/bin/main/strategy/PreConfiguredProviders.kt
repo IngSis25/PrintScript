@@ -8,15 +8,17 @@ object PreConfiguredProviders {
             this addStrategy variableDeclarationStrategy
             this addStrategy assignmentStrategy
             this addStrategy binaryExpressionStrategy
-            this addStrategy printlnStrategy
+            this addStrategy printStatementStrategy
         }
 
     val VERSION_1_1 =
         VERSION_1_0.plus(
             StrategyProvider builder {
                 this addStrategy ifStrategy
-                this addStrategy literalBooleanStrategy
-                this addStrategy identifierBooleanStrategy
+                this addStrategy completeIfStrategy
+                this addStrategy booleanExpressionStrategy
+                this addStrategy readEnvStrategy
+                this addStrategy readInputStrategy
             },
         )
 }

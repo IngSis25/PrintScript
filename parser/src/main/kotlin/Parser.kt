@@ -1,7 +1,7 @@
 package org
 
 import ASTGenerator
-import lexer.Location
+import org.example.Lexer.Location
 import org.example.Lexer.Token
 import org.example.astnode.ASTNode
 import org.example.astnode.ProgramNode

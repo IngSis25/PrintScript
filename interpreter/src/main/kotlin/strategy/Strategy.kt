@@ -1,6 +1,6 @@
 package org.example.strategy
 
-import org.example.ast.ASTNode
+import org.example.astnode.ASTNode
 import org.example.util.Services
 
 // interfaz funcional = a solo metodo abstracto
