@@ -1,5 +1,6 @@
 package org.example.strategy
-import org.example.ast.AssignmentNode
+
+import org.example.astnode.statamentNode.AssignmentNode
 import org.example.strategy.Strategy
 import org.example.util.Services
 
@@ -8,11 +9,11 @@ val assignmentStrategy =
         val varName = node.identifier.name
 
         when {
-            // 1) si la variable no existe → error
+            // 1) Si la variable no existe → error
             !services.context.containsKey(varName) ->
                 throw RuntimeException("Variable $varName no declarada")
 
-            // 2)  evaluamos RHS y devolvemos NUEVO Services con contexto actualizado
+            // 2) Evaluamos RHS y devolvemos NUEVO Services con contexto actualizado
             else -> {
                 val newValue = services.visit(services, node.value)
                 val newContext = services.context.toMutableMap().apply { this[varName] = newValue }

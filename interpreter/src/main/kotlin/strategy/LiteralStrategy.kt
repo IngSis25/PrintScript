@@ -1,24 +1,17 @@
 package org.example.strategy
 
-import org.example.ast.LiteralNode
+import org.example.astnode.expressionNodes.LiteralNode
+import org.example.astnode.expressionNodes.LiteralValue
 
 val literalStrategy =
     Strategy<LiteralNode> { _, node ->
-        val raw = node.value
-
-        when {
-            // string con comillas
-            raw.length >= 2 &&
-                (
-                    (raw.first() == '"' && raw.last() == '"') ||
-                        (raw.first() == '\'' && raw.last() == '\'')
-                ) ->
-                raw.substring(1, raw.length - 1)
-
-            // número
-            raw.toDoubleOrNull() != null -> raw.toDouble()
-
-            // default: string crudo
-            else -> raw
+        when (val value = node.value) {
+            is LiteralValue.StringValue -> value.value
+            is LiteralValue.NumberValue -> value.value.toDouble()
+            is LiteralValue.BooleanValue -> value.value
+            is LiteralValue.NullValue -> null
+            is LiteralValue.PromiseValue -> throw UnsupportedOperationException(
+                "PromiseValue not yet supported in interpreter",
+            )
         }
     }

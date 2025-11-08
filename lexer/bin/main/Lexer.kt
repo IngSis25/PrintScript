@@ -1,6 +1,6 @@
 package main.kotlin.lexer
 
-import lexer.Location
+import org.example.Lexer.Location
 import org.example.Lexer.Token
 import org.example.iterator.PrintScriptIterator
 import java.io.Reader
