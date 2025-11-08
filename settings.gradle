@@ -11,3 +11,4 @@ include 'common'
 include 'parser'
 
 include 'interpreter'
+include 'cli'

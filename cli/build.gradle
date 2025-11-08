@@ -11,9 +11,9 @@ dependencies {
     implementation(project(":lexer"))
     implementation(project(":parser"))
     implementation(project(":interpreter"))
-    implementation(project(":formatter"))
+//    implementation(project(":formatter"))
     implementation(project(":common"))
-    implementation(project(":analyzer"))
+//    implementation(project(":analyzer"))
     testImplementation "org.jetbrains.kotlin:kotlin-test:2.2.0"
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
     testImplementation("com.github.ajalt.clikt:clikt:4.2.0")
