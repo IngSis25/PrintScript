@@ -1,3 +1,5 @@
+package main.kotlin.cli
+
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.subcommands
 import org.Format

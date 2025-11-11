@@ -1,0 +1,167 @@
+@startuml
+skinparam style strictuml
+skinparam classAttributeIconVisibility false
+
+package "interpreter" {
+  interface "PrintScriptIterator<T>" as PrintScriptIterator
+
+  class Interpreter {
+    -output: Output
+    -input: Input
+    -provider: StrategyProvider
+    -context: MutableMap<String, Any>
+    +interpret(astNodeIterator: PrintScriptIterator) : void
+  }
+  Interpreter ..> Output
+  Interpreter ..> Input
+  Interpreter ..> StrategyProvider
+  Interpreter o--> Services : crea
+  Interpreter ..> PrintScriptIterator
+  Interpreter ..> ASTNode
+
+  class InterpreterFactory <<singleton>> {
+    +createInterpreterVersion10(output: Output, input: Input) : Interpreter
+    +createInterpreterVersion11(output: Output, input: Input) : Interpreter
+  }
+  InterpreterFactory ..> Interpreter
+  InterpreterFactory ..> Output
+  InterpreterFactory ..> Input
+  InterpreterFactory ..> ConsoleInput
+  InterpreterFactory ..> PreConfiguredProviders
+
+  class Services {
+    +context: Map<String, Any>
+    +output: Output
+    +input: Input
+  }
+  Services ..> Output
+  Services ..> Input
+
+  interface Input {
+    +read(message: String): String
+  }
+  class ConsoleInput
+  Input <|.. ConsoleInput
+
+  interface Output {
+    +write(msg: String) : void
+  }
+  class ConsoleOutput
+  Output <|.. ConsoleOutput
+
+  class Environment <<singleton>> {
+    -globalVariables: Map<String, Any>
+    +getGlobalVariable(name: String): Any
+    +hasGlobalVariable(name: String): Boolean
+  }
+
+  ' Stubs necesarios para strictuml
+  class ASTNode
+  class Any
+  class Map
+  class MutableMap
+  class Class
+}
+
+package "strategy" {
+  interface Strategy {
+    +visit(services: Services, node: ASTNode) : Any
+  }
+
+  interface StrategyProvider {
+    +getStrategyFor(node: ASTNode) : Strategy
+    +plus(other: StrategyProvider) : StrategyProvider
+  }
+  StrategyProvider ..> Strategy
+  StrategyProvider ..> StrategyProviderBuilder
+
+  class StrategyProviderBuilder {
+    -strategies: Map<Class, Strategy>
+    +addStrategy(nodeType: Class, strategy: Strategy) : StrategyProviderBuilder
+    +build() : StrategyProvider
+  }
+  StrategyProviderBuilder ..> StrategyProvider
+  StrategyProviderBuilder ..> Strategy
+  StrategyProviderBuilder ..> Class
+  StrategyProviderBuilder ..> Map
+
+  class PreConfiguredProviders <<singleton>> {
+    +VERSION_1_0: StrategyProvider
+    +VERSION_1_1: StrategyProvider
+  }
+  PreConfiguredProviders ..> StrategyProvider
+
+  ' Estrategias concretas (como clases)
+  class LiteralStrategy
+  class IdentifierStrategy
+  class VariableDeclarationStrategy
+  class AssignmentStrategy
+  class BinaryExpressionStrategy
+  class PrintStatementStrategy
+  class IfStrategy
+  class CompleteIfStrategy
+  class BooleanExpressionStrategy
+  class ReadEnvStrategy
+  class ReadInputStrategy
+
+  ' Implementan Strategy
+  Strategy <|.. LiteralStrategy
+  Strategy <|.. IdentifierStrategy
+  Strategy <|.. VariableDeclarationStrategy
+  Strategy <|.. AssignmentStrategy
+  Strategy <|.. BinaryExpressionStrategy
+  Strategy <|.. PrintStatementStrategy
+  Strategy <|.. IfStrategy
+  Strategy <|.. CompleteIfStrategy
+  Strategy <|.. BooleanExpressionStrategy
+  Strategy <|.. ReadEnvStrategy
+  Strategy <|.. ReadInputStrategy
+
+  ' Tipos de nodos (stubs)
+  class LiteralNode
+  class IdentifierNode
+  class VariableDeclarationNode
+  class AssignmentNode
+  class BinaryExpressionNode
+  class PrintStatementNode
+  class IfNode
+  class CompleteIfNode
+  class BooleanExpressionNode
+  class ReadEnvNode
+  class ReadInputNode
+
+  ASTNode <|-- LiteralNode
+  ASTNode <|-- IdentifierNode
+  ASTNode <|-- VariableDeclarationNode
+  ASTNode <|-- AssignmentNode
+  ASTNode <|-- BinaryExpressionNode
+  ASTNode <|-- PrintStatementNode
+  ASTNode <|-- IfNode
+  ASTNode <|-- CompleteIfNode
+  ASTNode <|-- BooleanExpressionNode
+  ASTNode <|-- ReadEnvNode
+  ASTNode <|-- ReadInputNode
+
+  ' Asociaciones estrategia ↔ nodo
+  LiteralStrategy ..> LiteralNode
+  IdentifierStrategy ..> IdentifierNode
+  VariableDeclarationStrategy ..> VariableDeclarationNode
+  AssignmentStrategy ..> AssignmentNode
+  BinaryExpressionStrategy ..> BinaryExpressionNode
+  PrintStatementStrategy ..> PrintStatementNode
+  IfStrategy ..> IfNode
+  CompleteIfStrategy ..> CompleteIfNode
+  BooleanExpressionStrategy ..> BooleanExpressionNode
+  ReadEnvStrategy ..> ReadEnvNode
+  ReadInputStrategy ..> ReadInputNode
+}
+
+note right of Interpreter
+  Itera un PrintScriptIterator de ASTNode.
+  Para cada nodo, pide la Strategy al Provider,
+  ejecuta visit(...) y actualiza el contexto
+  vía Services (I/O y variables).
+end note
+
+
+@enduml

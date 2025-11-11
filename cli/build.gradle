@@ -3,7 +3,7 @@ plugins {
 }
 
 application {
-    mainClass = 'main.kotlin.cli.MainKt'
+    mainClass = 'main.kotlin.cli.CommandLineInterfaceKt'
 }
 
 dependencies {

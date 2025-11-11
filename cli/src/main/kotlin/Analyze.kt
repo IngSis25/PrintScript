@@ -1,5 +1,10 @@
+package main.kotlin.cli
+
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.types.choice
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import main.kotlin.analyzer.AnalyzerConfig
@@ -14,6 +19,11 @@ import java.io.StringReader
 class Analyze : CliktCommand() {
     private val filePath by argument(help = "Path to the script file to execute")
     private val rulePath by argument(help = "Path to the rule json to use")
+    private val version by option(
+        "--version",
+        "-v",
+        help = "PrintScript version to use (1.0 or 1.1)",
+    ).choice("1.0", "1.1", ignoreCase = true).default("1.1")
 
     override fun run() {
         val file = File(filePath)
@@ -34,10 +44,20 @@ class Analyze : CliktCommand() {
         val rules = Gson().fromJson(rulesContent, JsonObject::class.java)
 
         echo("Lexing...\n", trailingNewline = true)
-        val lexer = LexerFactory.createLexerV11(reader)
+        val lexer =
+            when (version) {
+                "1.0" -> LexerFactory.createLexerV10(reader)
+                "1.1" -> LexerFactory.createLexerV11(reader)
+                else -> throw IllegalArgumentException("Unsupported version: $version")
+            }
 
         echo("Parsing...\n", trailingNewline = true)
-        val parser = ParserFactory.createParserV11(lexer)
+        val parser =
+            when (version) {
+                "1.0" -> ParserFactory.createParserV10(lexer)
+                "1.1" -> ParserFactory.createParserV11(lexer)
+                else -> throw IllegalArgumentException("Unsupported version: $version")
+            }
 
         // Recolectar todos los nodos AST del parser
         val nodes = mutableListOf<ASTNode>()
@@ -47,15 +67,30 @@ class Analyze : CliktCommand() {
 
         echo("Analyzing...\n", trailingNewline = true)
         // Crear un nuevo parser para el analyzer (que necesita un PrintScriptIterator)
-        val lexer2 = LexerFactory.createLexerV11(StringReader(code))
-        val parser2 = ParserFactory.createParserV11(lexer2)
-        val analyzer = AnalyzerFactory().createAnalyzerV11(parser2)
+        val lexer2 =
+            when (version) {
+                "1.0" -> LexerFactory.createLexerV10(StringReader(code))
+                "1.1" -> LexerFactory.createLexerV11(StringReader(code))
+                else -> throw IllegalArgumentException("Unsupported version: $version")
+            }
+        val parser2 =
+            when (version) {
+                "1.0" -> ParserFactory.createParserV10(lexer2)
+                "1.1" -> ParserFactory.createParserV11(lexer2)
+                else -> throw IllegalArgumentException("Unsupported version: $version")
+            }
+        val analyzer =
+            when (version) {
+                "1.0" -> AnalyzerFactory().createAnalyzerV10(parser2)
+                "1.1" -> AnalyzerFactory().createAnalyzerV11(parser2)
+                else -> throw IllegalArgumentException("Unsupported version: $version")
+            }
 
         // Crear el config con el JsonObject
         val config = AnalyzerConfig(jsonConfig = rules)
 
         // Analizar los nodos
-        val result = analyzer.analyze(nodes, config, "1.1")
+        val result = analyzer.analyze(nodes, config, version)
 
         // Mostrar los diagnósticos
         result.diagnostics.forEach { diagnostic ->

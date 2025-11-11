@@ -1,0 +1,68 @@
+@startuml
+skinparam style strictuml
+title Flujo del Lexer (leer → separar → tokenizar → resultado)
+
+start
+:Inicializar Position=(1,1);
+:errors=[], tokens=[], buffer="";
+
+repeat
+  :c = getNextChar();
+  if (EOF?) then (sí)
+    break
+  endif
+
+  if (¿c es salto de línea?) then (sí)
+    :handleNewLine(Position);
+    if (¿buffer vacío?) then (sí)
+      ' nada que tokenizar
+    else (no)
+      :lexNextStatement(buffer);
+      :buffer="";
+    endif
+  elseif (¿c == ';'?) then (sí)
+    :lexNextStatement(buffer);
+    :addToken(Token(';'));
+    :buffer="";
+  else (no)
+    :buffer += c;
+  endif
+repeat while (true)
+
+if (¿buffer no vacío?) then (sí)
+  :lexNextStatement(buffer);
+endif
+
+:result = new LexerResult(tokens, errors);
+stop
+
+' ---------- Detalle de lexNextStatement ----------
+' (Descompuesto dentro del mismo activity diagram)
+
+fork
+  :parts = splitIgnoringLiterals(statement);
+  repeat
+    :part = siguiente(parts);
+    :components = splitComponent(part);
+
+    repeat
+      :comp = siguiente(components);
+
+      if (¿comp es vacío/espacio?) then (sí)
+        ' ignorar
+      else (no)
+        :t = TokenResolver.getToken(comp, Location(Position));
+        if (¿t válido?) then (sí)
+          :addToken(t);
+        else (no)
+          :addError("Token inválido: " + comp);
+        endif
+      endif
+
+    repeat while (¿quedan components?)
+  repeat while (¿quedan parts?)
+fork again
+  :Actualizar Position según longitud\nprocesada y saltos de línea;
+end fork
+
+@enduml

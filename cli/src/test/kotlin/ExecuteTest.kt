@@ -1,7 +1,7 @@
 package cli
 
-import Execute
 import com.github.ajalt.clikt.testing.test
+import main.kotlin.cli.Execute
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

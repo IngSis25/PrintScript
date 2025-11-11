@@ -235,4 +235,139 @@ class InterpreterTesterV11 {
         assert(output.contains("Hello world!"))
         assert(!output.contains("Hello Name:!"))
     }
+
+    @Test
+    fun testReadEnv() {
+        val input = "const gravity: number = readEnv('gravity'); println(gravity);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("9.81\n", output)
+    }
+
+    @Test
+    fun testReadEnvPi() {
+        val input = "const piValue: number = readEnv('pi'); println(piValue);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("3.1415\n", output)
+    }
+
+    @Test
+    fun testReadEnvString() {
+        val input = "const club: string = readEnv('BEST_FOOTBALL_CLUB'); println(club);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("San Lorenzo\n", output)
+    }
+
+    @Test
+    fun testVariableDeclarationWithoutInitialization() {
+        val input = "let x: number; x = 42; println(x);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("42\n", output)
+    }
+
+    @Test
+    fun testDivisionByZero() {
+        val input = "println(10 / 0);"
+        val exception =
+            Assertions.assertThrows(Exception::class.java) {
+                interpretAndCaptureOutputV11(input)
+            }
+        assert(exception.message?.contains("División por cero") == true || exception.cause is ArithmeticException)
+    }
+
+    @Test
+    fun testDecimalNumbers() {
+        val input = "let x: number = 3.14; println(x);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("3.14\n", output)
+    }
+
+    @Test
+    fun testDecimalOperations() {
+        val input = "println(3.5 + 2.5);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("6\n", output)
+    }
+
+    @Test
+    fun testDecimalMultiplication() {
+        val input = "println(2.5 * 2);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("5\n", output)
+    }
+
+    @Test
+    fun testNumberPlusString() {
+        val input = "let a: number = 42; println(a + ' is the answer');"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("42 is the answer\n", output)
+    }
+
+    @Test
+    fun testIfWithBooleanVariableFalse() {
+        val input =
+            """
+            let flag: boolean = false;
+            if (flag) {
+                println('Should not print');
+            } else {
+                println('Should print');
+            }
+            """.trimIndent()
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("Should print\n", output)
+    }
+
+    @Test
+    fun testBooleanExpressionWithVariable() {
+        val input =
+            """
+            let x: boolean = true;
+            if (x) {
+                println('True branch');
+            } else {
+                println('False branch');
+            }
+            """.trimIndent()
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("True branch\n", output)
+    }
+
+    @Test
+    fun testReadInputWithNumberConversion() {
+        // readInput devuelve string, pero el interpreter lo convierte automáticamente
+        val code = "let numStr: string = readInput(\"Enter number:\"); println(numStr);"
+        val testInput = TestInput()
+        testInput.addInput("5")
+
+        val output = interpretAndCaptureOutputV11WithInput(code, testInput)
+        assertEquals("Enter number:5\n", output)
+    }
+
+    @Test
+    fun testReadInputWithDouble() {
+        val code = "let value: string = readInput(\"Enter value:\"); println(value);"
+        val testInput = TestInput()
+        testInput.addInput("3.14")
+
+        val output = interpretAndCaptureOutputV11WithInput(code, testInput)
+        assertEquals("Enter value:3.14\n", output)
+    }
+
+    @Test
+    fun testComplexBooleanExpression() {
+        val input =
+            """
+            let x: boolean = true;
+            let y: boolean = false;
+            if (x) {
+                if (y) {
+                    println('Both true');
+                } else {
+                    println('Only x true');
+                }
+            }
+            """.trimIndent()
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("Only x true\n", output)
+    }
 }

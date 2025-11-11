@@ -1,0 +1,30 @@
+@startuml
+skinparam style strictuml
+title Flujo del Intérprete (interpret)
+
+start
+:Recibir iterator de ASTNode,\nOutput, Input y StrategyProvider;
+:Crear Services {context, output, input};
+
+repeat
+  :node = iterator.next();
+  if (¿node existe?) then (sí)
+    :strategy = provider.getStrategyFor(node);
+    if (¿strategy encontrada?) then (sí)
+      :strategy.visit(services, node);
+      ' Dentro de visit(...) las estrategias pueden:
+      ' - Leer input: services.input.read(...)
+      ' - Escribir output: services.output.write(...)
+      ' - Actualizar contexto: services.context[k]=v
+    else (no)
+      :services.output.write("No strategy for " + node);
+      :// (opcional) registrar error;
+    endif
+  else (no)
+    break
+  endif
+repeat while (true)
+
+:Finalizar y devolver control;
+stop
+@enduml

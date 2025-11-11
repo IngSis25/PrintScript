@@ -1,0 +1,113 @@
+@startuml
+skinparam style strictuml
+skinparam classAttributeIconVisibility false
+
+package "parser" {
+  interface "PrintScriptIterator<T>" as PrintScriptIterator
+  class Parser {
+    -astGenerator: ASTGenerator
+    -semanticAnalyzer: SemanticAnalyzer
+    -supportedStructures: List<Structure>
+    -tokenIterator: PrintScriptIterator<Token>
+    +parse(iterator): ASTNode
+    +collectAllASTNodes(): List<ASTNode>
+  }
+  Parser ..|> PrintScriptIterator
+  Parser o--> ASTGenerator
+  Parser o--> SemanticAnalyzer
+  Parser o--> "0..*" Structure
+  Parser ..> Token
+  Parser ..> ASTNode
+
+  class ParserFactory {
+    +createParserV10(it: PrintScriptIterator<Token>): Parser
+    +createParserV11(it: PrintScriptIterator<Token>): Parser
+  }
+  ParserFactory ..> Parser
+  ParserFactory ..> ASTGenerator
+  ParserFactory ..> SemanticAnalyzer
+  ParserFactory ..> Structure
+}
+
+package "nodeBuilders" {
+  interface ASTNodeBuilder {
+    +formula: String
+    +generate(tokens, parser): ASTNode
+    +checkFormula(tokensString): Boolean
+  }
+
+  class AssignmentNodeBuilder
+  class PrintNodeBuilder
+  class VariableDeclarationNodeBuilder
+  class IdentifierNodeBuilder
+  class IfNodeBuilder
+  class ExpressionNodeBuilder {
+    -expressionsBuilders: List<ASTNodeBuilder>
+  }
+
+  ASTNodeBuilder <|.. AssignmentNodeBuilder
+  ASTNodeBuilder <|.. PrintNodeBuilder
+  ASTNodeBuilder <|.. VariableDeclarationNodeBuilder
+  ASTNodeBuilder <|.. IdentifierNodeBuilder
+  ASTNodeBuilder <|.. IfNodeBuilder
+  ASTNodeBuilder <|.. ExpressionNodeBuilder
+
+  ExpressionNodeBuilder o--> "1..*" ASTNodeBuilder : expressionsBuilders
+  IfNodeBuilder ..> Parser
+}
+
+package "nodeBuilders.expressions" {
+  class ExpressionsNodeBuilderFactory {
+    +createV10(): List<ASTNodeBuilder>
+    +createV11(): List<ASTNodeBuilder>
+  }
+  class BinaryExpressionNodeBuilder
+  class BooleanExpressionNodeBuilder
+  class ReadEnvNodeBuilder
+  class ReadInputNodeBuilder
+
+  ASTNodeBuilder <|.. BinaryExpressionNodeBuilder
+  ASTNodeBuilder <|.. BooleanExpressionNodeBuilder
+  ASTNodeBuilder <|.. ReadEnvNodeBuilder
+  ASTNodeBuilder <|.. ReadInputNodeBuilder
+
+  ExpressionsNodeBuilderFactory ..> ASTNodeBuilder
+  ExpressionNodeBuilder ..> ExpressionsNodeBuilderFactory
+}
+
+package "semanticAnalysis" {
+  class SemanticAnalyzer {
+    -checks: List<SemanticCheck>
+    -semanticVisitor: SemanticVisitor
+    +analyze(node: ASTNode)
+  }
+  class SemanticVisitor
+  interface SemanticCheck {
+    +check(node: ASTNode, symbolTable: MutableMap<String, Pair<String, LiteralValue>>)
+  }
+
+  SemanticAnalyzer o--> "1..*" SemanticCheck
+  SemanticAnalyzer o--> SemanticVisitor
+  SemanticVisitor ..> ASTNode
+  SemanticCheck <|.. VariableDeclarationCheck
+  SemanticCheck <|.. AssignmentTypeCheck
+  SemanticCheck <|.. VariableDeclarationTypeCheck
+  SemanticCheck <|.. AssignmentKindCheck
+  SemanticCheck <|.. ReadInputTypeCheck
+  SemanticCheck <|.. CompleteIfBooleanExpressionCheck
+  SemanticCheck <|.. IfBooleanExpressionCheck
+}
+
+package "structures" {
+  interface Structure {
+    +type: String
+    +getTokens(it: PrintScriptIterator<Token>, buffer: ArrayList<Token>): ArrayList<Token>
+    +checkStructure(str: Structure): Boolean
+  }
+  class IfElseStructure
+  Structure <|.. IfElseStructure
+  IfElseStructure ..> Token
+  IfElseStructure ..> PrintScriptIterator
+  IfNodeBuilder o--> IfElseStructure
+}
+@enduml

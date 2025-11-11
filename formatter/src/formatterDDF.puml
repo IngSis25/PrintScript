@@ -1,0 +1,34 @@
+@startuml
+skinparam style strictuml
+title Formatter flow (format)
+
+start
+:inputs:
+- nodeIterator: PrintScriptIterator<ASTNode>
+- originalSource (optional)
+- rules: List<Rule>;
+
+:FormattingContext.originalLine = null;
+:visitor = FormatterVisitor();
+:outputLines = [];
+
+' (opcional) reglas desde RulesFactory/RulesParser antes del loop
+' rules = RulesFactory.getRules(content, version)
+
+while (has next node?)
+  :node = nodeIterator.next();
+  :line = visitor.visit(node);
+
+  if (line is empty?) then (yes)
+    ' skip
+  else (no)
+    :FormattingContext.originalLine = original line\n(if available for this node);
+    :formatted = applyRules(line, rules);
+    :outputLines.add(formatted);
+  endif
+endwhile (no)
+
+:code = join(outputLines, "\n");
+:result = new FormatResult(code);
+stop
+@enduml

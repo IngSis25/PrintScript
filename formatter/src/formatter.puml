@@ -1,0 +1,168 @@
+@startuml
+skinparam style strictuml
+skinparam classAttributeIconVisibility false
+
+package "formatter" {
+  class Formatter {
+    -nodeIterator: PrintScriptIterator<ASTNode>
+    -originalSource: String?
+    -visitor: ASTNodeVisitor
+    +format(rules: List<Rule>): FormatResult
+    -applyRules(line: String, rules: List<Rule>): String
+  }
+  Formatter ..> PrintScriptIterator
+  Formatter ..> ASTNode
+  Formatter o--> FormatterVisitor : visitor
+  Formatter ..> Rule
+  Formatter ..> FormatResult
+  Formatter ..> FormattingContext
+
+  class FormatterVisitor {
+    +visit(node: ASTNode): VisitorResult
+    -visitAssignmentNode(node: AssignmentNode): VisitorResult
+    -visitPrintStatementNode(node: PrintStatementNode): VisitorResult
+    -visitVariableDeclarationNode(node: VariableDeclarationNode): VisitorResult
+    -visitLiteralNode(node: LiteralNode): VisitorResult
+    -visitBinaryExpressionNode(node: BinaryExpressionNode): VisitorResult
+    -visitIdentifierNode(node: IdentifierNode): VisitorResult
+    -visitIfNode(node: IfNode): VisitorResult
+    -visitElseNode(node: ElseNode): VisitorResult
+    -visitCompleteIfNode(node: CompleteIfNode): VisitorResult
+    -getExpression(init: ExpressionNode): String
+    -getStatements(nodes: List<ASTNode>): String
+  }
+  FormatterVisitor ..|> ASTNodeVisitor
+  FormatterVisitor ..> ASTNode
+  FormatterVisitor ..> VisitorResult
+
+  class FormatResult {
+    +code: String
+    +toString(): String
+  }
+
+  class RulesFactory {
+    +getRules(content: String, version: String): List<Rule>
+    -createRulesForV10(json: JsonObject): List<Rule>
+    -createRulesForV11(json: JsonObject): List<Rule>
+    -createRules(json: JsonObject, rulesMap: List<Pair<String, RuleBuilder>>): List<Rule>
+  }
+  RulesFactory ..> RulesParser
+  RulesFactory ..> Rule
+  RulesFactory ..> RuleBuilder
+  RulesFactory ..> JsonObject
+
+  class RulesParser {
+    +parse(content: String): JsonObject
+    -getMapOfTCK(): Map<String, String>
+  }
+  RulesParser ..> JsonObject
+
+  object FormattingContext {
+    +originalLine: String?
+  }
+}
+
+package "rules" {
+  interface Rule {
+    +name: String
+    +applyRule(input: String): String
+  }
+
+  class SpaceAroundEquals
+  class NoSpaceAroundEquals
+  class SpaceAfterColon
+  class SpaceBeforeColon
+  class NewlineAfterPrintln
+  class NewlineBeforePrintln
+  class SingleSpaceSeparation
+  class NumberOfSpacesIndentation {
+    -indentation: Int
+  }
+  class SameLineForIfAndBrace
+  class SameLineForElseAndBrace
+  class NewLineForIfAndBrace
+  class NewLineAfterSemiColon
+  class NewLineAfterBrace
+  class AddTwoSpacesAfterOpenBrace
+  class OnlyOneSpacePermited
+  class PreserveEqualsFromOriginal
+  class SpaceAfterAndBeforeOperators
+
+  Rule <|.. SpaceAroundEquals
+  Rule <|.. NoSpaceAroundEquals
+  Rule <|.. SpaceAfterColon
+  Rule <|.. SpaceBeforeColon
+  Rule <|.. NewlineAfterPrintln
+  Rule <|.. NewlineBeforePrintln
+  Rule <|.. SingleSpaceSeparation
+  Rule <|.. NumberOfSpacesIndentation
+  Rule <|.. SameLineForIfAndBrace
+  Rule <|.. SameLineForElseAndBrace
+  Rule <|.. NewLineForIfAndBrace
+  Rule <|.. NewLineAfterSemiColon
+  Rule <|.. NewLineAfterBrace
+  Rule <|.. AddTwoSpacesAfterOpenBrace
+  Rule <|.. OnlyOneSpacePermited
+  Rule <|.. PreserveEqualsFromOriginal
+  Rule <|.. SpaceAfterAndBeforeOperators
+}
+
+package "ruleBuilder" {
+  interface RuleBuilder {
+    +buildRule(ruleName: String, value: String): Rule
+  }
+
+  class SpaceAroundEqualsBuilder
+  class NoSpaceAroundEqualsBuilder
+  class SpaceAfterColonBuilder
+  class SpaceBeforeColonBuilder
+  class NewlineAfterPrintlnBuilder
+  class NewlineBeforePrintlnBuilder
+  class SingleSpaceSeparationBuilder
+  class NumberOfSpacesIndentationBuilder
+  class SameLineForIfAndBraceBuilder
+  class SameLineForElseAndBraceBuilder
+  class NewLineForIfAndBraceBuilder
+
+  RuleBuilder <|.. SpaceAroundEqualsBuilder
+  RuleBuilder <|.. NoSpaceAroundEqualsBuilder
+  RuleBuilder <|.. SpaceAfterColonBuilder
+  RuleBuilder <|.. SpaceBeforeColonBuilder
+  RuleBuilder <|.. NewlineAfterPrintlnBuilder
+  RuleBuilder <|.. NewlineBeforePrintlnBuilder
+  RuleBuilder <|.. SingleSpaceSeparationBuilder
+  RuleBuilder <|.. NumberOfSpacesIndentationBuilder
+  RuleBuilder <|.. SameLineForIfAndBraceBuilder
+  RuleBuilder <|.. SameLineForElseAndBraceBuilder
+  RuleBuilder <|.. NewLineForIfAndBraceBuilder
+
+  SpaceAroundEqualsBuilder ..> SpaceAroundEquals
+  NoSpaceAroundEqualsBuilder ..> NoSpaceAroundEquals
+  SpaceAfterColonBuilder ..> SpaceAfterColon
+  SpaceBeforeColonBuilder ..> SpaceBeforeColon
+  NewlineAfterPrintlnBuilder ..> NewlineAfterPrintln
+  NewlineBeforePrintlnBuilder ..> NewlineBeforePrintln
+  SingleSpaceSeparationBuilder ..> SingleSpaceSeparation
+  NumberOfSpacesIndentationBuilder ..> NumberOfSpacesIndentation
+  SameLineForIfAndBraceBuilder ..> SameLineForIfAndBrace
+  SameLineForElseAndBraceBuilder ..> SameLineForElseAndBrace
+  NewLineForIfAndBraceBuilder ..> NewLineForIfAndBrace
+}
+
+note right of Formatter
+  El Formatter recibe un iterador de ASTNodes
+  y opcionalmente el código fuente original.
+  Usa FormatterVisitor para convertir nodos
+  a strings y luego aplica reglas de formateo.
+end note
+
+note right of RulesFactory
+  Crea listas de reglas desde JSON según
+  la versión (V10 o V11). Combina reglas
+  no configurables con reglas configurables
+  construidas mediante RuleBuilders.
+end note
+
+
+@enduml
+

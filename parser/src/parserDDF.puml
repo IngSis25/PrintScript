@@ -1,0 +1,59 @@
+@startuml
+skinparam style strictuml
+title Parser end-to-end flow
+
+start
+
+:Recibir versión de PrintScript y un PrintScriptIterator<Token>;
+
+if (¿Qué versión?) then (v1.0)
+  :ParserFactory.createParserV10(it);
+else (v1.1)
+  :ParserFactory.createParserV11(it);
+endif
+
+:Inicializar Parser con
+- ASTGenerator
+- SemanticAnalyzer
+- supportedStructures;
+
+repeat
+  :Avanzar tokens y llenar buffer;
+  :Intentar cada Structure soportada\n(p.ej. IfElseStructure) -> getTokens();
+
+  if (Structure.checkStructure(buffer)?) then (sí)
+    :Despachar al ASTNodeBuilder correspondiente;
+    if (¿Tipo de nodo?) then (Asign/Print/VarDecl/Id)
+      :Assignment / Print / VariableDeclaration / Identifier;
+    else (If)
+      :IfNodeBuilder usa IfElseStructure;
+    endif
+
+    :ExpressionNodeBuilder crea subexpresiones\nvía ExpressionsNodeBuilderFactory(vX):\n- BinaryExpression\n- BooleanExpression\n- ReadEnv / ReadInput;
+
+    :Agregar nodo construido al AST;
+  endif
+repeat while (¿quedan tokens?) is (sí)
+
+:ASTGenerator produce el AST raíz;
+:collectAllASTNodes();
+
+:SemanticAnalyzer.analyze(root);
+
+fork
+  :SemanticVisitor recorre el AST;
+forkagain
+  repeat
+    :Aplicar SemanticCheck:\n- VariableDeclarationCheck\n- VariableDeclarationTypeCheck\n- AssignmentTypeCheck\n- AssignmentKindCheck\n- ReadInputTypeCheck\n- CompleteIfBooleanExpressionCheck\n- IfBooleanExpressionCheck;
+  repeat while (¿checks pendientes?) is (sí)
+end fork
+
+if (¿Hay errores?) then (sí)
+  :Reportar diagnósticos / fallar parseo;
+  stop
+else (no)
+  :Devolver AST;
+  stop
+endif
+
+@enduml

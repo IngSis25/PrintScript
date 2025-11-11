@@ -1,0 +1,93 @@
+@startuml
+skinparam style strictuml
+skinparam classAttributeIconVisibility false
+
+package "lexer" {
+  interface "PrintScriptIterator<T>" as PrintScriptIterator
+
+  class Lexer {
+    -lexicon: TokenResolver
+    -reader: Reader
+    -currentTokens: Queue<Token>
+    -position: Position
+    +hasNext(): Boolean
+    +next(): Token
+    +peek(): Token
+    +collectAllTokens(): LexerResult
+    -getNextChar(): Int
+    -lexNextStatement()
+    -tokenizeStatement(statement: String)
+    -tokenizeComponent(component: String)
+    -handleNewLine(position: Position)
+    -splitIgnoringLiterals(input: String): List<String>
+    -splitComponent(component: String): List<String>
+  }
+  Lexer ..|> PrintScriptIterator
+  Lexer o--> TokenResolver : lexicon
+  Lexer ..> Reader
+  Lexer o--> Position
+  Lexer ..> Token
+  Lexer ..> LexerResult
+
+  class LexerFactory {
+    +createLexerV10(reader: Reader): Lexer
+    +createLexerV11(reader: Reader): Lexer
+  }
+  LexerFactory ..> Lexer
+  LexerFactory ..> TokenFactory
+  LexerFactory ..> Reader
+
+  class TokenResolver {
+    -tokenMap: List<Pair<String, String>>
+    +getToken(component: String, location: Location): Token
+  }
+  TokenResolver ..> Token
+  TokenResolver ..> Location
+
+  class TokenFactory {
+    +createLexerV10(): TokenResolver
+    +createLexerV11(): TokenResolver
+  }
+  TokenFactory ..> TokenResolver
+
+  class Position {
+    +line: Int
+    +column: Int
+  }
+
+  class LexerResult {
+    +errors: MutableList<String>
+    +tokens: MutableList<Token>
+    +addError(message: String)
+    +addToken(token: Token)
+    +hasErrors(): Boolean
+  }
+  LexerResult o--> "0..*" Token
+
+  ' Tipos de apoyo (declarados para que compile el diagrama)
+  class Reader
+  class Token
+  class Location
+}
+
+note right of Lexer
+  El Lexer lee caracteres del Reader,
+  agrupa en statements (hasta ';'),
+  y tokeniza con TokenResolver.
+  Mantiene un buffer y la posición.
+  peek() puede devolver null en runtime,
+  pero se modela como Token para el UML.
+end note
+
+note right of TokenResolver
+  Resuelve strings a tokens usando
+  un mapa de patrones (regex -> tipo).
+  Devuelve el primer match.
+end note
+
+note right of TokenFactory
+  Crea TokenResolver con configuraciones
+  distintas según versión (V10/V11).
+end note
+
+@enduml
