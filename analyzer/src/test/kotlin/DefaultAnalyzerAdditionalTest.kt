@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 
 class DefaultAnalyzerAdditionalTest {
-    private val analyzer = DefaultAnalyzer()
+    private val analyzer = DefaultAnalyzer("1.0", nodeIterator)
     private val defaultConfig = AnalyzerConfig()
 
     @Test
