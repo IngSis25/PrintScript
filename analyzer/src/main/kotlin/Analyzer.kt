@@ -1,19 +1,19 @@
 package main.kotlin.analyzer
 
-import org.example.ast.ASTNode
+import org.example.iterator.PrintScriptIterator
 
 /**
  * Interface for static code analyzers
  */
 interface Analyzer {
+    val version: String
+    val nodeIterator: PrintScriptIterator<org.example.astnode.ASTNode>
+
     /**
      * Analyzes a list of AST nodes and returns analysis results
      * @param ast The abstract syntax tree to analyze
      * @param config Configuration for the analyzer
      * @return Analysis result containing diagnostics
      */
-    fun analyze(
-        ast: List<ASTNode>,
-        config: AnalyzerConfig,
-    ): AnalysisResult
+    fun analyze(config: AnalyzerConfig): AnalysisResult
 }
