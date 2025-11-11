@@ -4,8 +4,10 @@ import factory.LexerFactoryRegistry
 import factory.ParserFactoryRegistry
 import main.kotlin.analyzer.ConfigLoader
 import main.kotlin.analyzer.DefaultAnalyzer
-import org.example.DefaultInterpreter
+import org.example.InterpreterFactory
 import org.example.formatter.Formatter
+import org.example.input.StdInput
+import org.example.iterator.ListIterator
 import org.example.output.Output
 import org.example.strategy.PreConfiguredProviders
 import java.io.File
@@ -109,17 +111,15 @@ class PrintScriptCLI {
                         }
                     }
 
-                val strategyProvider =
+                val interpreter =
                     when (version) {
-                        "1.1" -> PreConfiguredProviders.VERSION_1_1
-                        else -> PreConfiguredProviders.VERSION_1_0
+                        "1.1" -> InterpreterFactory.createInterpreterVersion11(output, StdInput)
+                        else -> InterpreterFactory.createInterpreterVersion10(output, StdInput)
                     }
-                val interpreter = DefaultInterpreter(output, strategyProvider)
 
-                // Execute each statement
-                result.ast.forEach { node ->
-                    interpreter.interpret(node)
-                }
+                // Execute all statements using iterator
+                val nodeIterator = ListIterator(result.ast)
+                interpreter.interpret(nodeIterator)
 
                 onProgress("Execution completed successfully!")
                 ExecutionResult.Success(

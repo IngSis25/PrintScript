@@ -1,11 +1,11 @@
 if (true) {
-println('Hello');
+println("Hello");
 }
 
 #####
 
 if (true) {
-    println('Hello');
+    println("Hello");
 }
 
 #####

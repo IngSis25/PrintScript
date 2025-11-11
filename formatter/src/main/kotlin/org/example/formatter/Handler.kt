@@ -41,9 +41,9 @@ class Handler(
             is LiteralNode -> visitor.visit(node)
             is IdentifierNode -> append(node.name, outputCode)
             is BinaryExpressionNode -> {
-                openExpression(outputCode)
+                // openExpression(outputCode)
                 visitor.visit(node)
-                closeExpression(outputCode)
+                // closeExpression(outputCode)
             }
             is BooleanExpressionNode -> evaluate(node.bool)
             is ReadEnvNode -> {
@@ -68,9 +68,9 @@ class Handler(
         when (val value = node.value) {
             is org.example.astnode.expressionNodes.LiteralValue.StringValue -> {
                 // Agregar comillas simples alrededor del string
-                append("'", outputCode)
+                append("\"", outputCode)
                 append(value.value, outputCode)
-                append("'", outputCode)
+                append("\"", outputCode)
             }
             else -> {
                 append(value.toString(), outputCode)

@@ -1,8 +1,10 @@
-let a: string= 'hola';
+let a: string= "hola";
+let result: number = 5+4*3/2;
 
 #####
 
-let a: string = 'hola';
+let a: string = "hola";
+let result: number = 5 + 4 * 3 / 2;
 
 #####
 

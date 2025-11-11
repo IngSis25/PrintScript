@@ -1,6 +1,7 @@
 package org.example
 
 import org.example.astnode.ASTNode
+import org.example.input.Input
 import org.example.iterator.PrintScriptIterator
 import org.example.output.Output
 import org.example.strategy.StrategyProvider
@@ -8,6 +9,7 @@ import org.example.util.Services
 
 class Interpreter(
     private val output: Output,
+    private val input: Input,
     private val provider: StrategyProvider,
 ) {
     private var context = mutableMapOf<String, Any?>()
@@ -19,6 +21,7 @@ class Interpreter(
             Services(
                 context = context.toMap(),
                 output = output,
+                input = input,
                 visit = { s: Services, node: ASTNode ->
                     val strategy =
                         (provider getStrategyFor node)

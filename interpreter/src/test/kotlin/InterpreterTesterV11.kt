@@ -4,6 +4,7 @@ import main.kotlin.lexer.Lexer
 import main.kotlin.lexer.TokenFactory
 import org.ParserFactory
 import org.example.InterpreterFactory
+import org.example.input.TestInput
 import org.example.output.TestOutput
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -16,6 +17,20 @@ class InterpreterTesterV11 {
         val parser = ParserFactory.createParserV11(lexer)
         val printer = TestOutput()
         val interpreter = InterpreterFactory.createInterpreterVersion11(printer)
+
+        interpreter.interpret(parser)
+
+        return printer.printsList.joinToString(separator = "")
+    }
+
+    private fun interpretAndCaptureOutputV11WithInput(
+        code: String,
+        testInput: TestInput,
+    ): String {
+        val lexer = Lexer(TokenFactory().createLexerV11(), StringReader(code))
+        val parser = ParserFactory.createParserV11(lexer)
+        val printer = TestOutput()
+        val interpreter = InterpreterFactory.createInterpreterVersion11(printer, testInput)
 
         interpreter.interpret(parser)
 
@@ -188,5 +203,36 @@ class InterpreterTesterV11 {
             """.trimIndent()
         val output = interpretAndCaptureOutputV11(input)
         assertEquals("else statement working correctly\noutside of conditional\n", output)
+    }
+
+    @Test
+    fun testReadInput() {
+        val code =
+            """
+            const name: string = readInput("Name:");
+            println("Hello " + name + "!");
+            """.trimIndent()
+        val testInput = TestInput()
+        testInput.addInput("world")
+
+        val output = interpretAndCaptureOutputV11WithInput(code, testInput)
+
+        // El prompt "Name:" se imprime sin salto de línea, luego se lee "world",
+        // y luego se imprime "Hello world!" con salto de línea
+        assertEquals("Name:Hello world!\n", output)
+    }
+
+    @Test
+    fun testReadInputWithNewline() {
+        // Test que verifica que readInput imprime el prompt y lee correctamente
+        val code = "const name: string = readInput(\"Name:\");\nprintln(\"Hello \" + name + \"!\");"
+        val testInput = TestInput()
+        testInput.addInput("world")
+
+        val output = interpretAndCaptureOutputV11WithInput(code, testInput)
+
+        // Verificamos que name contiene "world" y no "Name:"
+        assert(output.contains("Hello world!"))
+        assert(!output.contains("Hello Name:!"))
     }
 }
