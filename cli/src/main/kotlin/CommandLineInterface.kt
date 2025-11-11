@@ -8,8 +8,8 @@ class CommandLineInterface : CliktCommand() {
 fun main(args: Array<String>) =
     CommandLineInterface()
         .subcommands(
-//        Analyze(),
-//        Format(),
-//        Validate(),
+            Analyze(),
+            Format(),
+            Validate(),
             Execute(),
         ).main(args)
