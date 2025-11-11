@@ -30,9 +30,7 @@ class DefaultAnalyzer(
         }
 
         nodes.forEach { node ->
-            visitors.forEach { visitor ->
-                visitor.visit(node)
-            }
+            visitRecursive(node, visitors)
         }
 
         val diagnostics = mutableListOf<Diagnostic>()
@@ -56,5 +54,36 @@ class DefaultAnalyzer(
         }
         val limited = if (config.maxErrors > 0) diagnostics.take(config.maxErrors) else diagnostics
         return AnalysisResult(limited)
+    }
+
+    private fun visitRecursive(
+        node: ASTNode,
+        visitors: List<visitors.AnalyzerVisitor>,
+    ) {
+        visitors.forEach { visitor ->
+            visitor.visit(node)
+        }
+
+        // Visitar recursivamente los nodos hijos
+        when (node) {
+            is org.example.astnode.statamentNode.VariableDeclarationNode -> {
+                visitRecursive(node.init, visitors)
+            }
+            is org.example.astnode.statamentNode.AssignmentNode -> {
+                visitRecursive(node.identifier, visitors)
+                visitRecursive(node.value, visitors)
+            }
+            is org.example.astnode.statamentNode.PrintStatementNode -> {
+                visitRecursive(node.value, visitors)
+            }
+            is org.example.astnode.expressionNodes.BinaryExpressionNode -> {
+                visitRecursive(node.left, visitors)
+                visitRecursive(node.right, visitors)
+            }
+            is org.example.astnode.expressionNodes.ReadInputNode -> {
+                visitRecursive(node.message, visitors)
+            }
+            // Otros tipos de nodos se pueden agregar aquí según sea necesario
+        }
     }
 }
