@@ -1,12 +1,10 @@
 package org.example.strategy
-import org.example.ast.BinaryOpNode
+
+import org.example.astnode.expressionNodes.BinaryExpressionNode
 import org.example.util.Services
 
-// Ajustá el import del nodo a tu parser real
-// import main.kotlin.parser.BinaryOpNode
-
 val binaryExpressionStrategy =
-    Strategy<BinaryOpNode> { services: Services, node: BinaryOpNode ->
+    Strategy<BinaryExpressionNode> { services: Services, node: BinaryExpressionNode ->
         val leftVal = services.visit(services, node.left)
         val rightVal = services.visit(services, node.right)
 

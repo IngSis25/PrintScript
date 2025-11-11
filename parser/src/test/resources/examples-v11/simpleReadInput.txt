@@ -1,0 +1,11 @@
+let a: string = readInput(readInput("pone numero mayor a " + "?"));
+println(a);
+
+#####
+
+VariableDeclarationNode
+PrintStatementNode
+
+#####
+
+True
