@@ -27,8 +27,9 @@ fun main() {
     println("  - Llamadas a println: 4")
     println()
 
-    val analyzer = DefaultAnalyzer()
-    val result = analyzer.analyze(program, config)
+    val nodeIterator = ListToIteratorAdapter(program)
+    val analyzer = AnalyzerFactory().createAnalyzerV10(nodeIterator)
+    val result = analyzer.analyze(config)
 
     printAnalysisResults(result)
 
@@ -170,8 +171,9 @@ fun testWithDifferentConfig() {
 
     val config = ConfigLoader.loadFromJsonString(permissiveConfig)
     val program = createTestProgram()
-    val analyzer = DefaultAnalyzer()
-    val result = analyzer.analyze(program, config)
+    val nodeIterator = ListToIteratorAdapter(program)
+    val analyzer = AnalyzerFactory().createAnalyzerV10(nodeIterator)
+    val result = analyzer.analyze(config)
 
     println(" Configuración permisiva:")
     println("  - Formato de identificadores: ${if (config.identifierFormat.enabled) "HABILITADO" else "DESHABILITADO"}")

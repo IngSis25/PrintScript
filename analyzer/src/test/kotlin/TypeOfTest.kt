@@ -1,7 +1,6 @@
 package org.example
 
 import main.kotlin.analyzer.SymbolTable
-import main.kotlin.analyzer.TypeOf
 import main.kotlin.analyzer.Types
 import org.example.ast.BinaryOpNode
 import org.example.ast.IdentifierNode

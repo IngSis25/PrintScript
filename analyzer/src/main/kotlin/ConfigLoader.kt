@@ -4,15 +4,9 @@ import com.google.gson.Gson
 import java.io.File
 import java.nio.charset.StandardCharsets
 
-/**
- * Simple config loader with Gson
- */
 object ConfigLoader {
     private val gson = Gson()
 
-    /**
-     * Loads configuration from a JSON file
-     */
     fun loadFromJson(file: File): AnalyzerConfig {
         if (!file.exists()) {
             throw IllegalArgumentException("Configuration file does not exist: ${file.absolutePath}")
@@ -29,9 +23,6 @@ object ConfigLoader {
         }
     }
 
-    /**
-     * Loads configuration from a JSON string
-     */
     fun loadFromJsonString(jsonContent: String): AnalyzerConfig =
         try {
             gson.fromJson(jsonContent, AnalyzerConfig::class.java)
@@ -39,9 +30,6 @@ object ConfigLoader {
             throw IllegalArgumentException("Invalid JSON configuration: ${e.message}")
         }
 
-    /**
-     * Loads configuration with fallback to default values
-     */
     fun loadWithFallback(configPath: String?): AnalyzerConfig =
         try {
             if (configPath != null) {
@@ -55,9 +43,6 @@ object ConfigLoader {
             AnalyzerConfig()
         }
 
-    /**
-     * Creates a default configuration file
-     */
     fun createDefaultConfig(file: File) {
         val defaultConfig = AnalyzerConfig()
         val json = gson.toJson(defaultConfig)
@@ -65,9 +50,6 @@ object ConfigLoader {
         println("Default configuration created: ${file.absolutePath}")
     }
 
-    /**
-     * Validates if a configuration file exists and is readable
-     */
     fun isValidConfigFile(file: File): Boolean =
         try {
             if (!file.exists() || !file.canRead()) {

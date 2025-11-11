@@ -1,23 +1,20 @@
 package main.kotlin.analyzer
 
-/**
- * Supported identifier formats
- */
+import com.google.gson.JsonObject
+
 enum class IdentifierFormat {
     CAMEL_CASE,
     SNAKE_CASE,
     PASCAL_CASE,
 }
 
-/**
- * Configuration for the static code analyzer
- */
 data class AnalyzerConfig(
     val identifierFormat: IdentifierFormatConfig = IdentifierFormatConfig(),
     val printlnRestrictions: PrintlnRestrictionConfig = PrintlnRestrictionConfig(),
     val maxErrors: Int = 100,
     val enableWarnings: Boolean = true,
     val strictMode: Boolean = false,
+    val jsonConfig: JsonObject? = null,
 )
 
 data class IdentifierFormatConfig(
