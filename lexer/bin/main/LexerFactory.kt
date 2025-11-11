@@ -1,3 +1,5 @@
+package main.kotlin.lexer
+
 import main.kotlin.lexer.Lexer
 import main.kotlin.lexer.TokenFactory
 import java.io.Reader

@@ -1,0 +1,24 @@
+if(true){let a:number=5;}else{let b:number=10;}
+
+#####
+
+if (true) {
+  let a: number = 5;
+} else {
+  let b: number = 10;
+}
+
+#####
+
+True
+
+#####
+
+{
+  "space_before_colon": false,
+  "space_after_colon": true,
+  "space_around_equals": true,
+  "if_brace_same_line": true,
+  "indent_inside_if": 2,
+  "newline_before_println": 1
+}

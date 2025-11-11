@@ -8,13 +8,19 @@ package org.example.formatter.rule
 // spaceBefore=true,  spaceAfter=true  → " : "
 // spaceBefore=false, spaceAfter=false → ":"
 
-data class SpaceAroundColons(
-    val spaceBefore: Boolean,
-    val spaceAfter: Boolean,
+data class SpaceAroundColonsRule(
+    private val before: Boolean,
+    private val after: Boolean,
 ) : FormatRule {
     override fun apply(): String {
-        val before = if (spaceBefore) " " else ""
-        val after = if (spaceAfter) " " else ""
-        return "$before:$after"
+        val result = StringBuilder()
+        if (before) {
+            result.append(" ")
+        }
+        result.append(":")
+        if (after) {
+            result.append(" ")
+        }
+        return result.toString()
     }
 }

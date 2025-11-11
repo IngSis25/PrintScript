@@ -1,8 +1,6 @@
 package org.example
 
 import main.kotlin.analyzer.*
-import org.example.LiteralNumber
-import org.example.LiteralString
 import org.example.ast.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -20,8 +18,9 @@ class DefaultAnalyzerTest {
                     varType = "NUMBER",
                     value = LiteralNode("42", LiteralNumber),
                 ),
-                AssignmentNode(
+                VariableDeclarationNode(
                     identifier = IdentifierNode("anotherVariable"),
+                    varType = "STRING",
                     value = LiteralNode("hello", LiteralString),
                 ),
             )
