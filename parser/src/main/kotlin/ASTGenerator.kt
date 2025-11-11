@@ -3,7 +3,7 @@ import org.example.Lexer.Token
 import org.example.astnode.ASTNode
 import kotlin.collections.joinToString
 
-class ASTGenerator(
+open class ASTGenerator(
     private val builders: List<ASTNodeBuilder>,
 ) {
     fun generate(

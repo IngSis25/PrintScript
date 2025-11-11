@@ -3,7 +3,7 @@ package semanticAnalysis
 import org.example.astnode.ASTNode
 import semanticAnalysis.check.SemanticCheck
 
-class SemanticAnalyzer(
+open class SemanticAnalyzer(
     private val checks: List<SemanticCheck>,
 ) {
     private val semanticVisitor: SemanticVisitor = SemanticVisitor()
