@@ -1,0 +1,19 @@
+println(something);
+println("in the way she moves");
+
+#####
+
+println(something);
+
+
+println("in the way she moves");
+
+#####
+
+True
+
+#####
+
+{
+  "newline_after_println": 2
+}

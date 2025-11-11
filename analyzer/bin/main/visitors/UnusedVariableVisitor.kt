@@ -3,10 +3,11 @@ package org.checkvisitors
 import WarningInfo
 import main.kotlin.analyzer.SourcePosition
 import main.kotlin.analyzer.SymbolTable
-import org.example.ast.IdentifierNode
-import org.example.ast.VariableDeclarationNode
 import org.example.astnode.ASTNode
 import org.example.astnode.astNodeVisitor.VisitorResult
+import org.example.astnode.expressionNodes.IdentifierNode
+import org.example.astnode.statamentNode.AssignmentNode
+import org.example.astnode.statamentNode.VariableDeclarationNode
 import visitors.AnalyzerVisitor
 
 class UnusedVariableVisitor : AnalyzerVisitor {
@@ -21,13 +22,30 @@ class UnusedVariableVisitor : AnalyzerVisitor {
 
     override fun visit(node: ASTNode): VisitorResult {
         when (node) {
-            is VariableDeclarationNode ->
+            is VariableDeclarationNode -> {
                 declared.add(
-                    node.identifier.name to SourcePosition(node.location.line, node.location.column),
+                    node.identifier.name to SourcePosition(node.location.getLine(), node.location.getColumn()),
                 )
+                // Visitar recursivamente el valor para detectar uso de otras variables
+                visitRecursive(node.init)
+            }
+            is AssignmentNode -> {
+                // Marcar el identificador asignado como usado
+                used.add(node.identifier.name)
+                // Visitar el valor del assignment
+                visitRecursive(node.value)
+            }
             is IdentifierNode -> used.add(node.name)
         }
         return VisitorResult.Empty
+    }
+
+    private fun visitRecursive(node: ASTNode?) {
+        if (node == null) return
+        when (node) {
+            is IdentifierNode -> used.add(node.name)
+            // Podríamos agregar más casos aquí si es necesario
+        }
     }
 
     override fun checkWarnings(): VisitorResult {
@@ -36,7 +54,7 @@ class UnusedVariableVisitor : AnalyzerVisitor {
                 warnings.add(
                     WarningInfo(
                         code = "UNUSED_VAR",
-                        message = "Variable '$name' declarada pero no utilizada",
+                        message = "Variable '$name' is declared but never used.",
                         position = pos,
                     ),
                 )

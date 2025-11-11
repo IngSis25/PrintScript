@@ -1,36 +1,41 @@
 package org.example.formatter
 
 import org.example.astnode.ASTNode
-import org.example.formatter.config.FormatterConfig
+import org.example.astnode.astNodeVisitor.ASTNodeVisitor
+import org.example.iterator.PrintScriptIterator
+import rules.Rule
 
 class Formatter(
-    private val config: FormatterConfig,
+    private val nodeIterator: PrintScriptIterator<ASTNode>,
 ) {
-    fun format(asts: Iterator<ASTNode>): String {
-        val result = StringBuilder()
-        val visitor = FormatterVisitor(config, result)
-        while (asts.hasNext()) {
-            val node = asts.next()
-            visitor.visit(node)
+    private val visitor: ASTNodeVisitor = FormatterVisitor()
+
+    fun format(rules: List<Rule>): FormatResult {
+        val code: MutableList<String> = mutableListOf()
+        var result = ""
+
+        // Takes each AST and gets its string representation
+        while (nodeIterator.hasNext()) {
+            val node = nodeIterator.next()!!
+            code.add(visitor.visit(node).toString())
         }
-        return result.toString()
+
+        // Applies rules to each statement of code
+        code.forEach { line ->
+            result += applyRules(line, rules)
+        }
+
+        return FormatResult(result)
     }
 
-    init { // validate config
-        config.indent?.takeIf { it < 0 }?.let {
-            throw IllegalParameterException("\"indent-inside-if\" must be greater than or equal to 0, $it was provided")
+    private fun applyRules(
+        line: String,
+        rules: List<Rule>,
+    ): String {
+        var modifiedLine = line
+        rules.forEach { rule ->
+            modifiedLine = rule.applyRule(modifiedLine)
         }
-        if (config.ifBraceSameLine == config.ifBraceBelowLine && config.ifBraceSameLine != null) {
-            throw IllegalParameterException("\"if-brace-same-line\" and \"if-brace-below-line\" should be different")
-        }
-        if (config.spaceAroundEquals == config.noSpaceAroundEquals && config.spaceAroundEquals != null) {
-            throw IllegalParameterException(
-                "\"enforce-spacing-around-equals\" " +
-                    "and \"enforce-no-spacing-around-equals\" should be different",
-            )
-        }
-        config.lineBreaksAfterPrints?.takeIf { it < 0 || it > 2 }?.let {
-            throw IllegalParameterException("\"line-breaks-after-println\" must be between 0 and 2, $it was provided")
-        }
+        return modifiedLine
     }
 }
