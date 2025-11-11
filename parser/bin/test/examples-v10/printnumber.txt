@@ -1,9 +1,0 @@
-println(5);
-
-#####
-
-PrintStatementNode
-
-#####
-
-True
