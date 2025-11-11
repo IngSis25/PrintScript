@@ -11,18 +11,28 @@ class Execute : CliktCommand() {
     private val filePath by argument(help = "Path to the script file to execute")
 
     override fun run() {
-        val file = File(filePath)
-        val totalBytes = file.length()
-        val inputStream = ProgressInputStream(FileInputStream(file), totalBytes)
-        val reader = BufferedReader(inputStream.reader())
+        try {
+            val file = File(filePath)
+            if (!file.exists()) {
+                echo("Error: File not found: $filePath", err = true)
+                return
+            }
 
-        val lexer = LexerFactory.createLexerV11(reader)
-        val parser = ParserFactory.createParserV11(lexer)
-        val output = ConsoleOutput()
-        val interpreter = InterpreterFactory.createInterpreterVersion11(output)
+            val totalBytes = file.length()
+            val inputStream = ProgressInputStream(FileInputStream(file), totalBytes)
+            val reader = BufferedReader(inputStream.reader())
 
-        interpreter.interpret(parser)
+            val lexer = LexerFactory.createLexerV11(reader)
+            val parser = ParserFactory.createParserV11(lexer)
+            val output = ConsoleOutput()
+            val interpreter = InterpreterFactory.createInterpreterVersion11(output)
 
-        echo("Execution successful")
+            interpreter.interpret(parser)
+
+            echo("Execution successful")
+        } catch (e: Exception) {
+            echo("Error: ${e.message}", err = true)
+            throw e
+        }
     }
 }

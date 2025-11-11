@@ -8,16 +8,27 @@ class Validation : CliktCommand() {
     private val filePath by argument(help = "Path to the script file to execute")
 
     override fun run() {
-        val code = File(filePath).readText()
-        val reader = StringReader(code)
+        try {
+            val file = File(filePath)
+            if (!file.exists()) {
+                echo("Error: File not found: $filePath", err = true)
+                return
+            }
 
-        echo("Analyzing...\n", trailingNewline = true)
-        val lexer = LexerFactory.createLexerV11(reader)
+            val code = file.readText()
+            val reader = StringReader(code)
 
-        echo("Parsing...\n", trailingNewline = true)
-        val parser = ParserFactory.createParserV11(lexer)
-        parser.collectAllASTNodes()
+            echo("Analyzing...\n", trailingNewline = true)
+            val lexer = LexerFactory.createLexerV11(reader)
 
-        echo("Validation successful")
+            echo("Parsing...\n", trailingNewline = true)
+            val parser = ParserFactory.createParserV11(lexer)
+            parser.collectAllASTNodes()
+
+            echo("Validation successful")
+        } catch (e: Exception) {
+            echo("Error: ${e.message}", err = true)
+            throw e
+        }
     }
 }
