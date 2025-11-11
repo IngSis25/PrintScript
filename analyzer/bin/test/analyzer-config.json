@@ -1,0 +1,13 @@
+{
+  "identifierFormat": {
+    "enabled": true,
+    "format": "CAMEL_CASE"
+  },
+  "printlnRestrictions": {
+    "enabled": true,
+    "allowOnlyIdentifiersAndLiterals": true
+  },
+  "maxErrors": 50,
+  "enableWarnings": true,
+  "strictMode": false
+}

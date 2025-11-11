@@ -1,10 +1,10 @@
 package main.kotlin.analyzer
 
-import org.example.ast.VariableDeclarationNode
 import org.example.astnode.ASTNode
+import org.example.astnode.statamentNode.VariableDeclarationNode
 
 object SymbolTableBuilder {
-    fun build(nodes: MutableList<org.example.astnode.ASTNode>): SymbolTable {
+    fun build(nodes: MutableList<ASTNode>): SymbolTable {
         val table = SymbolTable()
         nodes.forEach { node ->
             when (node) {
@@ -12,7 +12,7 @@ object SymbolTableBuilder {
                     val inferredType = inferVariableType(node, table)
                     val position =
                         node.location?.let {
-                            SourcePosition(it.line, it.column)
+                            SourcePosition(it.getLine(), it.getColumn())
                         } ?: SourcePosition(1, 1)
                     table.declare(
                         name = node.identifier.name,
@@ -31,8 +31,7 @@ object SymbolTableBuilder {
         table: SymbolTable,
     ): Types =
         when {
-            node.varType != null -> TypeOf.stringToType(node.varType!!)
-            node.value != null -> TypeOf.inferType(node.value!! as ASTNode, table)
-            else -> Types.UNKNOWN
+            node.identifier.dataType.isNotEmpty() -> TypeOf.stringToType(node.identifier.dataType)
+            else -> TypeOf.inferType(node.init as ASTNode, table)
         }
 }

@@ -1,0 +1,12 @@
+if (true) {
+    println("Hello");
+    println("World");
+}
+
+#####
+
+IfNode
+
+#####
+
+True

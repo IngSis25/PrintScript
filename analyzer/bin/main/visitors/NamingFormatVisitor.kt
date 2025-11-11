@@ -2,9 +2,9 @@ package org.checkvisitors
 
 import WarningInfo
 import main.kotlin.analyzer.SourcePosition
-import org.example.ast.VariableDeclarationNode
 import org.example.astnode.ASTNode
 import org.example.astnode.astNodeVisitor.VisitorResult
+import org.example.astnode.statamentNode.VariableDeclarationNode
 import visitors.AnalyzerVisitor
 
 class NamingFormatVisitor(
@@ -17,11 +17,18 @@ class NamingFormatVisitor(
         if (node is VariableDeclarationNode) {
             val name = node.identifier.name
             if (!Regex(regexPattern).matches(name)) {
+                val identifierLocation = node.identifier.location
                 warnings.add(
                     WarningInfo(
                         code = "NAMING_FORMAT",
-                        message = "Variable '$name' no sigue el formato $patternName",
-                        position = SourcePosition(node.location.line, node.location.column),
+                        message = "Location:(line: ${identifierLocation.getLine()}, column: ${identifierLocation
+                            .getColumn()}), Declaration's identifier '$name' does not match the pattern $patternName",
+                        position =
+                            SourcePosition(
+                                identifierLocation.getLine(),
+                                identifierLocation
+                                    .getColumn(),
+                            ),
                     ),
                 )
             }

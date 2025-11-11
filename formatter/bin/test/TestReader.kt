@@ -1,7 +1,8 @@
 package org.example.formatter
 
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonObject
 import java.io.File
 
 class TestReader {
@@ -9,13 +10,13 @@ class TestReader {
         val content = File(path).readText()
         val parts = content.split("#####")
         val codePart = parts[0].trim()
-        val solutionPart = parts[1].trim().split("\n").filter { it.isNotEmpty() }
+        val solutionPart = parts[1].trim().split("\n")
         val shouldSucceed = parts[2].trim().toBoolean()
         val json = getJson(parts[3].trim())
         return Quadruple(codePart, solutionPart, shouldSucceed, json)
     }
 
-    private fun getJson(input: String): JsonObject = JsonParser.parseString(input).asJsonObject
+    private fun getJson(input: String): JsonObject = Json.parseToJsonElement(input).jsonObject
 }
 
 data class Quadruple<A, B, C, D>(
