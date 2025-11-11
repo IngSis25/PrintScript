@@ -38,7 +38,7 @@ class DefaultAnalyzer(
         val diagnostics = mutableListOf<Diagnostic>()
         visitors.forEach { visitor ->
             val result = visitor.checkWarnings()
-            if (result is VisitorResult.ListResult<*>) {
+            if (result is VisitorResult.ListResult) {
                 // asumimos que ListResult.value es List<WarningInfo>
                 @Suppress("UNCHECKED_CAST")
                 val list = result.value as? List<WarningInfo>
@@ -54,7 +54,6 @@ class DefaultAnalyzer(
                 }
             }
         }
-
         val limited = if (config.maxErrors > 0) diagnostics.take(config.maxErrors) else diagnostics
         return AnalysisResult(limited)
     }

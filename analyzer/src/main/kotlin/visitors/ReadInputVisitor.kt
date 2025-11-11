@@ -18,7 +18,7 @@ class ReadInputVisitor(
                 WarningInfo(
                     code = "READ_INPUT",
                     message = "Uso de 'readInput/readln' no permitido",
-                    position = SourcePosition(node.location.line, node.location.column),
+                    position = SourcePosition(node.location.getLine(), node.location.getColumn()),
                 ),
             )
         }

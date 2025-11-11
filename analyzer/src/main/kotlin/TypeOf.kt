@@ -1,7 +1,7 @@
 package main.kotlin.analyzer
 
-import org.example.ast.BinaryOpNode
 import org.example.astnode.ASTNode
+import org.example.astnode.expressionNodes.BinaryExpressionNode
 import org.example.astnode.expressionNodes.IdentifierNode
 import org.example.astnode.expressionNodes.LiteralNode
 import org.example.astnode.expressionNodes.LiteralValue
@@ -32,7 +32,7 @@ object TypeOf {
 
             is IdentifierNode -> symbolTable.getType(node.name) ?: Types.UNKNOWN
 
-            is BinaryOpNode -> {
+            is BinaryExpressionNode -> {
                 val leftType = inferType(node.left as ASTNode, symbolTable)
                 val rightType = inferType(node.right as ASTNode, symbolTable)
 

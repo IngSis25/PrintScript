@@ -1,6 +1,5 @@
 package main.kotlin.analyzer
 
-import org.example.ast.ASTNode
 import org.example.iterator.PrintScriptIterator
 
 /**

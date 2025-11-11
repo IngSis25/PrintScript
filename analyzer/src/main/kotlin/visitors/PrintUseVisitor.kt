@@ -18,7 +18,7 @@ class PrintUseVisitor(
                 WarningInfo(
                     code = "PRINT_USE",
                     message = "Uso de 'print/println' no permitido",
-                    position = SourcePosition(node.location.line, node.location.column),
+                    position = SourcePosition(node.location.getLine(), node.location.getColumn()),
                 ),
             )
         }

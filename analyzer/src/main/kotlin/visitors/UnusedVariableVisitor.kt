@@ -3,10 +3,10 @@ package org.checkvisitors
 import WarningInfo
 import main.kotlin.analyzer.SourcePosition
 import main.kotlin.analyzer.SymbolTable
-import org.example.ast.IdentifierNode
-import org.example.ast.VariableDeclarationNode
 import org.example.astnode.ASTNode
 import org.example.astnode.astNodeVisitor.VisitorResult
+import org.example.astnode.expressionNodes.IdentifierNode
+import org.example.astnode.statamentNode.VariableDeclarationNode
 import visitors.AnalyzerVisitor
 
 class UnusedVariableVisitor : AnalyzerVisitor {
@@ -23,7 +23,7 @@ class UnusedVariableVisitor : AnalyzerVisitor {
         when (node) {
             is VariableDeclarationNode ->
                 declared.add(
-                    node.identifier.name to SourcePosition(node.location.line, node.location.column),
+                    node.identifier.name to SourcePosition(node.location.getLine(), node.location.getColumn()),
                 )
             is IdentifierNode -> used.add(node.name)
         }
