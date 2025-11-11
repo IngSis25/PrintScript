@@ -1,10 +1,10 @@
 package test.analyzer
 
-import LexerFactory
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import main.kotlin.analyzer.AnalyzerConfig
 import main.kotlin.analyzer.AnalyzerFactory
+import main.kotlin.lexer.LexerFactory
 import org.ParserFactory
 import org.example.astnode.ASTNode
 import org.junit.jupiter.api.Test

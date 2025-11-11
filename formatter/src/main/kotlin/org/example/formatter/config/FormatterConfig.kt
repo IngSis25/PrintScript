@@ -1,42 +1,37 @@
 package org.example.formatter.config
 
-import org.example.formatter.rule.LineBreaksBeforePrints
-import org.example.formatter.rule.SpaceAroundColons
-import org.example.formatter.rule.SpaceAroundEquals
-import org.example.formatter.rule.SpaceInsideParentheses
+import com.google.gson.annotations.SerializedName
+import org.example.formatter.rule.IndentRule
+import org.example.formatter.rule.InlineIfBraceRule
+import org.example.formatter.rule.LineBreaksRule
+import org.example.formatter.rule.SpaceAroundColonsRule
+import org.example.formatter.rule.SpaceAroundEqualsRule
 
 // Configuración principal del formatter que se carga desde JSON
 // todas las opciones de formateo y crea las reglas correspondientes
 
 data class FormatterConfig(
-    val lineBreaksBeforePrints: Int = 0,
-    val spaceAroundEquals: Boolean = true,
-    val spaceBeforeColon: Boolean = false,
-    val spaceAfterColon: Boolean = false,
-    val spaceAroundAssignment: Boolean = true,
-    val spaceInsideParentheses: Boolean = false,
-    val indentSize: Int = 2,
-    val ifBraceSameLine: Boolean = true,
-    val onlyLineBreakAfterStatement: Boolean = false,
+    @SerializedName("line-breaks-after-println") val lineBreaksAfterPrints: Int?,
+    @SerializedName("enforce-spacing-around-equals") val spaceAroundEquals: Boolean?,
+    @SerializedName("enforce-no-spacing-around-equals") val noSpaceAroundEquals: Boolean?,
+    @SerializedName("enforce-spacing-before-colon-in-declaration") val spaceBeforeColon: Boolean?,
+    @SerializedName("enforce-spacing-after-colon-in-declaration") val spaceAfterColon: Boolean?,
+    @SerializedName("if-brace-same-line") val ifBraceSameLine: Boolean?,
+    @SerializedName("if-brace-below-line") val ifBraceBelowLine: Boolean?,
+    @SerializedName("indent-inside-if") val indent: Int?,
 ) {
-    init {
-        // lineBreaksBeforePrints debe estar entre 0 y 2 -> valid
-        if (lineBreaksBeforePrints !in 0..2) {
-            throw IllegalArgumentException(
-                "lineBreaksBeforePrints debe estar entre 0 y 2, pero era: $lineBreaksBeforePrints",
-            )
-        }
-    }
+    val lineBreaksAfterPrintsRule: LineBreaksRule
+        get() = LineBreaksRule(lineBreaksAfterPrints ?: 0)
 
-    // Factory methods
+    val spaceAroundEqualsRule: SpaceAroundEqualsRule
+        get() = SpaceAroundEqualsRule(spaceAroundEquals ?: true && !(noSpaceAroundEquals ?: false))
 
-    fun lineBreaksBeforePrintsRule(): LineBreaksBeforePrints = LineBreaksBeforePrints(lineBreaksBeforePrints)
+    val spaceAroundColonsRule: SpaceAroundColonsRule
+        get() = SpaceAroundColonsRule(spaceBeforeColon ?: false, spaceAfterColon ?: true)
 
-    fun spaceAroundEqualsRule(): SpaceAroundEquals = SpaceAroundEquals(spaceAroundEquals)
+    val indentRule: IndentRule
+        get() = IndentRule(indent ?: 2)
 
-    fun spaceAroundColonsRule(): SpaceAroundColons = SpaceAroundColons(spaceBeforeColon, spaceAfterColon)
-
-    fun spaceAroundAssignmentRule(): SpaceAroundEquals = SpaceAroundEquals(spaceAroundAssignment)
-
-    fun spaceInsideParenthesesRule(): SpaceInsideParentheses = SpaceInsideParentheses(spaceInsideParentheses)
+    val inlineIfBraceRule: InlineIfBraceRule
+        get() = InlineIfBraceRule(ifBraceSameLine ?: true && !(ifBraceBelowLine ?: false))
 }
