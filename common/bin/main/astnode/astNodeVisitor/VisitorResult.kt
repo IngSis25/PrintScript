@@ -18,7 +18,7 @@ sealed class VisitorResult {
     ) : VisitorResult()
 
     data class ListResult(
-        val value: List<String>,
+        val value: List<Any>,
     ) : VisitorResult()
 
     data object Empty : VisitorResult()
