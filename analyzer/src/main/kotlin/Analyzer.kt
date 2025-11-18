@@ -1,5 +1,6 @@
 package main.kotlin.analyzer
 
+import org.example.astnode.ASTNode
 import org.example.iterator.PrintScriptIterator
 
 /**
@@ -15,5 +16,7 @@ interface Analyzer {
      * @param config Configuration for the analyzer
      * @return Analysis result containing diagnostics
      */
-    fun analyze(config: AnalyzerConfig): AnalysisResult
+    fun analyze(ast: List<ASTNode>,
+                config: AnalyzerConfig,
+                version: String): AnalysisResult
 }

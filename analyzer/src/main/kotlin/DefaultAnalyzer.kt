@@ -6,13 +6,13 @@ import org.example.astnode.astNodeVisitor.VisitorResult
 import org.example.iterator.PrintScriptIterator
 
 class DefaultAnalyzer(
-    string: String,
-    nodeIterator: PrintScriptIterator<ASTNode>,
-) {
-    fun analyze(
+    override val version: String,
+    override val nodeIterator: PrintScriptIterator<ASTNode>,
+) : Analyzer {
+    override fun analyze(
         ast: List<ASTNode>,
         config: AnalyzerConfig,
-        version: String = "1.0",
+        version: String,
     ): AnalysisResult {
         @Suppress("UNCHECKED_CAST")
         val nodes = ast as? List<ASTNode> ?: ast.map { it as ASTNode }
