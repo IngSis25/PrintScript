@@ -48,17 +48,39 @@ class AnalyzerVisitorsFactory {
 
     private fun createAnalyzerVisitorsV10FromJson(jsonFile: JsonObject): List<AnalyzerVisitor> {
         val visitors = mutableListOf<AnalyzerVisitor>()
+        val configOnlyKeys = setOf("maxErrors", "enableWarnings", "strictMode")
         for ((key, value) in jsonFile.entrySet()) {
             when (key) {
                 "UnusedVariableCheck" -> visitors.add(UnusedVariableVisitor())
-                "NamingFormatCheck" -> {
-                    val namingPatternName = value.asJsonObject.get("namingPatternName")?.asString ?: "camelCase"
+                "NamingFormatCheck", "identifierFormat" -> {
+                    val namingPatternName =
+                        when {
+                            key == "identifierFormat" -> {
+                                val format = value.asJsonObject.get("format")?.asString ?: "CAMEL_CASE"
+                                when (format) {
+                                    "CAMEL_CASE" -> "camelCase"
+                                    "SNAKE_CASE" -> "snakeCase"
+                                    "PASCAL_CASE" -> "pascalCase"
+                                    else -> "camelCase"
+                                }
+                            }
+                            else -> value.asJsonObject.get("namingPatternName")?.asString ?: "camelCase"
+                        }
                     val pattern = PatternFactory.getNamingFormatPattern(namingPatternName)
                     visitors.add(NamingFormatVisitor(namingPatternName, pattern))
                 }
-                "PrintUseCheck" -> {
-                    val enabled = value.asJsonObject.get("printlnCheckEnabled")?.asBoolean == true
+                "PrintUseCheck", "printlnRestrictions" -> {
+                    val enabled =
+                        when {
+                            key == "printlnRestrictions" -> {
+                                value.asJsonObject.get("enabled")?.asBoolean == true
+                            }
+                            else -> value.asJsonObject.get("printlnCheckEnabled")?.asBoolean == true
+                        }
                     visitors.add(PrintUseVisitor(enabled))
+                }
+                in configOnlyKeys -> {
+                    // Ignorar propiedades de configuración que no son checks
                 }
                 else -> throw IllegalArgumentException("Unknown check: $key")
             }
@@ -68,21 +90,43 @@ class AnalyzerVisitorsFactory {
 
     private fun createAnalyzerVisitorsV11FromJson(jsonFile: JsonObject): List<AnalyzerVisitor> {
         val visitors = mutableListOf<AnalyzerVisitor>()
+        val configOnlyKeys = setOf("maxErrors", "enableWarnings", "strictMode")
         for ((key, value) in jsonFile.entrySet()) {
             when (key) {
                 "UnusedVariableCheck" -> visitors.add(UnusedVariableVisitor())
-                "NamingFormatCheck" -> {
-                    val namingPatternName = value.asJsonObject.get("namingPatternName")?.asString ?: "camelCase"
+                "NamingFormatCheck", "identifierFormat" -> {
+                    val namingPatternName =
+                        when {
+                            key == "identifierFormat" -> {
+                                val format = value.asJsonObject.get("format")?.asString ?: "CAMEL_CASE"
+                                when (format) {
+                                    "CAMEL_CASE" -> "camelCase"
+                                    "SNAKE_CASE" -> "snakeCase"
+                                    "PASCAL_CASE" -> "pascalCase"
+                                    else -> "camelCase"
+                                }
+                            }
+                            else -> value.asJsonObject.get("namingPatternName")?.asString ?: "camelCase"
+                        }
                     val pattern = PatternFactory.getNamingFormatPattern(namingPatternName)
                     visitors.add(NamingFormatVisitor(namingPatternName, pattern))
                 }
-                "PrintUseCheck" -> {
-                    val enabled = value.asJsonObject.get("printlnCheckEnabled")?.asBoolean == true
+                "PrintUseCheck", "printlnRestrictions" -> {
+                    val enabled =
+                        when {
+                            key == "printlnRestrictions" -> {
+                                value.asJsonObject.get("enabled")?.asBoolean == true
+                            }
+                            else -> value.asJsonObject.get("printlnCheckEnabled")?.asBoolean == true
+                        }
                     visitors.add(PrintUseVisitor(enabled))
                 }
                 "ReadInputCheck" -> {
                     val enabled = value.asJsonObject.get("readInputCheckEnabled")?.asBoolean == true
                     visitors.add(ReadInputVisitor(enabled))
+                }
+                in configOnlyKeys -> {
+                    // Ignorar propiedades de configuración que no son checks
                 }
                 else -> throw IllegalArgumentException("Unknown check: $key")
             }

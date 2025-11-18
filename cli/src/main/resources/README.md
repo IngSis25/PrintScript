@@ -55,20 +55,6 @@ Este directorio contiene archivos de ejemplo para probar el CLI de PrintScript.
 ./gradlew :cli:run --args="format src/main/resources/example-v11.ps src/main/resources/formatter-rules.json --version 1.1"
 ```
 
-## Script de Prueba
-
-Se incluye un script `test-cli.sh` que ejecuta todas las pruebas automáticamente:
-
-```bash
-cd cli/src/main/kotlin/resources
-./test-cli.sh
-```
-
-O desde la raíz del proyecto:
-
-```bash
-./cli/src/main/kotlin/resources/test-cli.sh
-```
 
 ## Notas
 

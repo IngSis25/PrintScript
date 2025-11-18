@@ -9,6 +9,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import main.kotlin.analyzer.AnalyzerConfig
 import main.kotlin.analyzer.AnalyzerFactory
+import main.kotlin.analyzer.ConfigLoader
 import main.kotlin.analyzer.DiagnosticSeverity
 import main.kotlin.lexer.LexerFactory
 import org.ParserFactory
@@ -41,7 +42,17 @@ class Analyze : CliktCommand() {
         val code = file.readText()
         val reader = StringReader(code)
         val rulesContent = rulesFile.readText()
-        val rules = Gson().fromJson(rulesContent, JsonObject::class.java)
+        val rulesJson = Gson().fromJson(rulesContent, JsonObject::class.java)
+
+        // Cargar la configuración completa usando ConfigLoader
+        val config =
+            try {
+                main.kotlin.analyzer.ConfigLoader
+                    .loadFromJson(rulesFile)
+            } catch (e: Exception) {
+                // Si falla el ConfigLoader, usar el JSON crudo (para compatibilidad con formato antiguo)
+                AnalyzerConfig(jsonConfig = rulesJson)
+            }
 
         echo("Lexing...\n", trailingNewline = true)
         val lexer =
@@ -85,9 +96,6 @@ class Analyze : CliktCommand() {
                 "1.1" -> AnalyzerFactory().createAnalyzerV11(parser2)
                 else -> throw IllegalArgumentException("Unsupported version: $version")
             }
-
-        // Crear el config con el JsonObject
-        val config = AnalyzerConfig(jsonConfig = rules)
 
         // Analizar los nodos
         val result = analyzer.analyze(nodes, config, version)

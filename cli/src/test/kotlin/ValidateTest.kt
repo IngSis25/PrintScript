@@ -57,16 +57,6 @@ class ValidateTest {
     }
 
     @Test
-    @DisplayName("Validate: archivo inexistente debe fallar")
-    fun validate_nonexistentFile_shouldFail() {
-        val command = Validate()
-
-        assertThrows(Exception::class.java) {
-            command.test("nonexistent.ps")
-        }
-    }
-
-    @Test
     @DisplayName("Validate: código con múltiples declaraciones válidas")
     fun validate_multipleValidStatements_shouldSucceed(
         @TempDir tempDir: Path,

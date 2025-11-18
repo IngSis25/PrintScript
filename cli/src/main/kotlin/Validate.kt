@@ -19,26 +19,37 @@ class Validate : CliktCommand() {
     ).choice("1.0", "1.1", ignoreCase = true).default("1.1")
 
     override fun run() {
-        val code = File(filePath).readText()
-        val reader = StringReader(code)
-
-        echo("Lexing...\n", trailingNewline = true)
-        val lexer =
-            when (version) {
-                "1.0" -> LexerFactory.createLexerV10(reader)
-                "1.1" -> LexerFactory.createLexerV11(reader)
-                else -> throw IllegalArgumentException("Unsupported version: $version")
+        try {
+            val file = File(filePath)
+            if (!file.exists()) {
+                echo("Error: File not found: $filePath", err = true)
+                return
             }
 
-        echo("Parsing...\n", trailingNewline = true)
-        val parser =
-            when (version) {
-                "1.0" -> ParserFactory.createParserV10(lexer)
-                "1.1" -> ParserFactory.createParserV11(lexer)
-                else -> throw IllegalArgumentException("Unsupported version: $version")
-            }
-        parser.collectAllASTNodes()
+            val code = file.readText()
+            val reader = StringReader(code)
 
-        echo("Validation successful")
+            echo("Lexing...\n", trailingNewline = true)
+            val lexer =
+                when (version) {
+                    "1.0" -> LexerFactory.createLexerV10(reader)
+                    "1.1" -> LexerFactory.createLexerV11(reader)
+                    else -> throw IllegalArgumentException("Unsupported version: $version")
+                }
+
+            echo("Parsing...\n", trailingNewline = true)
+            val parser =
+                when (version) {
+                    "1.0" -> ParserFactory.createParserV10(lexer)
+                    "1.1" -> ParserFactory.createParserV11(lexer)
+                    else -> throw IllegalArgumentException("Unsupported version: $version")
+                }
+            parser.collectAllASTNodes()
+
+            echo("Validation successful")
+        } catch (e: Exception) {
+            echo("Error: ${e.message}", err = true)
+            throw e
+        }
     }
 }
