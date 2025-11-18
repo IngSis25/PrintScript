@@ -17,6 +17,7 @@ class Parser(
 ) : PrintScriptIterator<ASTNode> {
     private var peekedElement: ASTNode? = null
 
+    // aca lo pasa al ASTGenerator para que genere el nodo AST.
     fun parse(tokenIterator: PrintScriptIterator<Token>): ASTNode {
         val buffer = ArrayList<Token>()
 
@@ -30,17 +31,14 @@ class Parser(
             }
         }
 
-        // If the buffer is not empty, there was a missing semicolon
         if (buffer.isNotEmpty()) {
             throw Exception(
                 "Unexpected end of input. Missing semicolon or brace at the end of the file.",
             )
         }
-        // never reaches this point.
         return ProgramNode("EndOfLine", Location(0, 0), emptyList())
     }
 
-    // Simply get all the tokens concerning that structure and handle them
     private fun handleStructure(
         type: String,
         tokenIterator: PrintScriptIterator<Token>,

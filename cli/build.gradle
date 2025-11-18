@@ -3,7 +3,7 @@ plugins {
 }
 
 application {
-    mainClass = 'main.kotlin.cli.MainKt'
+    mainClass = 'main.kotlin.cli.CommandLineInterfaceKt'
 }
 
 dependencies {
@@ -14,7 +14,9 @@ dependencies {
     implementation(project(":formatter"))
     implementation(project(":common"))
     implementation(project(":analyzer"))
+    implementation("com.google.code.gson:gson:2.10.1")
     testImplementation "org.jetbrains.kotlin:kotlin-test:2.2.0"
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
     testImplementation("com.github.ajalt.clikt:clikt:4.2.0")
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2'
 }

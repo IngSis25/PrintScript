@@ -1,0 +1,119 @@
+@startuml
+skinparam style strictuml
+skinparam classAttributeIconVisibility false
+
+package "cli" {
+  class CommandLineInterface {
+    +run()
+  }
+  CommandLineInterface ..|> CliktCommand
+  CommandLineInterface ..> Analyze
+  CommandLineInterface ..> Format
+  CommandLineInterface ..> Validate
+  CommandLineInterface ..> Execute
+
+  class Analyze {
+    -filePath: String
+    -rulePath: String
+    +run()
+  }
+  Analyze ..|> CliktCommand
+  Analyze ..> LexerFactory
+  Analyze ..> ParserFactory
+  Analyze ..> AnalyzerFactory
+  Analyze ..> AnalyzerConfig
+  Analyze ..> JsonObject
+  Analyze ..> File
+  Analyze ..> StringReader
+
+  class Format {
+    -filePath: String
+    -rulePath: String
+    +run()
+  }
+  Format ..|> CliktCommand
+  Format ..> LexerFactory
+  Format ..> ParserFactory
+  Format ..> Formatter
+  Format ..> RulesFactory
+  Format ..> JsonObject
+  Format ..> File
+  Format ..> StringReader
+
+  class Validate {
+    -filePath: String
+    +run()
+  }
+  Validate ..|> CliktCommand
+  Validate ..> LexerFactory
+  Validate ..> ParserFactory
+  Validate ..> File
+  Validate ..> StringReader
+
+  class Execute {
+    -filePath: String
+    +run()
+  }
+  Execute ..|> CliktCommand
+  Execute ..> LexerFactory
+  Execute ..> ParserFactory
+  Execute ..> InterpreterFactory
+  Execute ..> ConsoleOutput
+  Execute ..> ProgressInputStream
+  Execute ..> File
+  Execute ..> FileInputStream
+  Execute ..> BufferedReader
+
+  class ProgressInputStream {
+    -totalBytes: Long
+    -bytesRead: Long
+    +read(): Int
+    +read(b: ByteArray, off: Int, len: Int): Int
+    -showProgress()
+  }
+  ProgressInputStream ..|> FilterInputStream
+  ProgressInputStream ..> InputStream
+}
+
+note right of CommandLineInterface
+  Comando raíz que agrupa todos los
+  subcomandos disponibles: analyze,
+  format, validate y execute.
+end note
+
+note right of Analyze
+  Comando que analiza código fuente
+  usando reglas de análisis configurables.
+  Crea lexer, parser y analyzer, luego
+  muestra los diagnósticos encontrados.
+end note
+
+note right of Format
+  Comando que formatea código fuente
+  según reglas de formateo configurables.
+  Lee el código, lo parsea, aplica reglas
+  y escribe el resultado de vuelta al archivo.
+end note
+
+note right of Validate
+  Comando que valida la sintaxis del
+  código fuente. Solo verifica que el
+  código pueda ser lexeado y parseado
+  correctamente.
+end note
+
+note right of Execute
+  Comando que ejecuta código fuente.
+  Crea lexer, parser e intérprete,
+  y ejecuta el programa mostrando
+  la salida en consola.
+end note
+
+note right of ProgressInputStream
+  Wrapper de InputStream que muestra
+  el progreso de lectura del archivo
+  durante la ejecución.
+end note
+
+@enduml
+
