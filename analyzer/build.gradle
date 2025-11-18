@@ -3,9 +3,9 @@ plugins {
 }
 
 dependencies {
-    implementation project(':lexer')
-    implementation project(':parser')
     implementation(project(":common"))
+    testImplementation(project(":lexer"))
+    testImplementation(project(":parser"))
     testImplementation "org.jetbrains.kotlin:kotlin-test:2.2.0"
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2'
