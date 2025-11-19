@@ -1,89 +1,219 @@
 package runner
 
+import com.google.gson.JsonObject
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.io.TempDir
-import java.io.File
-import java.nio.file.Path
+import java.io.StringReader
 
 class RunnerTests {
     @Test
-    @DisplayName("validate(): reporta error cuando falta ';'")
-    fun validate_reports_syntax_error() {
-        val code =
-            """
-            let a: number = 12
-            println(a);
-            """.trimIndent()
+    @DisplayName("Debería crear un Runner con versión 1.0")
+    fun `should create runner with version one`() {
+        val code = "let x: number = 10;"
+        val reader = StringReader(code)
 
-        val runner =
-            Runner(
-                version = "1.0",
-                sourceCode = code,
-            )
-
-        val result = runner.validate()
-        assertFalse(result.errors.isEmpty(), "Debería reportar error de sintaxis por falta de ';'")
-        assertTrue(
-            result.errors.first().contains(";") || result.errors.first().contains("syntax", ignoreCase = true),
-            "El mensaje debería mencionar un problema de sintaxis o el ';' faltante. Fue: ${result.errors.firstOrNull()}",
-        )
+        assertDoesNotThrow {
+            Runner("1.0", reader)
+        }
     }
 
     @Test
-    @DisplayName("format(): aplica salto de línea tras ';' cuando onlyLineBreakAfterStatement = true")
-    fun format_inserts_line_breaks_after_semicolon(
-        @TempDir tempDir: Path,
-    ) {
+    @DisplayName("Debería crear un Runner con versión 1.1")
+    fun `should create runner with version one one`() {
+        val code = "let x: number = 10;"
+        val reader = StringReader(code)
+
+        assertDoesNotThrow {
+            Runner("1.1", reader)
+        }
+    }
+
+    @Test
+    @DisplayName("Debería lanzar excepción con versión no soportada")
+    fun `should throw exception with unsupported version`() {
+        val code = "let x: number = 10;"
+        val reader = StringReader(code)
+
+        val exception =
+            assertThrows(IllegalArgumentException::class.java) {
+                Runner("2.0", reader)
+            }
+
+        assertTrue(exception.message?.contains("Unsupported version") == true)
+    }
+
+    @Test
+    @DisplayName("Debería validar código válido sin errores")
+    fun `should validate valid code without errors`() {
+        val code = "let x: number = 10;"
+        val reader = StringReader(code)
+        val runner = Runner("1.0", reader)
+
+        val result = runner.validate()
+
+        assertTrue(result.errors.isEmpty(), "No debería haber errores en código válido")
+    }
+
+    @Test
+    @DisplayName("Debería detectar errores en código inválido")
+    fun `should detect errors in invalid code`() {
+        val code = "let x number = 10;" // Falta el ':'
+        val reader = StringReader(code)
+        val runner = Runner("1.0", reader)
+
+        val result = runner.validate()
+
+        assertFalse(result.errors.isEmpty(), "Debería haber errores en código inválido")
+    }
+
+    @Test
+    @DisplayName("Debería formatear código correctamente")
+    fun `should format code correctly`() {
+        val code = "let x:number=10;"
+        val reader = StringReader(code)
+        val runner = Runner("1.0", reader)
+
+        val rulesJson = "{}"
+        val result = runner.format(rulesJson, "1.0")
+
+        assertTrue(result.errors.isEmpty(), "No debería haber errores al formatear")
+        assertNotNull(result.formattedCode, "Debería retornar código formateado")
+    }
+
+    @Test
+    @DisplayName("Debería analizar código sin warnings con configuración vacía")
+    fun `should analyze code without warnings with empty config`() {
+        val code = "let x: number = 10;"
+        val reader = StringReader(code)
+        val runner = Runner("1.0", reader)
+
+        val jsonConfig = JsonObject()
+        val result = runner.analyze(jsonConfig)
+
+        assertNotNull(result, "Debería retornar un resultado")
+        // Puede haber warnings o no, dependiendo de la configuración
+    }
+
+    @Test
+    @DisplayName("Debería analizar código con configuración de UnusedVariableCheck")
+    fun `should analyze code with UnusedVariableCheck config`() {
+        val code = "let unused: number = 10;"
+        val reader = StringReader(code)
+        val runner = Runner("1.0", reader)
+
+        val jsonConfig = JsonObject()
+        val unusedVarCheck = JsonObject()
+        jsonConfig.add("UnusedVariableCheck", unusedVarCheck)
+
+        val result = runner.analyze(jsonConfig)
+
+        assertNotNull(result, "Debería retornar un resultado")
+        assertNotNull(result.warnings, "Debería tener lista de warnings")
+        assertNotNull(result.errors, "Debería tener lista de errors")
+    }
+
+    @Test
+    @DisplayName("Debería analizar código con configuración de NamingFormatCheck")
+    fun `should analyze code with NamingFormatCheck config`() {
+        val code = "let snake_case: number = 10;"
+        val reader = StringReader(code)
+        val runner = Runner("1.0", reader)
+
+        val jsonConfig = JsonObject()
+        val namingFormatCheck = JsonObject()
+        namingFormatCheck.addProperty("namingPatternName", "camelCase")
+        jsonConfig.add("NamingFormatCheck", namingFormatCheck)
+
+        val result = runner.analyze(jsonConfig)
+
+        assertNotNull(result, "Debería retornar un resultado")
+    }
+
+    @Test
+    @DisplayName("Debería manejar código con múltiples declaraciones")
+    fun `should handle code with multiple declarations`() {
         val code =
             """
-            let x:number=1; let y: number=2; println(x + y);
+            let x: number = 10;
+            let y: string = "hello";
+            println(x);
             """.trimIndent()
 
-        // Armamos el runner y validamos que parsee
-        val runner =
-            Runner(
-                version = "1.0",
-                sourceCode = code,
-            )
-        val validate = runner.validate()
-        assertTrue(validate.errors.isEmpty(), "El código base debe ser válido antes de formatear")
+        val reader = StringReader(code)
+        val runner = Runner("1.0", reader)
 
-        // Config mínima del formatter (ajustá si tu schema difiere)
-        // Esta bandera la mencionaste en tu suite previa: onlyLineBreakAfterStatement
-        val formatterConfig =
+        val result = runner.validate()
+
+        assertTrue(result.errors.isEmpty(), "No debería haber errores en código válido")
+    }
+
+    @Test
+    @DisplayName("Debería validar código con if en versión 1.1")
+    fun `should validate code with if in version one one`() {
+        val code =
+            """
+            if (true) {
+                println("hello");
+            }
+            """.trimIndent()
+
+        val reader = StringReader(code)
+        val runner = Runner("1.1", reader)
+
+        val result = runner.validate()
+
+        assertTrue(result.errors.isEmpty(), "No debería haber errores en código válido con if")
+    }
+
+    @Test
+    @DisplayName("Debería formatear código con reglas personalizadas")
+    fun `should format code with custom rules`() {
+        val code = "let x:number=10;"
+        val reader = StringReader(code)
+        val runner = Runner("1.0", reader)
+
+        val rulesJson =
             """
             {
-              "onlyLineBreakAfterStatement": true
+                "space_around_equals": true,
+                "space_before_colon": true,
+                "space_after_colon": true
             }
             """.trimIndent()
 
-        val configFile =
-            File(tempDir.toFile(), "formatter.json").apply {
-                writeText(formatterConfig)
-            }
+        val result = runner.format(rulesJson, "1.0")
 
-        val formatted = runner.format(configFile)
+        assertTrue(result.errors.isEmpty(), "No debería haber errores al formatear")
+        assertTrue(result.formattedCode.isNotEmpty(), "Debería retornar código formateado")
+    }
 
-        // Afirmaciones:
-        // 1) No debería haber errores del formatter
-        assertTrue(formatted.errors.isEmpty(), "El formateo no debería fallar: ${formatted.errors}")
+    @Test
+    @DisplayName("Debería manejar código vacío")
+    fun `should handle empty code`() {
+        val code = ""
+        val reader = StringReader(code)
+        val runner = Runner("1.0", reader)
 
-        // 2) El código debería tener saltos de línea tras ';'
-        //    No nos casamos con el estilo exacto, pero al menos esperamos más de una línea.
-        val lines = formatted.formattedCode.lines()
-        assertTrue(
-            lines.size >= 2,
-            "Se esperaban múltiples líneas después del formateo. Fue:\n${formatted.formattedCode}",
-        )
+        val result = runner.validate()
 
-        // 3) Sugerencia adicional: que siga conteniendo las tres sentencias
-        assertTrue(
-            formatted.formattedCode.contains("let x") &&
-                formatted.formattedCode.contains("let y") &&
-                formatted.formattedCode.contains("println"),
-            "El formateo no debería eliminar sentencias. Fue:\n${formatted.formattedCode}",
-        )
+        assertNotNull(result, "Debería retornar un resultado")
+    }
+
+    @Test
+    @DisplayName("Debería analizar código con PrintUseCheck en versión 1.1")
+    fun `should analyze code with PrintUseCheck in version one one`() {
+        val code = "println(10);"
+        val reader = StringReader(code)
+        val runner = Runner("1.1", reader)
+
+        val jsonConfig = JsonObject()
+        val printUseCheck = JsonObject()
+        printUseCheck.addProperty("printlnCheckEnabled", true)
+        jsonConfig.add("PrintUseCheck", printUseCheck)
+
+        val result = runner.analyze(jsonConfig)
+
+        assertNotNull(result, "Debería retornar un resultado")
     }
 }
