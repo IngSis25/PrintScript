@@ -22,13 +22,11 @@ private val transform = { value: String ->
         value.toBooleanStrict()
     } catch (_: IllegalArgumentException) {
         try {
-            value.toInt()
+            // Convertir a Double para mantener consistencia con el resto del sistema
+            // que usa Double para todos los números
+            value.toDouble()
         } catch (_: NumberFormatException) {
-            try {
-                value.toDouble()
-            } catch (_: NumberFormatException) {
-                value
-            }
+            value
         }
     }
 }

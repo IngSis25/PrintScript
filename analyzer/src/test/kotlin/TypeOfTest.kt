@@ -226,8 +226,7 @@ class TypeOfTest {
                 override val type: String = "Unknown"
                 override val location: Location = Location(1, 1)
 
-                override fun accept(visitor: org.example.astnode.astNodeVisitor.ASTNodeVisitor) =
-                    org.example.astnode.astNodeVisitor.VisitorResult.Empty
+                override fun accept(visitor: org.example.astnode.astNodeVisitor.ASTNodeVisitor) = org.example.astnode.astNodeVisitor.VisitorResult.Empty
             }
         assertEquals(Types.UNKNOWN, TypeOf.inferType(unknownNode, symbolTable))
     }

@@ -13,8 +13,7 @@ class IdentifierNode(
 ) : ExpressionNode {
     override fun accept(visitor: ASTNodeVisitor): VisitorResult = visitor.visit(this)
 
-    override fun getType(symbolTable: MutableMap<String, Pair<String, LiteralValue>>): String =
-        symbolTable[name]?.second?.getType() ?: dataType
+    override fun getType(symbolTable: MutableMap<String, Pair<String, LiteralValue>>): String = symbolTable[name]?.second?.getType() ?: dataType
 
     override fun toString(): String = name
 }

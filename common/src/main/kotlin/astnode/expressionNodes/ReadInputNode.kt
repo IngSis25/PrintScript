@@ -11,8 +11,7 @@ class ReadInputNode(
 ) : ExpressionNode {
     override fun accept(visitor: ASTNodeVisitor): VisitorResult = visitor.visit(this)
 
-    override fun getType(symbolTable: MutableMap<String, Pair<String, LiteralValue>>): String =
-        message.getType(symbolTable)
+    override fun getType(symbolTable: MutableMap<String, Pair<String, LiteralValue>>): String = "string" // readInput siempre devuelve un string (el intérprete lo convierte automáticamente si es necesario)
 
     override fun toString(): String = "readInput($message)"
 }

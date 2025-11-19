@@ -6,6 +6,11 @@ application {
     mainClass = 'main.kotlin.cli.CommandLineInterfaceKt'
 }
 
+// Configurar el task run para usar la entrada estándar de la consola
+tasks.named('run', JavaExec) {
+    standardInput = System.in
+}
+
 dependencies {
     implementation("com.github.ajalt.clikt:clikt:4.2.0")
     implementation(project(":lexer"))

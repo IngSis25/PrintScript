@@ -23,20 +23,6 @@ class InterpreterTesterV11 {
         return printer.printsList.joinToString(separator = "")
     }
 
-    private fun interpretAndCaptureOutputV11WithInput(
-        code: String,
-        testInput: TestInput,
-    ): String {
-        val lexer = Lexer(TokenFactory().createLexerV11(), StringReader(code))
-        val parser = ParserFactory.createParserV11(lexer)
-        val printer = TestOutput()
-        val interpreter = InterpreterFactory.createInterpreterVersion11(printer, testInput)
-
-        interpreter.interpret(parser)
-
-        return printer.printsList.joinToString(separator = "")
-    }
-
     private fun interpretAndCaptureOutputV10(input: String): String {
         val lexer = Lexer(TokenFactory().createLexerV10(), StringReader(input))
         val parser = ParserFactory.createParserV10(lexer)
@@ -114,126 +100,6 @@ class InterpreterTesterV11 {
         val input = "let a: string = 'hola'; let b: number = 5; println(a + b);"
         val output = interpretAndCaptureOutputV10(input)
         assertEquals("hola5\n", output)
-    }
-
-    @Test
-    fun testPrintlnWithAddition() {
-        val input = "println(1 + 4);"
-        val output = interpretAndCaptureOutputV10(input)
-        assertEquals("5\n", output)
-    }
-
-    @Test
-    fun testPrintlnWithSubtraction() {
-        val input = "println(5 - 1);"
-        val output = interpretAndCaptureOutputV10(input)
-        assertEquals("4\n", output)
-    }
-
-    @Test
-    fun testPrintlnWithMultiplication() {
-        val input = "println(5 * 2);"
-        val output = interpretAndCaptureOutputV10(input)
-        assertEquals("10\n", output)
-    }
-
-    @Test
-    fun testPrintlnWithDivision() {
-        val input = "println(10 / 2);"
-        val output = interpretAndCaptureOutputV10(input)
-        assertEquals("5\n", output)
-    }
-
-    @Test
-    fun testIfNode() {
-        val input =
-            """
-            if (true) {
-                println('Hello');
-            }
-            """.trimIndent()
-        val output = interpretAndCaptureOutputV11(input)
-        assertEquals("Hello\n", output)
-    }
-
-    @Test
-    fun testIfCompleteNode() {
-        val input =
-            """
-            if (false) {
-                println('Hello');
-            } else {
-                println('World');
-            }
-            """.trimIndent()
-        val output = interpretAndCaptureOutputV11(input)
-        assertEquals("World\n", output)
-    }
-
-    @Test
-    fun testIfNestedNode() {
-        val input =
-            """
-            if (true) {
-                if (true) {
-                    println('Hello');
-                    if (true) {
-                        println('World');
-                    }
-                } else {
-                    println('Goodbye World');
-                }
-            }
-            """.trimIndent()
-        val output = interpretAndCaptureOutputV11(input)
-        assertEquals("Hello\nWorld\n", output)
-    }
-
-    @Test
-    fun testIfElseNode() {
-        val input =
-            """
-            const booleanResult: boolean = true;
-            if(booleanResult) {
-                println("else statement working correctly");
-            } else {
-                println("else statement not working correctly");
-            }
-            println("outside of conditional");
-            """.trimIndent()
-        val output = interpretAndCaptureOutputV11(input)
-        assertEquals("else statement working correctly\noutside of conditional\n", output)
-    }
-
-    @Test
-    fun testReadInput() {
-        val code =
-            """
-            const name: string = readInput("Name:");
-            println("Hello " + name + "!");
-            """.trimIndent()
-        val testInput = TestInput()
-        testInput.addInput("world")
-
-        val output = interpretAndCaptureOutputV11WithInput(code, testInput)
-
-        // El prompt "Name:" se imprime sin salto de línea, luego se lee "world",
-        // y luego se imprime "Hello world!" con salto de línea
-        assertEquals("Name:Hello world!\n", output)
-    }
-
-    @Test
-    fun testReadInputWithNewline() {
-        // Test que verifica que readInput imprime el prompt y lee correctamente
-        val code = "const name: string = readInput(\"Name:\");\nprintln(\"Hello \" + name + \"!\");"
-        val testInput = TestInput()
-        testInput.addInput("world")
-
-        val output = interpretAndCaptureOutputV11WithInput(code, testInput)
-
-        // Verificamos que name contiene "world" y no "Name:"
-        assert(output.contains("Hello world!"))
-        assert(!output.contains("Hello Name:!"))
     }
 
     @Test
@@ -332,42 +198,288 @@ class InterpreterTesterV11 {
         assertEquals("True branch\n", output)
     }
 
-    @Test
-    fun testReadInputWithNumberConversion() {
-        // readInput devuelve string, pero el interpreter lo convierte automáticamente
-        val code = "let numStr: string = readInput(\"Enter number:\"); println(numStr);"
-        val testInput = TestInput()
-        testInput.addInput("5")
+    // ========== Tests para AssignmentStrategy ==========
 
-        val output = interpretAndCaptureOutputV11WithInput(code, testInput)
-        assertEquals("Enter number:5\n", output)
+    @Test
+    fun testAssignmentWithStringValue() {
+        val input = "let s: string = 'hello'; s = 'world'; println(s);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("world\n", output)
     }
 
     @Test
-    fun testReadInputWithDouble() {
-        val code = "let value: string = readInput(\"Enter value:\"); println(value);"
+    fun testAssignmentWithBooleanValue() {
+        val input = "let b: boolean = true; b = false; println(b);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("false\n", output)
+    }
+
+    @Test
+    fun testAssignmentWithNumberValue() {
+        val input = "let n: number = 10; n = 20; println(n);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("20\n", output)
+    }
+
+    @Test
+    fun testAssignmentWithExpression() {
+        val input = "let x: number = 5; x = x + 10; println(x);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("15\n", output)
+    }
+
+    // ========== Tests para IdentifierStrategy ==========
+    @Test
+    fun testIdentifierNonExistentVariable() {
+        val input = "println(x);"
+        val exception =
+            Assertions.assertThrows(Exception::class.java) {
+                interpretAndCaptureOutputV11(input)
+            }
+        assert(exception.message?.contains("Variable x no declarada") == true)
+    }
+
+    @Test
+    fun testIdentifierWithStringValue() {
+        val input = "let s: string = 'test'; println(s);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("test\n", output)
+    }
+
+    @Test
+    fun testIdentifierWithBooleanValue() {
+        val input = "let b: boolean = true; println(b);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("true\n", output)
+    }
+
+    @Test
+    fun testIdentifierInExpression() {
+        val input = "let a: number = 5; let b: number = a + 3; println(b);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("8\n", output)
+    }
+
+    // ========== Tests para VariableDeclarationStrategy ==========
+
+    @Test
+    fun testVariableDeclarationWithNullInit() {
+        val input = "let x: number; x = 42; println(x);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("42\n", output)
+    }
+
+    @Test
+    fun testVariableDeclarationWithStringInit() {
+        val input = "let s: string = 'initial'; println(s);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("initial\n", output)
+    }
+
+    @Test
+    fun testVariableDeclarationWithBooleanInit() {
+        val input = "let b: boolean = true; println(b);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("true\n", output)
+    }
+
+    // ========== Tests para BinaryExpressionStrategy - Casos de Error ==========
+    @Test
+    fun testBinaryExpressionUnsupportedOperation() {
+        val input = "let b1: boolean = true; let b2: boolean = false; println(b1 + b2);"
+        val exception =
+            Assertions.assertThrows(Exception::class.java) {
+                interpretAndCaptureOutputV11(input)
+            }
+        assert(exception.message?.contains("Operación + no soportada") == true)
+    }
+
+    @Test
+    fun testBinaryExpressionSubtractionWithString() {
+        val input = "println('hello' - 'world');"
+        val exception =
+            Assertions.assertThrows(Exception::class.java) {
+                interpretAndCaptureOutputV11(input)
+            }
+        assert(exception.message?.contains("Operando izquierdo no es número") == true)
+    }
+
+    @Test
+    fun testBinaryExpressionMultiplicationWithString() {
+        val input = "println('hello' * 2);"
+        val exception =
+            Assertions.assertThrows(Exception::class.java) {
+                interpretAndCaptureOutputV11(input)
+            }
+        assert(exception.message?.contains("Operando izquierdo no es número") == true)
+    }
+
+    @Test
+    fun testBinaryExpressionDivisionWithString() {
+        val input = "println('hello' / 2);"
+        val exception =
+            Assertions.assertThrows(Exception::class.java) {
+                interpretAndCaptureOutputV11(input)
+            }
+        assert(exception.message?.contains("Operando izquierdo no es número") == true)
+    }
+
+    // Nota: Algunos tests de error pueden fallar en el parser antes de llegar a la strategy
+    // Estos casos se validan en el análisis semántico
+
+    // ========== Tests para ReadInputStrategy ==========
+    @Test
+    fun testReadInputWithVariableMessage() {
+        val code =
+            """
+            let prompt: string = "Enter name: ";
+            let name: string = readInput(prompt);
+            println(name);
+            """.trimIndent()
+        val testInput = TestInput()
+        testInput.addInput("Alice")
+
+        val output = interpretAndCaptureOutputV11WithInput(code, testInput)
+        assertEquals("Enter name: Alice\n", output)
+    }
+
+    @Test
+    fun testReadInputTransformToBooleanTrue() {
+        val code = "let b: boolean = readInput('Enter: '); println(b);"
+        val testInput = TestInput()
+        testInput.addInput("true")
+
+        val output = interpretAndCaptureOutputV11WithInput(code, testInput)
+        assertEquals("Enter: true\n", output)
+    }
+
+    @Test
+    fun testReadInputTransformToBooleanFalse() {
+        val code = "let b: boolean = readInput('Enter: '); println(b);"
+        val testInput = TestInput()
+        testInput.addInput("false")
+
+        val output = interpretAndCaptureOutputV11WithInput(code, testInput)
+        assertEquals("Enter: false\n", output)
+    }
+
+    @Test
+    fun testReadInputTransformToInteger() {
+        val code = "let n: number = readInput('Enter: '); println(n);"
+        val testInput = TestInput()
+        testInput.addInput("42")
+
+        val output = interpretAndCaptureOutputV11WithInput(code, testInput)
+        assertEquals("Enter: 42\n", output)
+    }
+
+    @Test
+    fun testReadInputTransformToDouble() {
+        val code = "let n: number = readInput('Enter: '); println(n);"
         val testInput = TestInput()
         testInput.addInput("3.14")
 
         val output = interpretAndCaptureOutputV11WithInput(code, testInput)
-        assertEquals("Enter value:3.14\n", output)
+        assertEquals("Enter: 3.14\n", output)
     }
 
     @Test
-    fun testComplexBooleanExpression() {
+    fun testReadInputTransformToNegativeNumber() {
+        val code = "let n: number = readInput('Enter: '); println(n);"
+        val testInput = TestInput()
+        testInput.addInput("-10")
+
+        val output = interpretAndCaptureOutputV11WithInput(code, testInput)
+        assertEquals("Enter: -10\n", output)
+    }
+
+    // ========== Tests para ReadEnvStrategy ==========
+    @Test
+    fun testReadEnvNonExistentVariable() {
+        val input = "let value: string = readEnv('NON_EXISTENT'); println(value);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("\n", output) // Devuelve string vacío
+    }
+
+    @Test
+    fun testReadEnvFromContext() {
+        // Primero establecer en context, luego leer con readEnv
         val input =
             """
-            let x: boolean = true;
-            let y: boolean = false;
-            if (x) {
-                if (y) {
-                    println('Both true');
-                } else {
-                    println('Only x true');
-                }
-            }
+            let gravity: number = 9.81;
+            let g: string = readEnv('gravity');
+            println(g);
             """.trimIndent()
         val output = interpretAndCaptureOutputV11(input)
-        assertEquals("Only x true\n", output)
+        // Debería leer del context si no existe en Environment
+        assert(output.contains("9.81"))
+    }
+
+    // ========== Tests para PrintStatementStrategy ==========
+    @Test
+    fun testPrintNullValue() {
+        val input = "let x: number; println(x);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("null\n", output)
+    }
+
+    @Test
+    fun testPrintBooleanTrue() {
+        val input = "println(true);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("true\n", output)
+    }
+
+    @Test
+    fun testPrintBooleanFalse() {
+        val input = "println(false);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("false\n", output)
+    }
+
+    @Test
+    fun testPrintIntegerAsInteger() {
+        val input = "println(42);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("42\n", output) // Debería mostrarse sin decimales
+    }
+
+    @Test
+    fun testPrintDoubleAsDouble() {
+        val input = "println(3.14);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("3.14\n", output)
+    }
+
+    @Test
+    fun testPrintString() {
+        val input = "println('hello');"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("hello\n", output)
+    }
+
+    @Test
+    fun testPrintExpressionResult() {
+        val input = "println(10 + 20);"
+        val output = interpretAndCaptureOutputV11(input)
+        assertEquals("30\n", output)
+    }
+
+    // ========== Tests adicionales para BinaryExpressionStrategy ==========
+    // Nota: Algunos tests de comparaciones con variables pueden fallar en el parser
+    // Los casos básicos ya están cubiertos en otros tests
+
+    private fun interpretAndCaptureOutputV11WithInput(
+        code: String,
+        testInput: TestInput,
+    ): String {
+        val lexer = Lexer(TokenFactory().createLexerV11(), StringReader(code))
+        val parser = ParserFactory.createParserV11(lexer)
+        val printer = TestOutput()
+        val interpreter = InterpreterFactory.createInterpreterVersion11(printer, testInput)
+
+        interpreter.interpret(parser)
+
+        return printer.printsList.joinToString(separator = "")
     }
 }

@@ -39,6 +39,47 @@ val binaryExpressionStrategy =
                 }
             }
 
+            "==", "!=", ">", "<", ">=", "<=" -> {
+                // Operadores de comparación - devuelven Boolean
+                when {
+                    // Comparación de números
+                    leftVal is Double && rightVal is Double -> {
+                        when (node.operator) {
+                            "==" -> leftVal == rightVal
+                            "!=" -> leftVal != rightVal
+                            ">" -> leftVal > rightVal
+                            "<" -> leftVal < rightVal
+                            ">=" -> leftVal >= rightVal
+                            "<=" -> leftVal <= rightVal
+                            else -> throw RuntimeException("Operador de comparación no soportado: ${node.operator}")
+                        }
+                    }
+                    // Comparación de strings
+                    leftVal is String && rightVal is String -> {
+                        when (node.operator) {
+                            "==" -> leftVal == rightVal
+                            "!=" -> leftVal != rightVal
+                            else -> throw RuntimeException(
+                                "Operador de comparación no soportado para strings: ${node.operator}",
+                            )
+                        }
+                    }
+                    // Comparación de booleans
+                    leftVal is Boolean && rightVal is Boolean -> {
+                        when (node.operator) {
+                            "==" -> leftVal == rightVal
+                            "!=" -> leftVal != rightVal
+                            else -> throw RuntimeException(
+                                "Operador de comparación no soportado para booleans: ${node.operator}",
+                            )
+                        }
+                    }
+                    else -> throw RuntimeException(
+                        "Comparación no soportada entre ${leftVal!!::class.simpleName} y ${rightVal!!::class.simpleName}",
+                    )
+                }
+            }
+
             else -> throw RuntimeException("Operador no soportado: ${node.operator}")
         }
     }
