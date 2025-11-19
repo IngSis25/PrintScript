@@ -29,7 +29,7 @@ class ValidateTest {
         val command = Validate()
         val result = command.test(testFile.absolutePath)
 
-        assertTrue(result.output.contains("Validation successful"))
+        assertTrue(result.output.contains("Validation completed"))
         assertEquals(0, result.statusCode)
     }
 
@@ -77,6 +77,7 @@ class ValidateTest {
         val command = Validate()
         val result = command.test(testFile.absolutePath)
 
-        assertTrue(result.output.contains("Validation successful"))
+        assertTrue(result.output.contains("Validation completed"))
+        assertEquals(0, result.statusCode)
     }
 }
