@@ -13,58 +13,41 @@ class Lexer(
 ) : PrintScriptIterator<Token> {
     private val currentTokens: Queue<Token> = LinkedList()
     private val position: Position = Position(1, 1)
+    private var finished = false
 
     override fun hasNext(): Boolean {
-        if (!currentTokens.isEmpty()) { // if tokens left in current statement
-            return true
-        }
+        if (currentTokens.isNotEmpty()) return true
+        if (finished) return false
 
-        if (getNextChar() != -1) {
-            lexNextStatement()
-            return !currentTokens.isEmpty()
-        }
-        return false
+        // Lexeamos TODO lo que queda del reader UNA sola vez
+        lexAll()
+        finished = true
+        return currentTokens.isNotEmpty()
     }
 
     override fun next(): Token {
         if (!hasNext()) {
             throw NoSuchElementException()
         }
-
-        // Se acabaron los tokens de la statement actual. Lexeo el próximo.
-        if (currentTokens.isEmpty()) {
-            lexNextStatement()
-        }
-
-        // return next token from current statement
         return currentTokens.remove()
     }
 
     override fun peek(): Token? {
-        if (currentTokens.isEmpty()) {
-            lexNextStatement()
-        }
+        if (!hasNext()) return null
         return currentTokens.peek()
     }
 
-    // Esta función existe para poder leer el próximo char sin avanzar el reader.
-    private fun getNextChar(): Int {
-        reader.mark(1)
-        val nextChar = reader.read()
-        reader.reset()
-        return nextChar
-    }
-
-    private fun lexNextStatement() {
+    /**
+     * Lee TODO el contenido que queda en el reader
+     * y lo tokeniza usando tu pipeline original.
+     */
+    private fun lexAll() {
         val statement = StringBuilder()
         var intChar = reader.read()
 
         while (intChar != -1) {
             val char = intChar.toChar()
             statement.append(char)
-            if (char == ';') {
-                break
-            }
             intChar = reader.read()
         }
 
@@ -75,32 +58,50 @@ class Lexer(
 
     private fun tokenizeStatement(statement: String) {
         val components = splitIgnoringLiterals(statement)
+
         for (component in components) {
-            if (component.contains("\n")) {
-                handleNewLine(position)
-                continue
-            } else if (component == " ") {
-                position.column++
-                continue
+            when {
+                // Si el componente tiene saltos de línea, los procesamos uno por uno
+                component.contains('\n') -> {
+                    component.forEach { ch ->
+                        if (ch == '\n') {
+                            handleNewLine()
+                        } else if (ch.isWhitespace()) {
+                            position.column++
+                        }
+                    }
+                    continue
+                }
+
+                // Espacios/tabs: avanzan columnas pero no generan tokens
+                component.isBlank() -> {
+                    position.column += component.length
+                    continue
+                }
+
+                else -> {
+                    tokenizeComponent(component)
+                }
             }
-            tokenizeComponent(component)
         }
     }
 
     private fun tokenizeComponent(component: String) {
         val subComponents = splitComponent(component)
         for (subComponent in subComponents) {
-            try {
-                val token = lexicon.getToken(subComponent, Location(position.line, position.column))
-                currentTokens.add(token)
-            } catch (e: Exception) {
-                throw Exception(e.message ?: "Unknown error")
-            }
+            val token =
+                try {
+                    lexicon.getToken(subComponent, Location(position.line, position.column))
+                } catch (e: Exception) {
+                    throw Exception(e.message ?: "Unknown error")
+                }
+
+            currentTokens.add(token)
             position.column += subComponent.length
         }
     }
 
-    private fun handleNewLine(position: Position) {
+    private fun handleNewLine() {
         position.line++
         position.column = 1
     }
@@ -108,36 +109,47 @@ class Lexer(
     private fun splitIgnoringLiterals(input: String): List<String> {
         val regex =
             Regex(
-                "[a-zA-Z_][a-zA-Z0-9_]*|:|;|=|[0-9]+(?:\\.[0-9]+)?|\".*?\"|'.*?'|\\n|\\s+|[^\\s]",
+                "[a-zA-Z_][a-zA-Z0-9_]*" + // identificadores
+                    "|:|;|=" + // símbolos simples
+                    "|[0-9]+(?:\\.[0-9]+)?" + // números
+                    "|\".*?\"|'.*?'" + // strings
+                    "|\\n" + // newline
+                    "|\\s+" + // espacios/tabs
+                    "|[^\\s]", // cualquier otro símbolo suelto
             )
         return regex.findAll(input).map { it.value }.toList()
     }
 
+    /**
+     * También reciclado: si alguna vez tenés componentes mezclados,
+     * esto los vuelve a partir con el mismo criterio.
+     */
     private fun splitComponent(component: String): List<String> {
-        val regex = Regex("[a-zA-Z_][a-zA-Z0-9_]*|:|;|=|[0-9]+(?:\\.[0-9]+)?|\".*?\"|'.*?'|\\S")
+        val regex =
+            Regex(
+                "[a-zA-Z_][a-zA-Z0-9_]*" +
+                    "|:|;|=" +
+                    "|[0-9]+(?:\\.[0-9]+)?" +
+                    "|\".*?\"|'.*?'" +
+                    "|\\S",
+            )
         return regex.findAll(component).map { it.value }.toList()
     }
 
+    /**
+     * Versión corregida: usamos ESTE lexer, no creamos uno nuevo con el mismo reader.
+     */
     fun collectAllTokens(): LexerResult {
-        // copy the actual lexer, to simulate collection of tokens
-        val newLexer = Lexer(lexicon, reader)
+        val result = LexerResult()
 
-        val tokens = mutableListOf<Token>()
-        val errors = mutableListOf<String>()
-
-        // Collect all tokens from the lexer
         try {
-            while (newLexer.hasNext()) {
-                tokens.add(newLexer.next())
+            while (hasNext()) {
+                result.addToken(next())
             }
         } catch (e: Exception) {
-            errors.add(e.message ?: "Unknown error")
+            result.addError(e.message ?: "Unknown error")
         }
 
-        // Return a LexerResult object based on the collected tokens and errors
-        val result = LexerResult()
-        tokens.forEach { result.addToken(it) }
-        errors.forEach { result.addError(it) }
         return result
     }
 }

@@ -24,9 +24,11 @@ class Parser(
         while (tokenIterator.hasNext()) {
             val token = tokenIterator.next()!!
             buffer.add(token)
-            if (checkIfStructureToken(token.type)) {
-                return handleStructure(token.type, tokenIterator, buffer)
-            } else if (token.type == "SemicolonToken") {
+
+            // Si el token pertenece a alguna Structure, delego
+            val structure = supportedStructures.find { it.type == token.type }
+            if (structure != null) {
+                structure.getTokens(tokenIterator, buffer)
                 return handleStatement(buffer)
             }
         }
@@ -39,46 +41,20 @@ class Parser(
         return ProgramNode("EndOfLine", Location(0, 0), emptyList())
     }
 
-    private fun handleStructure(
-        type: String,
-        tokenIterator: PrintScriptIterator<Token>,
-        buffer: ArrayList<Token>,
-    ): ASTNode {
-        supportedStructures.forEach {
-            if (it.type == type) {
-                it.getTokens(tokenIterator, buffer)
-            }
-        }
-        return handleStatement(buffer)
-    }
-
-    // If the token is a semicolon, generate an AST node from the buffer and analyze it.
-    private fun handleStatement(buffer: ArrayList<Token>): ASTNode {
+    private fun handleStatement(buffer: ArrayList<Token>): ASTNode =
         try {
             val node: ASTNode = astGenerator.generate(buffer, this)
             try {
                 semanticAnalyzer.analyze(node)
-                buffer.clear()
-                return node
+                node
             } catch (e: Exception) {
                 throw Exception("Semantic error: ${e.message}")
             }
         } catch (e: Exception) {
             throw Exception("Syntactic error: ${e.message}")
         }
-    }
 
-    private fun checkIfStructureToken(string: String): Boolean {
-        val structureTokens = supportedStructures.map { it.type }
-        return structureTokens.contains(string)
-    }
-
-    override fun hasNext(): Boolean {
-        if (peekedElement != null) {
-            return true
-        }
-        return tokenIterator.hasNext()
-    }
+    override fun hasNext(): Boolean = peekedElement != null || tokenIterator.hasNext()
 
     override fun next(): ASTNode {
         if (peekedElement != null) {

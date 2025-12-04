@@ -20,13 +20,14 @@ import semanticAnalysis.check.SemanticCheck
 import semanticAnalysis.check.VariableDeclarationCheck
 import semanticAnalysis.check.VariableDeclarationTypeCheck
 import structures.IfElseStructure
+import structures.SimpleStatementStructure
 
 object ParserFactory {
     fun createParserV10(tokenIterator: PrintScriptIterator<Token>): Parser =
         Parser(
             astGenerator = createASTGeneratorV10(),
             semanticAnalyzer = createSemanticAnalyzerV10(),
-            supportedStructures = emptyList(),
+            supportedStructures = listOf(SimpleStatementStructure()),
             tokenIterator = tokenIterator,
         )
 
@@ -34,7 +35,7 @@ object ParserFactory {
         Parser(
             astGenerator = createASTGeneratorV11(),
             semanticAnalyzer = createSemanticAnalyzerV11(),
-            supportedStructures = listOf(IfElseStructure()),
+            supportedStructures = listOf(SimpleStatementStructure(), IfElseStructure()),
             tokenIterator = tokenIterator,
         )
 
