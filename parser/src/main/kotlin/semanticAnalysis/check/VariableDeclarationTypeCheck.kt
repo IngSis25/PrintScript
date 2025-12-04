@@ -26,6 +26,12 @@ class VariableDeclarationTypeCheck : SemanticCheck {
                 throw Exception("ReadInputNode message must be of type string")
             }
 
+            // Permitir asignar readInput (que devuelve string) a variables de tipo number o boolean
+            // porque el intérprete hace la conversión automática
+            if (expressionNode is ReadInputNode && (variableType == "number" || variableType == "boolean")) {
+                return // Permitir la asignación, el intérprete se encargará de la conversión
+            }
+
             if (expressionType != variableType && expressionType != "Undefined") {
                 throw Exception(
                     "Variable ${variableDeclarationNode.identifier.name}" +

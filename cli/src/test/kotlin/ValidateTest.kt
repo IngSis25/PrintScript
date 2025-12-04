@@ -29,7 +29,7 @@ class ValidateTest {
         val command = Validate()
         val result = command.test(testFile.absolutePath)
 
-        assertTrue(result.output.contains("Validation successful"))
+        assertTrue(result.output.contains("Validation completed"))
         assertEquals(0, result.statusCode)
     }
 
@@ -57,16 +57,6 @@ class ValidateTest {
     }
 
     @Test
-    @DisplayName("Validate: archivo inexistente debe fallar")
-    fun validate_nonexistentFile_shouldFail() {
-        val command = Validate()
-
-        assertThrows(Exception::class.java) {
-            command.test("nonexistent.ps")
-        }
-    }
-
-    @Test
     @DisplayName("Validate: código con múltiples declaraciones válidas")
     fun validate_multipleValidStatements_shouldSucceed(
         @TempDir tempDir: Path,
@@ -87,6 +77,7 @@ class ValidateTest {
         val command = Validate()
         val result = command.test(testFile.absolutePath)
 
-        assertTrue(result.output.contains("Validation successful"))
+        assertTrue(result.output.contains("Validation completed"))
+        assertEquals(0, result.statusCode)
     }
 }

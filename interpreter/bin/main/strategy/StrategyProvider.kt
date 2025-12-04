@@ -30,15 +30,12 @@ sealed interface StrategyProvider {
         /**
          * Creates a new [StrategyProvider] using the builder-style DSL.
          */
-        infix fun builder(block: StrategyProviderBuilder.() -> Unit): StrategyProvider =
-            StrategyProviderBuilder().apply(block).build()
+        infix fun builder(block: StrategyProviderBuilder.() -> Unit): StrategyProvider = StrategyProviderBuilder().apply(block).build()
 
         /**
          * Creates a concrete implementation from a prebuilt map.
          */
-        internal infix fun implementation(
-            strategies: Map<Class<out ASTNode>, Strategy<out ASTNode>>,
-        ): StrategyProvider = StrategyProviderImplementation(strategies)
+        internal infix fun implementation(strategies: Map<Class<out ASTNode>, Strategy<out ASTNode>>): StrategyProvider = StrategyProviderImplementation(strategies)
     }
 
     /**
@@ -48,8 +45,7 @@ sealed interface StrategyProvider {
         private val strategies: Map<Class<out ASTNode>, Strategy<out ASTNode>>,
     ) : StrategyProvider {
         @Suppress("UNCHECKED_CAST")
-        override fun <T> getStrategyFor(node: T): Strategy<T>? where T : ASTNode =
-            strategies[node::class.java] as Strategy<T>?
+        override fun <T> getStrategyFor(node: T): Strategy<T>? where T : ASTNode = strategies[node::class.java] as Strategy<T>?
 
         override fun plus(other: StrategyProvider): StrategyProvider {
             val merged = mutableMapOf<Class<out ASTNode>, Strategy<out ASTNode>>()
@@ -60,7 +56,6 @@ sealed interface StrategyProvider {
             return StrategyProviderImplementation(merged.toMap())
         }
 
-        override fun iterator(): Iterator<Pair<Class<out ASTNode>, Strategy<out ASTNode>>> =
-            strategies.map { it.toPair() }.iterator()
+        override fun iterator(): Iterator<Pair<Class<out ASTNode>, Strategy<out ASTNode>>> = strategies.map { it.toPair() }.iterator()
     }
 }

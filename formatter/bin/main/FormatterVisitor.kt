@@ -70,8 +70,7 @@ class FormatterVisitor : ASTNodeVisitor {
         return VisitorResult.StringResult(result)
     }
 
-    private fun visitLiteralNode(node: LiteralNode): VisitorResult =
-        VisitorResult.StringResult(node.value.toString() + ";")
+    private fun visitLiteralNode(node: LiteralNode): VisitorResult = VisitorResult.StringResult(node.value.toString() + ";")
 
     private fun visitBinaryExpressionNode(node: BinaryExpressionNode): VisitorResult {
         val result: String =

@@ -5,8 +5,8 @@ plugins {
 
 dependencies {
     implementation project(':common')
-    implementation project(':lexer')
-    implementation project(':parser')
+    testImplementation(project(":lexer"))
+    testImplementation(project(":parser"))
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0"
     testImplementation "org.jetbrains.kotlin:kotlin-test:2.2.0"
 }

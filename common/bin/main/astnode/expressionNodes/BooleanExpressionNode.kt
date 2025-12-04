@@ -11,8 +11,7 @@ class BooleanExpressionNode(
 ) : ExpressionNode {
     override fun accept(visitor: ASTNodeVisitor): VisitorResult = visitor.visit(this)
 
-    override fun getType(symbolTable: MutableMap<String, Pair<String, LiteralValue>>): String =
-        bool.getType(symbolTable)
+    override fun getType(symbolTable: MutableMap<String, Pair<String, LiteralValue>>): String = bool.getType(symbolTable)
 
     override fun toString(): String = bool.toString()
 }

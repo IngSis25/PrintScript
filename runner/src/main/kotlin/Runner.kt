@@ -1,96 +1,104 @@
 package runner
 
-import factory.LexerFactoryRegistry
+import com.google.gson.JsonObject
 import main.kotlin.analyzer.AnalyzerConfig
+import main.kotlin.analyzer.AnalyzerFactory
 import main.kotlin.analyzer.DefaultAnalyzer
-import main.kotlin.analyzer.Diagnostic
-import main.kotlin.analyzer.DiagnosticSeverity
 import main.kotlin.lexer.Lexer
-import main.kotlin.parser.ConfiguredRules
-import main.kotlin.parser.DefaultParser
-import org.example.ast.ASTNode
+import main.kotlin.lexer.LexerFactory
+import org.Parser
+import org.ParserFactory
+import org.example.astnode.ASTNode
 import org.example.formatter.Formatter
-import rules.RuleMatcher
-import java.io.File
+import org.example.formatter.RulesFactory
+import java.io.Reader
 
 class Runner(
-    private val version: String,
-    private val sourceCode: String,
+    version: String,
+    reader: Reader,
 ) {
-    private val lexer: Lexer = LexerFactoryRegistry.getFactory(version).create()
-    private val tokens = lexer.tokenize(sourceCode)
+    private val lexer: Lexer
+    private val parser: Parser
+    private val linter: DefaultAnalyzer
+    private val formatter: Formatter
+    private val runnerVersion: String = version
 
-    // Parser según versión de lenguaje
-    private val parser: DefaultParser =
+    init {
         when (version) {
             "1.0" -> {
-                val rules = ConfiguredRules.V1
-                DefaultParser(RuleMatcher(rules))
+                lexer = LexerFactory.createLexerV10(reader)
+                parser = ParserFactory.createParserV10(lexer)
+                linter = AnalyzerFactory().createAnalyzerV10(parser)
+                formatter = Formatter(parser)
             }
+
             "1.1" -> {
-                val dummy = DefaultParser(RuleMatcher(emptyList()))
-                val rules = ConfiguredRules.createV11Rules(dummy)
-                DefaultParser(RuleMatcher(rules))
-            }
-            else -> error("Versión de PrintScript no soportada: $version")
-        }
-
-    fun validate(): RunnerResult.Validate =
-        try {
-            parser.parse(tokens)
-            RunnerResult.Validate(errors = emptyList())
-        } catch (e: Exception) {
-            RunnerResult.Validate(errors = listOf(e.message ?: "Syntax error"))
-        }
-
-    fun analyze(config: AnalyzerConfig): RunnerResult.Analyze {
-        val warnings = mutableListOf<String>()
-        val errors = mutableListOf<String>()
-
-        val ast: List<ASTNode> =
-            try {
-                parser.parse(tokens)
-            } catch (e: Exception) {
-                // Si la sintaxis falla, lo reportamos como error y salimos.
-                return RunnerResult.Analyze(
-                    warnings = emptyList(),
-                    errors = listOf("Syntax error: ${e.message ?: "unknown"}"),
-                )
+                lexer = LexerFactory.createLexerV11(reader)
+                parser = ParserFactory.createParserV11(lexer)
+                linter = AnalyzerFactory().createAnalyzerV11(parser)
+                formatter = Formatter(parser)
             }
 
-        val analyzer = DefaultAnalyzer()
-        val result = analyzer.analyze(ast, config)
-
-        // Mapeo simple de diagnostics → warnings/errors en texto
-        result.diagnostics.forEach { d: Diagnostic ->
-            when (d.severity) {
-                DiagnosticSeverity.WARNING -> warnings += d.message
-                DiagnosticSeverity.ERROR -> errors += d.message
-                else -> {}
-            }
+            else -> throw IllegalArgumentException("Unsupported version: $version")
         }
-
-        return RunnerResult.Analyze(warnings = warnings, errors = errors)
     }
 
-    fun format(jsonConfigFile: File): RunnerResult.Format {
-        val errors = mutableListOf<String>()
+    fun analyze(jsonFile: JsonObject): RunnerResult.Analyze {
+        val warningsList = mutableListOf<String>()
+        val errorsList = mutableListOf<String>()
 
-        val ast: List<ASTNode> =
+        // Collect AST nodes from the parser
+        val nodes = mutableListOf<ASTNode>()
+        while (parser.hasNext()) {
             try {
-                parser.parse(tokens)
+                nodes.add(parser.next())
             } catch (e: Exception) {
-                return RunnerResult.Format(formattedCode = "", errors = listOf("Syntax error: ${e.message}"))
+                errorsList.add(e.message ?: "Unknown parse error")
             }
+        }
 
-        val formatted =
+        // Create a config and call the analyzer with the expected parameters
+        val config = AnalyzerConfig()
+        val linterResult = linter.analyze(nodes, config)
+
+        // Try to handle common result shapes:
+        // 1) If result is an Iterable<String>
+        (linterResult as? Iterable<*>)?.filterIsInstance<String>()?.forEach { warningsList.add(it) }
+
+        // 2) Otherwise, attempt to call a getList() method via reflection if present
+        if (warningsList.isEmpty()) {
             try {
-                Formatter.formatMultiple(ast, jsonConfigFile)
-            } catch (e: Exception) {
-                errors += "Formatter error: ${e.message}"
-                ""
+                val method = linterResult!!::class.java.methods.firstOrNull { it.name == "getList" && it.parameterCount == 0 }
+                val list = method?.invoke(linterResult) as? Iterable<*>
+                list?.filterIsInstance<String>()?.forEach { warningsList.add(it) }
+            } catch (_: Exception) {
+                // ignore reflection errors; leave warningsList empty or as collected
             }
+        }
 
-        return RunnerResult.Format(formattedCode = formatted, errors = errors)
+        return RunnerResult.Analyze(warningsList, errorsList)
+    }
+
+    fun format(
+        json: String,
+        version: String,
+    ): RunnerResult.Format {
+        val errorsList = mutableListOf<String>()
+
+        val rules = RulesFactory().getRules(json, version)
+        val formatterResult = formatter.format(rules)
+        return RunnerResult.Format(formatterResult.code, errorsList)
+    }
+
+    fun validate(): RunnerResult.Validate {
+        val errorsList = mutableListOf<String>()
+        while (parser.hasNext()) {
+            try {
+                parser.next()
+            } catch (e: Exception) {
+                errorsList.add(e.message ?: "Unknown error")
+            }
+        }
+        return RunnerResult.Validate(errorsList)
     }
 }

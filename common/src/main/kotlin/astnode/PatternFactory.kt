@@ -42,8 +42,8 @@ class PatternFactory {
         fun getNamingFormatPattern(namingPatternName: String): String =
             when (namingPatternName) {
                 "camelCase" -> {
-                    // starts with a lowercase letter, followed by any number of letters or numbers, and then an uppercase letter, followed by any number of letters or numbers.
-                    """^[a-z][a-zA-Z0-9]*[A-Z][a-zA-Z0-9]*$"""
+                    // starts with a lowercase letter and can include alphanumeric characters without requiring uppercase segments
+                    """^[a-z][a-zA-Z0-9]*$"""
                 }
                 "snake_case" -> {
                     // starts with a lowercase letter, followed by any number of letters or numbers, and then an underscore, followed by any number of letters or numbers.
